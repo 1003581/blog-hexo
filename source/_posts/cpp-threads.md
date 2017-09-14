@@ -1,7 +1,9 @@
 ---
 title: 多线程外链
 date: 2017-09-14 15:11:37
-tags: c++ 多线程
+tags: 
+- c++
+- 多线程
 categories: c++
 ---
 

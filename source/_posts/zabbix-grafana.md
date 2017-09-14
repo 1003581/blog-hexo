@@ -1,7 +1,9 @@
 ---
 title: 使用Zabbix+Grafana监控
 date: 2017-09-14 16:00:50
-tags: zabbix grafana
+tags: 
+- zabbix
+- grafana
 categories: linux
 ---
 

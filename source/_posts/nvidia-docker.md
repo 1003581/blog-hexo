@@ -237,34 +237,6 @@ $ docker volume create --name=nvidia_driver_375.66 -d nvidia-docker
 
 如果您不想使用`volume plugins`, 则必须使用`ldconfig -p`或解析`ldcache`手动查找驱动程序文件.  如果您的部署环境完全相同, 您可以简单地硬编码用例的文件路径.  为了验证, 您可以查看由nvidia-docker-plugin创建的卷：
 
-```
-$ ls -R `docker volume inspect -f "{{ .Mountpoint }}" nvidia_driver_375.66`
-/var/lib/nvidia-docker/volumes/nvidia_driver/375.66:
-bin  lib  lib64
-
-/var/lib/nvidia-docker/volumes/nvidia_driver/375.66/bin:
-nvidia-cuda-mps-control  nvidia-cuda-mps-server  nvidia-debugdump  nvidia-persistenced  nvidia-smi
-
-/var/lib/nvidia-docker/volumes/nvidia_driver/375.66/lib:
-libEGL_nvidia.so.0             libGLESv2_nvidia.so.375.66  libnvcuvid.so.1                      libnvidia-fbc.so.1          libnvidia-ptxjitcompiler.so.375.66
-libEGL_nvidia.so.375.66        libGLESv2.so.2              libnvcuvid.so.375.66                 libnvidia-fbc.so.375.66     libnvidia-tls.so.375.66
-libEGL.so.1                    libGL.so.1                  libnvidia-compiler.so.375.66         libnvidia-glcore.so.375.66  libvdpau_nvidia.so.1
-libGLdispatch.so.0             libGL.so.1.0.0              libnvidia-eglcore.so.375.66          libnvidia-glsi.so.375.66    libvdpau_nvidia.so.375.66
-libGLESv1_CM_nvidia.so.1       libGLX_indirect.so.0        libnvidia-egl-wayland.so.375.66      libnvidia-ifr.so.1
-libGLESv1_CM_nvidia.so.375.66  libGLX_nvidia.so.0          libnvidia-encode.so.1                libnvidia-ifr.so.375.66
-libGLESv1_CM.so.1              libGLX_nvidia.so.375.66     libnvidia-encode.so.375.66           libnvidia-ml.so.1
-libGLESv2_nvidia.so.2          libGLX.so.0                 libnvidia-fatbinaryloader.so.375.66  libnvidia-ml.so.375.66
-
-/var/lib/nvidia-docker/volumes/nvidia_driver/375.66/lib64:
-libcuda.so               libGLESv1_CM_nvidia.so.1       libGL.so.1.0.0           libnvidia-compiler.so.375.66         libnvidia-fbc.so.375.66     libnvidia-opencl.so.1
-libcuda.so.1             libGLESv1_CM_nvidia.so.375.66  libGLX_indirect.so.0     libnvidia-eglcore.so.375.66          libnvidia-glcore.so.375.66  libnvidia-opencl.so.375.66
-libcuda.so.375.66        libGLESv1_CM.so.1              libGLX_nvidia.so.0       libnvidia-egl-wayland.so.375.66      libnvidia-glsi.so.375.66    libnvidia-ptxjitcompiler.so.375.66
-libEGL_nvidia.so.0       libGLESv2_nvidia.so.2          libGLX_nvidia.so.375.66  libnvidia-encode.so.1                libnvidia-ifr.so.1          libnvidia-tls.so.375.66
-libEGL_nvidia.so.375.66  libGLESv2_nvidia.so.375.66     libGLX.so.0              libnvidia-encode.so.375.66           libnvidia-ifr.so.375.66     libOpenGL.so.0
-libEGL.so.1              libGLESv2.so.2                 libnvcuvid.so.1          libnvidia-fatbinaryloader.so.375.66  libnvidia-ml.so.1           libvdpau_nvidia.so.1
-libGLdispatch.so.0       libGL.so.1                     libnvcuvid.so.375.66     libnvidia-fbc.so.1                   libnvidia-ml.so.375.66      libvdpau_nvidia.so.375.66
-```
-
 我们不建议基于通过查找找到库的解决方案, 因为您可能从较旧的驱动程序安装中选择流浪库. 
 我们建议使用驱动程序版本对该卷的名称进行后缀, 这样可以防止错误驱动程序/库版本不匹配, 如果您更新驱动程序但忘记重新创建一个新的卷. 
 
@@ -345,12 +317,5 @@ nvidia-docker | 2016/04/21 21:41:35 Error: unsupported CUDA version: driver 7.0 
 #### 替代选择
 
 在这种情况下，nvidia-docker不会简单地将参数注入docker命令行。 因此，重现这种行为更为复杂。 您将需要在工作流程或容器编排解决方案的上游检查图像。 查看图像内的标签很简单：
-
-```
-$ docker inspect -f '{{index .Config.Labels "com.nvidia.volumes.needed"}}' nvidia/cuda
-nvidia_driver
-$ docker inspect -f '{{index .Config.Labels "com.nvidia.cuda.version"}}' nvidia/cuda
-8.0.61
-```
 
 If you build your own custom CUDA images, we suggest you to reuse the same labels for compatibility reasons.

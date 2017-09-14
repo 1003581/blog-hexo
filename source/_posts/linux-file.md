@@ -1,7 +1,9 @@
 ---
 title: Linux中文件相关知识
 date: 2017-09-14 16:02:33
-tags: linux file
+tags: 
+- linux
+- file
 categories: linux
 ---
 

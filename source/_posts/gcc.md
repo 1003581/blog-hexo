@@ -1,7 +1,9 @@
 ---
 title: G++编译C++程序
 date: 2017-09-14 15:58:29
-tags: g++ c++
+tags: 
+- g++
+- c++
 categories: c++
 ---
 

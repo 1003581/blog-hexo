@@ -1,7 +1,10 @@
 ---
 title: Python小游戏，使用Tensorflow进行训练
 date: 2017-09-14 16:04:48
-tags: tensorflow python game
+tags: 
+- tensorflow
+- python
+- game
 categories: tensorflow
 ---
 

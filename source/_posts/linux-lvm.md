@@ -1,7 +1,9 @@
 ---
 title: LVM操作记录
 date: 2017-09-14 16:02:41
-tags: linux lvm
+tags: 
+- linux
+- lvm
 categories: linux
 ---
 

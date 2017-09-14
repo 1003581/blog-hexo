@@ -1,7 +1,9 @@
 ---
 title: TensorFlow On Spark笔记
 date: 2017-09-14 16:04:24
-tags: tensorflow spark
+tags: 
+- tensorflow
+- spark
 categories: tensorflow
 ---
 

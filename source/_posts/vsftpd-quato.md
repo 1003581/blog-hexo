@@ -1,7 +1,9 @@
 ---
 title: vsftpd和quota配额
 date: 2017-09-14 16:00:33
-tags: vsftpd quota
+tags: 
+- vsftpd
+- quota
 categories: linux
 ---
 

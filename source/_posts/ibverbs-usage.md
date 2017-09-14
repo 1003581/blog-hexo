@@ -1,7 +1,9 @@
 ---
 title: ibverbs文档翻译
 date: 2017-09-14 15:58:43
-tags: rdma ibverbs
+tags: 
+- rdma
+- ibverbs
 categories: rdma
 ---
 

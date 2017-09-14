@@ -1,7 +1,9 @@
 ---
 title: TensorFlow中rdma的设计细节
 date: 2017-09-14 15:59:41
-tags: tensorflow rdma
+tags: 
+- tensorflow
+- rdma
 categories: rdma
 ---
 

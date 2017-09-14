@@ -1,7 +1,7 @@
 ---
 title: TensorFlow官网教学（中文翻译）
 date: 2017-09-14 15:59:55
-tags: tensorflow tutorial
+tags: tensorflow
 categories: tensorflow
 ---
 

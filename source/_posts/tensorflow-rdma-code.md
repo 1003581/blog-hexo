@@ -1,7 +1,9 @@
 ---
 title: TensorFlow中rdma的使用
 date: 2017-09-14 15:59:32
-tags: tensorflow rdma
+tags: 
+- tensorflow
+- rdma
 categories: rdma
 ---
 
