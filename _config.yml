@@ -79,7 +79,7 @@ theme: next
 deploy:
   type: git
   repo:
-    coding: git@git.coding.net:liqiang311/liqiang311.git
+    coding: https://git.coding.net/liqiang311/liqiang311.git
 
 
 search:

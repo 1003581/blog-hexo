@@ -1,15 +1,13 @@
 ---
-layout: post
-title: "Docker命令及dockerfile详解"
-date: 2017-09-06
-description: ""
-tag: docker
----   
-
-* TOC
-{:toc}
+title: Docker命令及dockerfile详解
+date: 2017-09-14 15:11:50
+tags: docker-cli
+categories: docker
+---
 
 ## 镜像
+
+<!-- more -->
 
 ### Pull
 
