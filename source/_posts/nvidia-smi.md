@@ -436,3 +436,107 @@ nvidia-smi [OPTION1 [ARG1]] [OPTION2 [ARG2]] ...
 
 Please see the nvidia-smi(1) manual page for more detailed information.
 ```
+
+## 特殊命令
+
+### 获取GPU的当前温度
+
+依次获得所有GPU卡的温度
+
+```
+nvidia-smi -q 2>&1|grep -i "gpu current temp"|awk '{print $5}'| sed s/\%//g
+```
+
+获得指定GPU卡的温度，添加`-g`参数，后加GPU ID，从0开始索引
+
+```
+nvidia-smi -q -g 0 2>&1|grep -i "gpu current temp"|awk '{print $5}'| sed s/\%//g
+```
+
+### 获取GPU当前正在运行的进程
+
+依次获得所有GPU卡的进程
+
+```
+nvidia-smi -q 2>&1|grep -i "Process ID"|awk '{print $4}'
+```
+
+获得指定GPU卡的温度，添加`-g`参数，后加GPU ID，从0开始索引
+
+### 获取GPU当前使用率
+
+```
+nvidia-smi -q 2>&1|grep -i "Process ID"|awk '{print $4}'
+```
+
+附： 使用python远程监控gpu状态，并返回json格式的数据。或者简单用shell脚本执行返回。
+
+首先需配置SSH免密钥登录，在执行脚本的机器上重复执行
+
+```
+cd ~/.ssh
+ssh-keygen -t rsa
+ssh-copy-id -i ~/.ssh/id_rsa.pub root@10.42.10.xx
+```
+
+python版本`get-gpu-util.py`
+
+```python
+#!/usr/bin/python
+
+import paramiko
+import json
+
+def ssh_exec(ip, cmd):
+    client = paramiko.SSHClient()
+    client.load_system_host_keys()
+    client.connect(ip)
+    stdin, stdout, stderr = client.exec_command(cmd)
+    if len(stderr.readlines()):
+        output = ["-1"]
+    else:
+        output =  stdout.readlines()
+    client.close()
+    return output
+
+command = "nvidia-smi -q|grep \"Gpu\"|awk '{print $3}'"
+hosts = ["10.42.10.35", "10.42.10.41", "10.42.10.62"]
+
+
+result = []
+for host in hosts:
+    utils = ssh_exec(host, command)
+    for index, util in enumerate(utils):
+        util = util.strip()
+        info = {}
+        info["ip"] = host
+        info["card"] = index
+        info["gpu-util"] = int(util)
+        result.append(info)
+
+print(json.dumps(result))
+```
+
+输出如下
+
+```
+[{"ip": "10.42.10.35", "card": 0, "gpu-util": 0}, {"ip": "10.42.10.41", "card": 0, "gpu-util": 99}, {"ip": "10.42.10.41", "card": 1, "gpu-util": 65}, {"ip": "10.42.10.41", "card": 2, "gpu-util": 85}, {"ip": "10.42.10.41", "card": 3, "gpu-util": 0}, {"ip": "10.42.10.62", "card": 0, "gpu-util": 90}, {"ip": "10.42.10.62", "card": 1, "gpu-util": 33}, {"ip": "10.42.10.62", "card": 2, "gpu-util": 91}, {"ip": "10.42.10.62", "card": 3, "gpu-util": 87}]
+```
+
+Shell版本`get-gpu-util.sh`
+
+```bash
+#!/bin/bash
+command="nvidia-smi -q|grep \"Gpu\"|awk '{print \$3}'|tr '\n' ','"
+
+result35=`ssh 10.42.10.35 $command`
+result41=`ssh 10.42.10.41 $command`
+result62=`ssh 10.42.10.62 $command`
+
+result=$result35$result41$result62
+result1=${result:0:${#result}-1}
+
+echo $result1
+```
+
+运行命令`bash get-gpu-util.sh`

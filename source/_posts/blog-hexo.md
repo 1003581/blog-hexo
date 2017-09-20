@@ -40,6 +40,8 @@ categories: tool
 
 阿里的万网、腾讯的等等都可以选择。
 
+注：作者购买的万网域名，但是使用了腾讯的DNSpod解析。原因是万网的解析不支持顶级域名解析（liqiang311.com），DNSPod目前支持，操作步骤见[baidu](https://jingyan.baidu.com/article/2c8c281daa4faa0008252ac7.html)
+
 # 博客代码
 
 本博客代码，代码仅作参考，下面介绍如何详细部署。
