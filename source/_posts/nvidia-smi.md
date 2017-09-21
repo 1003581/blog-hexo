@@ -471,7 +471,7 @@ nvidia-smi -q 2>&1|grep -i "Process ID"|awk '{print $4}'
 
 附： 使用python远程监控gpu状态，并返回json格式的数据。或者简单用shell脚本执行返回。
 
-首先需配置SSH免密钥登录，在执行脚本的机器上重复执行
+首先需配置SSH免密钥登录，在执行脚本的机器上重复执行。
 
 ```
 cd ~/.ssh
@@ -540,3 +540,29 @@ echo $result1
 ```
 
 运行命令`bash get-gpu-util.sh`
+
+> 若无法配置SSH免密钥登录，比如需要在容器中运行等，则可以利用远程执行ssh的工具[sshexec](https://github.com/liqiang311/sshexec)来执行，代码如下：
+
+首先在每台机器上创建用于查询信息的用户名，无需管理员权限（nvidia-smi不需管理员）。
+
+```
+useradd -s /bin/bash -mr gpu
+passwd gpu
+gpu
+```
+
+远程代码执行如下
+
+```bash
+#!/bin/bash
+set -e
+
+res35=`sshexec -i 10.42.10.35 -u gpu -p gpu -e "nvidia-smi -q | grep Gpu" | awk '{print $3}' | tr '\n' ',' `
+res41=`sshexec -i 10.42.10.41 -u gpu -p gpu -e "nvidia-smi -q | grep Gpu" | awk '{print $3}' | tr '\n' ',' `
+res62=`sshexec -i 10.42.10.62 -u gpu -p gpu -e "nvidia-smi -q | grep Gpu" | awk '{print $3}' | tr '\n' ',' `
+res1=$res35$res41$res62
+res2=${res1:0:${#res1}-1}
+
+echo $res2
+```
+
