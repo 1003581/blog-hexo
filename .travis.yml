@@ -1,0 +1,30 @@
+language: node_js
+node_js: stable
+
+# S: Build Lifecycle
+install:
+  - npm install
+
+
+#before_script:
+ # - npm install -g gulp
+
+script:
+  - hexo g
+
+after_script:
+  - cd ./public
+  - git init
+  - git config user.name "liqiang311"
+  - git config user.email "385098415@qq.com"
+  - git add .
+  - git commit -m "Travis CI AutoUpdate"
+  - git push --force --quiet "https://${GITHUB_TOKEN}@${GITHUB_REF}" master:master
+  - git push --force --quiet "https://${CODING_TOKEN}@${CODING_REF}" master:master
+# E: Build LifeCycle
+
+branches: master
+env:
+ global:
+   - GITHUB_REF: github.com/liqiang311/liqiang311.github.io.git
+   - CODING_REF: git.coding.net/liqiang311/liqiang311.git
