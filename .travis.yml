@@ -19,8 +19,9 @@ after_script:
   - git config user.email "385098415@qq.com"
   - git add .
   - git commit -m "Travis CI AutoUpdate"
-  - git push --force --quiet "https://${GITHUB_TOKEN}@${GITHUB_REF}" master:master
-  - git push --force --quiet "https://${CODING_TOKEN}@${CODING_REF}" master:master
+  - git remote add all "https://${GITHUB_TOKEN}@${GITHUB_REF}"
+  - git remote set-url --add all "https://${CODING_TOKEN}@${CODING_REF}"
+  - git push -f all -all
 # E: Build LifeCycle
 
 branches: master
