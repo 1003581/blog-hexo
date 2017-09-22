@@ -35,6 +35,8 @@ set hlsearch
 
 ## 激活
 
+3126激活码
+
 ```
 —– BEGIN LICENSE —–
 Michael Barnes
@@ -51,16 +53,55 @@ FCCC7561 8A4A1741 68FA4223 ADCEDE07
 —— END LICENSE ——
 ```
 
+3143激活码
+
+```
+—– BEGIN LICENSE —–  
+TwitterInc  
+200 User License  
+EA7E-890007  
+1D77F72E 390CDD93 4DCBA022 FAF60790  
+61AA12C0 A37081C5 D0316412 4584D136  
+94D7F7D4 95BC8C1C 527DA828 560BB037  
+D1EDDD8C AE7B379F 50C9D69D B35179EF  
+2FE898C4 8E4277A8 555CE714 E1FB0E43  
+D5D52613 C3D12E98 BC49967F 7652EED2  
+9D2D2E61 67610860 6D338B72 5CF95C69  
+E36B85CC 84991F19 7575D828 470A92AB  
+—— END LICENSE —— 
+```
+
 ## 设置
 
 `Prefences`->`Settings`
 
 ```
+    "font_size": 14,
     "default_encoding":"UTF-8", //unix模式
     "default_line_ending":"unix",
 
     "translate_tabs_to_spaces": false, //
 ```
+
+## 在文件夹右键和空格右键处添加用Sublime打开
+
+`Win + R` -> `regedit`打开注册表
+
+### 在资源管理器的当前目录打开
+
+定位到如下：`HKEY_CLASSES_ROOT\Directory\background\shell`
+
+右键点击`shell`，`新建`->`项`，命名为`Sublime`
+
+右键点击`Sublime`，`新建`->`项`，命名为`command`
+
+点击`command`，右侧会出现默认的一条数据，双击`名称`一栏的`(默认)`，修改数值数据为`"C:\Program Files\Sublime Text 3\sublime_text.exe" "-a" "%v"`
+
+### 点击文件夹用Sublime打开
+
+定位到如下：`HKEY_CLASSES_ROOT\Directory\shell`
+
+重复以上内容。
 
 ## Markdown Editing
 
