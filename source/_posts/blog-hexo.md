@@ -49,4 +49,8 @@ categories: tool
 [https://github.com/liqiang311/blog-hexo](https://github.com/liqiang311/blog-hexo)
 
 
+# 利用Traivs CI实现自动部署
+
+[http://www.w3cboy.com/post/2016/03/travisci-hexo-deploy/](http://www.w3cboy.com/post/2016/03/travisci-hexo-deploy/)
+
 
