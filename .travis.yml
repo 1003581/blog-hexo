@@ -3,6 +3,8 @@ node_js: stable
 
 # S: Build Lifecycle
 install:
+  - npm install -g hexo-cli
+  - npm install hexo --save
   - npm install
 
 
