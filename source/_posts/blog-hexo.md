@@ -51,6 +51,9 @@ categories: tool
 
 # 利用Traivs CI实现自动部署
 
-[http://www.w3cboy.com/post/2016/03/travisci-hexo-deploy/](http://www.w3cboy.com/post/2016/03/travisci-hexo-deploy/)
+1. 参考1[http://www.w3cboy.com/post/2016/03/travisci-hexo-deploy/](http://www.w3cboy.com/post/2016/03/travisci-hexo-deploy/)
 
-
+2. 参考2
+    1. [1](https://huangyijie.com/2016/09/20/blog-with-github-travis-ci-and-coding-net-1/)
+    2. [2](https://huangyijie.com/2016/10/05/blog-with-github-travis-ci-and-coding-net-2/)
+    3. [3](https://huangyijie.com/2017/06/22/blog-with-github-travis-ci-and-coding-net-3/)

@@ -1,31 +1,38 @@
+# https://docs.travis-ci.com/user/customizing-the-build/
+# https://docs.travis-ci.com/user/encrypting-files/
+
 language: node_js
 node_js: '6.11.3'
 
+sudo: false
+
 # S: Build Lifecycle
+before_install:
+  - openssl aes-256-cbc -K $encrypted_e2774ebf4996_key -iv $encrypted_e2774ebf4996_iv -in .travis/id_rsa.enc -out ~/.ssh/id_rsa -d
+  - chmod 600 ~/.ssh/id_rsa
+  - eval $(ssh-agent)
+  - ssh-add ~/.ssh/id_rsa
+  - cp .travis/ssh_config ~/.ssh/config
+  - git config --global user.name "liqiang311"
+  - git config --global user.email "385098415@qq.com"
+
 install:
+  - npm install hexo-cli -g
   - npm install
 
+cache:
+  apt: true
+  directories:
+    - node_modules
 
-#before_script:
- # - npm install -g gulp
+addons:
+  ssh_known_hosts: github.com
 
 script:
+  - hexo clean
   - hexo g
+  - hexo d
 
-after_script:
-  - cd ./public
-  - git init
-  - git config user.name "liqiang311"
-  - git config user.email "385098415@qq.com"
-  - git add .
-  - git commit -m "Travis CI AutoUpdate"
-  - git remote add all "https://${GITHUB_TOKEN}@${GITHUB_REF}"
-  - git remote set-url --add all "https://${CODING_TOKEN}@${CODING_REF}"
-  - git push -f all --all
-# E: Build LifeCycle
-
-branches: master
-env:
- global:
-   - GITHUB_REF: github.com/liqiang311/liqiang311.github.io.git
-   - CODING_REF: git.coding.net/liqiang311/liqiang311.git
+branches: 
+  only: 
+  - master
