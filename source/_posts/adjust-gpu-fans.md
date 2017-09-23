@@ -24,6 +24,6 @@ nohup ./cool_gpu &
 
 输入`nvidia-smi`,当显示有一个7MB的进程运行时，表示成功。
 
-若失败，检查/opt下的nohup.out
+若失败，检查/opt下的nohup.out，有可能是[`lightdm`](https://baike.baidu.com/item/LightDM/9557430?fr=aladdin)服务开启的原因，需要关闭此服务`service lightdm stop`。
 
 原文参考[http://www.jianshu.com/p/ab956df5e40c](http://www.jianshu.com/p/ab956df5e40c)

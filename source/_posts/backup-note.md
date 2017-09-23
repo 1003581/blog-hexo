@@ -33,3 +33,23 @@ categories: tool
 [remote "origin"]
 url = git@github.com:USERNAME/REPONAME.git  
 ```
+
+### Linux
+
+采用Crontab定时任务
+
+新建执行脚本文件`schedule.sh`
+
+```
+cd gitlab/note
+git status
+git add .
+git commit -m "auto update"
+git push origin master
+```
+
+每天3点钟运行
+
+```
+0 3 * * * bash schedule.sh
+```
