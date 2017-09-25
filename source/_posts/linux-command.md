@@ -60,7 +60,18 @@ update-rc.d xxxxx defaults
 更改时区
 
 ```
+apt-get update
+apt-get install tzdata
 dpkg-reconfigure tzdata
+```
+
+或者无交互设置
+
+```
+apt-get update
+apt-get install -y tzdata
+cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
+echo 'Asia/Shanghai' > /etc/timezone
 ```
 
 同步时间
