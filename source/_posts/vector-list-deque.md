@@ -1,7 +1,7 @@
 ---
 title: C++ STL vector、list、deque的比较
 date: 2017-09-14 16:00:07
-tags: STL
+tags: stl
 categories: c++
 ---
 

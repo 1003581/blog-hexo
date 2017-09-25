@@ -1,7 +1,7 @@
 ---
 title: 机器学习入门笔记
 date: 2017-09-14 16:05:13
-tags: ML
+tags: machinelearning
 categories: 机器学习
 ---
 

@@ -1,8 +1,7 @@
 ---
-title: 神经网络常用优化方法(TensorFlow)
+title: TensorFlow神经网络常用优化方法
 date: 2017-09-21 14:29:57
 tags: 
-- ML
 - tensorflow
 categories: tensorflow
 ---
@@ -243,6 +242,8 @@ with tf.control_dependencies([opt_op]):
 
 使用上文所属的三种方法来优化MNIST全连接神经网络，代码如下：
 
+原文代码地址[github](https://github.com/caicloud/tensorflow-tutorial/blob/master/Deep_Learning_with_TensorFlow/1.0.0/Chapter05/2.%20TensorFlow%E8%AE%AD%E7%BB%83%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/1.%20%E5%85%A8%E6%A8%A1%E5%9E%8B.ipynb)
+
 ```python
 import tensorflow as tf
 from tensorflow.examples.tutorials.mnist import input_data
@@ -343,6 +344,27 @@ def train(mnist):
         test_acc=sess.run(accuracy,feed_dict=test_feed)
         print(("After %d training step(s), test accuracy using average model is %g" %(TRAINING_STEPS, test_acc)))
 
+def main(argv=None):
+    mnist = input_data.read_data_sets("mnist_data", one_hot=True)
+    train(mnist)
+
+if __name__=='__main__':
+    main()
 ```
 
 > inference函数中最后输出未使用softmax的原因：在计算损失函数时会一并计算softmax函数，所以这里不需要激活函数。而且不加入softmax不会影响预测结果。因为预测时采用的是不同类别对应节点输出值的相对大小，有没有softmax层对最后分类结果的计算没有影响。于是在计算整个神经网络的前向传播时可以不加入最后的softmax层。
+
+输出如下：
+
+```
+Extracting mnist_data/train-images-idx3-ubyte.gz
+Extracting mnist_data/train-labels-idx1-ubyte.gz
+Extracting mnist_data/t10k-images-idx3-ubyte.gz
+Extracting mnist_data/t10k-labels-idx1-ubyte.gz
+After 0 training step(s), validation accuracy using average model is 0.0422 
+After 1000 training step(s), validation accuracy using average model is 0.9766 
+After 2000 training step(s), validation accuracy using average model is 0.9806 
+After 3000 training step(s), validation accuracy using average model is 0.982 
+After 4000 training step(s), validation accuracy using average model is 0.9846 
+After 5000 training step(s), test accuracy using average model is 0.9831
+```
