@@ -216,4 +216,43 @@ ifconfig eth0
 reboot
 ```
 
+## 批量重命名文件
 
+[参考](http://www.lx138.com/page.php?ID=Vkd0U1ZtVkJQVDA9)
+
+使用rename命令
+
+```
+$ rename
+Usage: rename [-v] [-n] [-f] perlexpr [filenames]
+```
+
+Perl语言版本 - 批量给文件添加前缀
+
+```
+root@lx138.com~# ls //显示目录内容
+A.bin B.bin C.bin D.bin E.bin F.bin G.bin
+root@lx138.com~# rename 's/^/backup_/'  *  //给当前目录所有文件增加 backup_ 前缀
+root@lx138.com~# ls     
+backup_A.bin backup_B.backup_bin backup_C.bin backup_D.bin backup_E.bin backup_F.bin  backup_G.bin
+```
+
+Perl语言版本 - 批量给文件添加后缀
+
+```
+root@lx138.com~# ls //显示目录内容
+A   B   C   D   E   F   G  
+root@lx138.com~# rename 's/$/\.bin/'  *  //给当前目录所有文件增加 .bin 后缀
+root@lx138.com~# ls     
+A.bin B.bin C.bin D.bin E.bin F.bin G.bin
+```
+
+Perl语言版本 - 批量给文件删除后缀
+
+```
+root@lx138.com~# ls //显示目录内容
+A.bin B.bin C.bin D.bin E.bin F.bin G.bin
+root@lx138.com~# rename 's/\.bin$//'  *  //给当前目录所有文件删除 .bin 后缀
+root@lx138.com~# ls     
+A   B   C   D   E   F   G
+```
