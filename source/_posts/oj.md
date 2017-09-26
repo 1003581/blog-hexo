@@ -34,43 +34,42 @@ void swap3(int &a, int &b){
 ```c++
 #include <iostream>
 #include <string>
-using namespace std;  
-  
+using namespace std;
+
 //将每个单词进行翻转  
-void reverse(string &s,int low,int high)  
-{  
-    while (low < high)  
-    {  
-        char tmp = s[high];  
+void reverse(string &s, int low, int high)
+{
+    while (low < high)
+    {
+        char tmp = s[high];
         s[high] = s[low];
         s[low] = tmp;
         low++;
         high--;
     }
-}  
-  
-int main()  
-{  
-    int num = 0;  
+}
+
+int main()
+{
+    int num = 0;
     string a;
-    cin>>a;  
-    cout<<a<<endl;
-    for (int i = 0; i <= a.size(); i++)  
-    {  
-        if (a[i] == ' ' || i == a.size())  
-        {  
-            reverse(a, i-num, i-1);  
+    getline(cin, a);
+    for (int i = 0; i <= a.size(); i++)
+    {
+        if (a[i] == ' ' || i == a.size())
+        {
+            reverse(a, i - num, i - 1);
             num = 0;
-        }  
-        else  
-        {  
-            num++;  
-        }  
+        }
+        else
+        {
+            num++;
+        }
     }
-    reverse(a, 0, a.size()-1);
-    cout<<a<<endl;  
-    return 0;  
-}  
+    reverse(a, 0, a.size() - 1);
+    cout << a << endl;
+    return 0;
+}
 ```
 
 ## 实现STL的auto函数
