@@ -566,3 +566,18 @@ res2=${res1:0:${#res1}-1}
 echo $res2
 ```
 
+若要使用命令行输入，shell代码如下
+
+```
+#!/bin/bash
+set -e
+
+args_num=$#
+
+if [ $args_num -ge 2 ] 
+then 
+  ip=$1
+  card=$2
+  sshexec -i $ip -u gpu -p gpu -e "nvidia-smi -q -g $card | grep Gpu" | awk '{print $3}'
+fi
+```

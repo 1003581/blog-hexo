@@ -78,8 +78,18 @@ python mypy2exe.py py2exe
 
 会生成build和dist文件夹
 
+## 发布为Linux可执行文件
+
+使用[PyInstaller](http://www.cnblogs.com/mywolrd/p/4756005.html)
+
+```
+pip install pyinstaller
+pyinstaller -F xxx.py
+./dist/xxx
+```
+
 ## scrapy使用
 
-
+见`Python抓包`。
 
 
