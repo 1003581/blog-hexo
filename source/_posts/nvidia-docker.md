@@ -142,7 +142,9 @@ REST端点如下所述.  请注意, 如果给定的客户端仅关心最新的AP
 > 应答信息格式分别为 `text/plain` and `application/json`.  
 >   
 > 如果您不想依赖nvidia-docker替代CLI(参见Internals), 这很有用.  例如：  
-> ```docker run -ti `curl -s http//localhost:3476/v1.0/docker/cli?dev=0+1\&vol=nvidia_driver` cuda```
+> ```
+> docker run -ti `curl -s http//localhost:3476/v1.0/docker/cli?dev=0+1\&vol=nvidia_driver` cuda
+> ```
 - GET `/v1.0/mesos/cli`
 > 查询启动Mesos代理时使用的命令行参数.   
 > 与`/v1.0/gpu/info/json`类似, 但在zlib / base64(RFC 6920)中压缩和编码设备信息. 
