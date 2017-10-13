@@ -15,7 +15,7 @@ categories: linux
 sudo pam-auth-update
 ```
 
-## apt-get update出错
+## apt-get update出错 
 
 错误信息
 
