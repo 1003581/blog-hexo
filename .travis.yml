@@ -22,10 +22,7 @@ install:
   - npm install hexo-generator-index --save
   - npm install
 
-cache:
-  apt: true
-  directories:
-    - node_modules
+
 
 addons:
   ssh_known_hosts: github.com
