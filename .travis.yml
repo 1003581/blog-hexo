@@ -14,6 +14,8 @@ before_install:
   - eval $(ssh-agent)
   - ssh-add ~/.ssh/id_rsa
   - cp .travis/ssh_config ~/.ssh/config
+  - git submodule init
+  - git submodule update
   - git config --global user.name "liqiang311"
   - git config --global user.email "385098415@qq.com"
 
