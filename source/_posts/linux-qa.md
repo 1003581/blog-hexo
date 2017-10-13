@@ -54,3 +54,37 @@ source
 vim /etc/apt/apt.conf
 Acquire::http::Proxy::mirrors.zte.com.cn DIRECT;
 ```
+
+## elliptic curve routines:EC_GROUP_new_by_curve_name:unknown group
+
+调用`yum update`即可。
+
+## yum与python不匹配
+
+参考[blog](http://webcache.googleusercontent.com/search?q=cache:tS7lB4Sz9U0J:smilepad.blog.51cto.com/6094369/1333478+&cd=9&hl=zh-CN&ct=clnk&gl=hk&client=aff-cs-360chromium)
+
+```
+wget http://mirrors.zte.com.cn/centos/6.9/os/x86_64/Packages/python-2.6.6-66.el6_8.x86_64.rpm
+wget http://mirrors.zte.com.cn/centos/6.9/os/x86_64/Packages/python-devel-2.6.6-66.el6_8.x86_64.rpm
+wget http://mirrors.zte.com.cn/centos/6.9/os/x86_64/Packages/python-libs-2.6.6-66.el6_8.x86_64.rpm
+rpm -Uvh --replacepkgs python*.rpm
+vim /usr/bin/yum
+```
+
+行首改为
+
+```
+/usr/bin/python2.6
+```
+
+添加源
+
+```
+bash -c "echo -e '[base]\n\
+name=CentOS-$releasever - Base\n\
+baseurl=http://mirrors.zte.com.cn/centos/6.9/os/x86_64/\n\
+gpgcheck=0'"\
+> /etc/yum.repos.d/CentOS-Base.repo
+
+yum update
+```

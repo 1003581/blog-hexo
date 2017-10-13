@@ -22,7 +22,22 @@ create table <table name> (
 );
 ```
 
-插入数据`insert into <表名> [( <字段名1>[,..<字段名n > ])] values ( 值1 )[, ( 值n )]
+插入数据
+```
+insert into <表名> [( <字段名1>[,..<字段名n > ])] values ( 值1 )[, ( 值n )]
+```
+
+主机上导出数据库
+```
+docker exec gpuswork_mysql_1  mysqldump -uroot -p123456 gpu > /tmp/backup.sql
+# gpu后可选择添加表名，可以到处指定表
+```
+
+主机上导入数据库
+```
+docker cp /tmp/backup.sql gputest_mysql_1:/tmp/
+docker exec gputest_mysql_1 mysql -uroot -p123456 gpu -e "source /tmp/backup.sql"
+```
 
 ## 查看命令
 
