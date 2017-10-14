@@ -50,7 +50,7 @@ highlight:
 index_generator:
   path: ''
   per_page: 20
-  order_by: -updated
+  order_by: -date # updated
   
 # Category & Tag
 default_category: uncategorized
