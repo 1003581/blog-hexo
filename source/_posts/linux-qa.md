@@ -12,7 +12,7 @@ categories: linux
 方法
 
 ```
-sudo pam-auth-update
+sudo pam-auth-update 
 ```
 
 ## apt-get update出错 
