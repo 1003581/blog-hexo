@@ -25,10 +25,10 @@ install:
   - npm install hexo-cli -g
   - npm install
 
-cache:
-  apt: true   
-  directories:    
-    - node_modules
+#cache:
+#  apt: true   
+#  directories:    
+#    - node_modules
 
 addons:
   ssh_known_hosts: 
