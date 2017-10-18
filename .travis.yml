@@ -17,15 +17,15 @@ before_install:
   - git config --global user.name "liqiang311"
   - git config --global user.email "385098415@qq.com"
 
-#  - npm install hexo-generator-index --save
 install:
   - npm install hexo-cli -g
+  - npm install hexo-generator-index --save
   - npm install
 
-#cache:
-#  apt: true   
-#  directories:    
-#    - node_modules
+cache:
+  apt: true   
+  directories:    
+    - node_modules
 
 addons:
   ssh_known_hosts: 

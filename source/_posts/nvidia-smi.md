@@ -65,7 +65,7 @@ Thu Aug  3 14:00:03 2017
 - `Memory-Usage`: 显存使用情况, 当前使用显存/总显存
 - `Volatile GPU-Util`: 浮动的GPU利用率.
 - `Uncorr.ECC`: 关于ECC
-- `Compute M.`: 计算模式
+- `Compute M.`: 计算模式 
 
 
 ## `nvidia-smi -q`
