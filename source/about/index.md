@@ -26,7 +26,7 @@ date: 2017-09-14 14:47:21
 项目名称：GPU平台
 项目简介：从底向上构建了一套GPU集群以供公司内部员工深度学习使用
 我的职责：
-    1. 利用TensorFlow做一部分深度学习。
+    1. 利用**TensorFlow**做一部分深度学习。
     2. 制作并更新各个深度学习框架的Docker镜像（TensorFlow、Caffe、Caffe2、Pytorch、MxNet等）。
     3. 使用Go语言编写了GPU集群的调度算法，包含节点管理和作业管理等。
     4. 负责对GPU集群（SW580、DGX-1）的日常维护，包括GPU状态监控、驱动管理、镜像更新等。
@@ -103,19 +103,21 @@ date: 2017-09-14 14:47:21
 
 #### 编程平台
 
+- **Linux**(Ubuntu)
 - WIndows
-- Linux(Ubuntu)
 
 #### 编程语言
 
-- C++ (本科、硕士期间使用)
-- Python (硕士、工作期间使用)
+- **C++** (本科、硕士期间使用)
+- **Python** (硕士、工作期间使用)
 - Go (工作期间使用)
 - Lua (了解)
 
 ### 其他
 
-- TensorFlow (持续学习中)
+- **TensorFlow** (持续学习中)
+- Docker (熟悉)
+- RDMA & IB Verbs (熟悉)
 - CUDA C/C++ (了解)
 
 ### 获奖经历
