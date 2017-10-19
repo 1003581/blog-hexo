@@ -459,22 +459,163 @@ golang在引入包的时候还有一些tricks：
  
 ### 作用域
 
-
+if,switch条件部分为一个隐式词法域，然后是每个分支的词法域。
 
 ## 基础数据类型
 
+Go语言将数据类型分为四类：基础类型、复合类型、引用类型和接口类型。
 
+本章介绍基础类型，包括：数字、字符串和布尔型。
 
 ### 整型
 
+等价类型
 
+- Unicode字符rune类型是和int32等价的类型,通常用于表示一个Unicode码点。
+- byte也是uint8类型的等价类型，byte类型一般用于强调数值是一个原始的数据而不是一个小的整数。
+
+二元运算符，它们按照优先级递减的顺序排列如下，二元运算符有五种优先级。在同一个优先级，使用左优先结合规则，但是使用括号可以明确优先顺序，使用括号也可以用于提升优先级
+
+```
+*      /      %      <<       >>     &       &^
++      -      |      ^
+==     !=     <      <=       >      >=
+&&
+||
+```
+
+位操作符
+
+```
+&      位运算 AND
+|      位运算 OR
+^      位运算 XOR
+&^     位清空 (AND NOT)
+<<     左移
+>>     右移
+```
+
+位操作运算符^作为二元运算符时是按位异或（XOR），当用作一元运算符时表示按位取反；
+
+位操作代码
+
+```go
+package main
+
+import (
+	"fmt"
+)
+
+func main() {
+	var x uint8 = 1<<1 | 1<<5
+	var y uint8 = 1<<1 | 1<<2
+
+	fmt.Printf("%08b\n", x) // "00100010", the set {1, 5}
+	fmt.Printf("%08b\n", y) // "00000110", the set {1, 2}
+
+	fmt.Printf("%08b\n", x&y)  // "00000010", the intersection {1}
+	fmt.Printf("%08b\n", x|y)  // "00100110", the union {1, 2, 5}
+	fmt.Printf("%08b\n", x^y)  // "00100100", the symmetric difference {2, 5}
+	fmt.Printf("%08b\n", x&^y) // "00100000", the difference {5}
+
+	for i := uint(0); i < 8; i++ {
+		if x&(1<<i) != 0 { // membership test
+			fmt.Println(i) // "1", "5"
+		}
+	}
+
+	fmt.Printf("%08b\n", x<<1) // "01000100", the set {2, 6}
+	fmt.Printf("%08b\n", x>>1) // "00010001", the set {0, 4}
+}
+```
+
+对于一个`float`，可以利用`int(f)`这样的语法进行转化，但是会丢弃小数部分
+
+打印八进制、十进制、十六进制
+
+```go
+o := 0666
+fmt.Printf("%d %[1]o %#[1]o\n", o) // "438 666 0666"
+x := int64(0xdeadbeef)
+fmt.Printf("%d %[1]x %#[1]x %#[1]X\n", x)
+// Output:
+// 3735928559 deadbeef 0xdeadbeef 0XDEADBEEF
+```
+
+- %之后的[1]副词告诉Printf函数再次使用第一个操作数。
+- %后的#副词告诉Printf在用%o、%x或%X输出时生成0、0x或0X前缀。
 
 ### 浮点数
 
+一个float32类型的浮点数可以提供大约6个十进制数的精度，而float64则可以提供约15个十进制数的精度；
+
 ### 复数
+
+Go语言提供了两种精度的复数类型：complex64和complex128，分别对应float32和float64两种浮点数精度。内置的complex函数用于构建复数，内建的real和imag函数分别返回复数的实部和虚部：
+
+```go
+var x complex128 = complex(1, 2) // 1+2i
+var y complex128 = complex(3, 4) // 3+4i
+fmt.Println(x*y)                 // "(-5+10i)"
+fmt.Println(real(x*y))           // "-5"
+fmt.Println(imag(x*y))           // "10"
+```
 
 ### 布尔型
 
+```go
+func btoi(b bool) int {
+    if b {
+        return 1
+    }
+    return 0
+}
+func itob(i int) bool { return i != 0 }
+```
+
 ### 字符串
+
+内置的len函数可以返回一个字符串中的字节数目（不是rune字符数目）
+
+字符串可以用==和<进行比较；比较通过逐个字节比较完成的，因此比较的结果是字符串自然编码的顺序。
+
+字符串的值是不可变的：
+
+原生的字符串面值`\`...\``，用\`包含的字符串中没有转义操作
+
+Unicode和UTF-8
+
+- Unicode每个符号都分配一个唯一的Unicode码点，Unicode码点对应Go语言中的rune整数类型（译注：rune是int32等价类型）。
+- UTF8编码使用1到4个字节来表示每个Unicode码点，ASCII部分字符只使用1个字节，常用字符部分使用2或3个字节表示。
+
+```
+0xxxxxxx                             runes 0-127    (ASCII)
+110xxxxx 10xxxxxx                    128-2047       (values <128 unused)
+1110xxxx 10xxxxxx 10xxxxxx           2048-65535     (values <2048 unused)
+11110xxx 10xxxxxx 10xxxxxx 10xxxxxx  65536-0x10ffff (other values unused)
+```
+
+统计utf8的字符串中rune的个数，使用`utf8.RuneCountInString(s)`
+
+转换代码
+
+```go
+// "program" in Japanese katakana
+s := "プログラム"
+fmt.Printf("% x\n", s) // "e3 83 97 e3 83 ad e3 82 b0 e3 83 a9 e3 83 a0"
+r := []rune(s)
+fmt.Printf("%x\n", r)  // "[30d7 30ed 30b0 30e9 30e0]"
+fmt.Println(string(r)) // "プログラム"
+fmt.Println(string(65))     // "A", not "65"
+fmt.Println(string(0x4eac)) // "京"
+fmt.Println(string(1234567)) // "?"
+```
+> 在第一个Printf中的% x参数用于在每个十六进制数字前插入一个空格。
+
+bytes、strings、strconv和unicode
+
+- bytes.Buffer提供构建字符串。
+- strconv包提供了布尔型、整型数、浮点数和对应字符串的相互转换，还提供了双引号转义相关的转换。
+- unicode包提供了IsDigit、IsLetter、IsUpper和IsLower等类似功能，它们用于给字符分类。每个函数有一个单一的rune类型的参数，然后返回一个布尔值。
 
 ### 常量
