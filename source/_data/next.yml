@@ -120,7 +120,7 @@ scheme: Gemini
 # Value after `||` delimeter is the name of FontAwesome icon. If icon (with or without delimeter) is not specified, globe icon will be loaded.
 social:
   GitHub: https://github.com/liqiang311 || github
-  E-Mail: strong_liqiang@163.com || envelope
+  #E-Mail: strong_liqiang@163.com || envelope
   #Google: https://plus.google.com/yourname || google
   #Twitter: https://twitter.com/yourname || twitter
   #FB Page: https://www.facebook.com/yourname || facebook
@@ -215,7 +215,7 @@ auto_excerpt:
 post_meta:
   item_text: true
   created_at: true
-  updated_at: true
+  updated_at: false
   categories: true
 
 # Post wordcount display settings
@@ -334,7 +334,7 @@ font:
 
 # MathJax Support
 mathjax:
-  enable: true
+  enable: false
   per_page: false
   cdn: //cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML
 
@@ -373,9 +373,9 @@ valine:
   enable: true
   appid: SNbANCFTPx1WFzG5lQYA35sS-gzGzoHsz # your leancloud application appid
   appkey: ixsf3XHl5lsrVHHA6wji0d67 # your leancloud application appkey
-  notify: false # mail notifier , https://github.com/xCss/Valine/wiki
+  notify: true # mail notifier , https://github.com/xCss/Valine/wiki
   verify: false # Verification code
-  placeholder: 来写点什么吧:)
+  placeholder: 欢迎留言讨论。
 
 # Support for youyan comments system.
 # You can get your uid from http://www.uyan.cc
@@ -518,7 +518,7 @@ rating:
 # Show number of visitors to each article.
 # You can visit https://leancloud.cn get AppID and AppKey.
 leancloud_visitors:
-  enable: true
+  enable: false
   app_id: SNbANCFTPx1WFzG5lQYA35sS-gzGzoHsz #<app_id>
   app_key: ixsf3XHl5lsrVHHA6wji0d67 #<app_key>
 
@@ -526,7 +526,7 @@ leancloud_visitors:
 # Get more information on http://ibruce.info/2015/04/04/busuanzi/
 busuanzi_count:
   # count values only if the other configs are false
-  enable: false
+  enable: true
   # custom uv span for the whole site
   site_uv: true
   site_uv_header: <i class="fa fa-user"></i>
