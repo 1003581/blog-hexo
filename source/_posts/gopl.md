@@ -619,3 +619,165 @@ bytes、strings、strconv和unicode
 - unicode包提供了IsDigit、IsLetter、IsUpper和IsLower等类似功能，它们用于给字符分类。每个函数有一个单一的rune类型的参数，然后返回一个布尔值。
 
 ### 常量
+
+- 常量表达式的值在编译期计算，而不是在运行期。每种常量的潜在类型都是基础类型：boolean、string或数字。
+- 常量间的所有算术运算、逻辑运算和比较运算的结果也是常量，对常量的类型转换操作或以下函数调用都是返回常量结果：len、cap、real、imag、complex和unsafe.Sizeof
+
+iota 常量生成器
+
+```go
+const (
+    FlagUp Flags = 1 << iota // is up
+    FlagBroadcast            // supports broadcast access capability
+    FlagLoopback             // is a loopback interface
+    FlagPointToPoint         // belongs to a point-to-point link
+    FlagMulticast            // supports multicast access capability
+)
+const (
+    _ = 1 << (10 * iota)
+    KiB // 1024
+    MiB // 1048576
+    GiB // 1073741824
+    TiB // 1099511627776             (exceeds 1 << 32)
+    PiB // 1125899906842624
+    EiB // 1152921504606846976
+    ZiB // 1180591620717411303424    (exceeds 1 << 64)
+    YiB // 1208925819614629174706176
+)
+```
+
+## 复合数据类型
+
+数组、slice、map和结构体
+
+- 数组和结构体是聚合类型；它们的值由许多元素或成员字段的值组成。
+- 数组是由同构的元素组成——每个数组元素都是完全相同的类型——结构体则是由异构的元素组成的。
+- 数组和结构体都是有固定内存大小的数据结构。
+- slice和map则是动态的数据结构，它们将根据需要动态增长。
+
+### 数组
+
+长度固定
+
+初始化
+
+```go
+var a [3]int
+var b [3]int = [3]int{1, 2, 3}
+var c [3]int = [3]int{1, 2}
+d := [...]int{1, 2, 3} //数组的长度是根据初始化值的个数来计算
+e := [...]int{99: -1} //定义了一个含有100个元素的数组r，最后一个元素被初始化为-1，其它元素都是用0初始化。
+```
+
+数组比较
+
+- 相同类型（相同长度）的才能比较
+- 不同类型比较会编译错误
+- 数组中的元素完全一样，才是相等
+
+```go
+a := [2]int{1, 2}
+b := [...]int{1, 2}
+c := [2]int{1, 3}
+fmt.Println(a == b, a == c, b == c) // "true false false"
+d := [3]int{1, 2}
+fmt.Println(a == d) // compile error: cannot compare [2]int == [3]int
+```
+
+函数传参
+
+- 函数参数变量接收的是一个复制的副本
+- 传递大的数组类型将是低效的
+- Go语言对待数组的方式和其它很多编程语言不同，其它编程语言可能会隐式地将数组作为引用或指针对象传入被调用的函数。
+- 改进：传递数组指针
+```go
+func zero(ptr *[32]byte) {
+}
+```
+
+sha256创建及比较
+
+```go
+package main
+
+import (
+	"crypto/sha256"
+	"fmt"
+)
+
+var pc [256]byte
+
+func init() {
+	for i := range pc {
+		pc[i] = pc[i/2] + byte(i&1)
+	}
+}
+
+func main() {
+	c1 := sha256.Sum256([]byte("李强"))
+	c2 := sha256.Sum256([]byte("关凤瑜"))
+	fmt.Printf("%x\n%x\n%t\n%T\n", c1, c2, c1 == c2, c1)
+	fmt.Printf("Diff: %d\n", diffBitsSha256(c1, c2))
+	// Output:
+	// 2d711642b726b04401627ca9fbac32f5c8530fb1903cc4db02258717921a4881
+	// 4b68ab3847feda7d6c62c1fbcbeebfa35eab7351ed5e78f4ddadea5df64b8015
+	// false
+	// [32]uint8
+	// Diff: 127
+}
+
+func diffBitsSha256(c1, c2 [32]uint8) int {
+	res := 0
+	for i := 0; i < 32; i++ {
+		res += int(pc[c1[i]^c2[i]])
+	}
+	return res
+}
+```
+
+sha256,sha384,sha512输出
+
+### Slice
+
+语法
+
+- 一个slice类型一般写作[]T，slice的语法和数组很像，只是没有固定长度而已。
+- 初始化时，同样可以使用顺序指定序列或者通过索引指定。
+- 不能用`==`、`!=`比较2个slice中的数据是否相同。
+- 使用高度优化的bytes.Equal函数来判断两个字节型slice是否相等（[]byte），但是对于其他类型的slice，我们必须自己展开每个元素进行比较
+- make
+	```go
+	make([]T, len)
+	make([]T, len, cap) // same as make([]T, cap)[:len]
+	```
+
+底层数据结构
+
+- slice是轻量级的数据结构，slice的底层引用了一个数组对象。
+- slice由三个部分构成：指针、长度和容量。
+- 长度对应slice中元素的数目；长度不能超过容量
+- 容量一般是从slice的开始位置到底层数据的结尾位置
+- 内置的len和cap函数分别返回slice的长度和容量。
+- 切片操作超出cap(s)的上限将导致一个panic异常，但是超出len(s)则是意味着扩展了slice，因为新slice的长度会变大
+
+底层实现
+
+- 创建slice时，会隐式地创建一个合适大小的数组，然后slice的指针指向底层的数组。
+- 多个slice之间可以共享底层的数据，并且引用的数组部分区间可能重叠。
+
+零值
+
+- 一个零值的slice等于nil。一个nil值的slice并没有底层数组。一个nil值的slice的长度和容量都是0
+- 非nil值的slice的长度和容量也是0的，例如[]int{}或make([]int, 3)[3:]
+
+Append
+
+```go
+var x []int
+x = append(x, 1)
+x = append(x, 2, 3)
+x = append(x, 4, 5, 6)
+x = append(x, x...) // append the slice x
+fmt.Println(x)      // "[1 2 3 4 5 6 1 2 3 4 5 6]"
+```
+- 内存分配策略类似于C++的Vector

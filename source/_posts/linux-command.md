@@ -267,3 +267,33 @@ root@lx138.com~# rename 's/\.bin$//'  *  //给当前目录所有文件删除 .bi
 root@lx138.com~# ls     
 A   B   C   D   E   F   G
 ```
+
+## 修改crontab默认编辑器
+
+方法1：修改环境变量
+
+```shell
+echo "export EDITOR=/usr/bin/vim" >> /etc/profile
+source /etc/profile
+```
+
+方法2：命令
+
+```
+update-alternatives --config editor
+```
+
+```
+There are 4 choices for the alternative editor (providing /usr/bin/editor).
+
+  Selection    Path                Priority   Status
+------------------------------------------------------------
+* 0            /bin/nano            40        auto mode
+  1            /bin/ed             -100       manual mode
+  2            /bin/nano            40        manual mode
+  3            /usr/bin/vim.basic   30        manual mode
+  4            /usr/bin/vim.tiny    10        manual mode
+```
+
+选择3即可。
+
