@@ -737,6 +737,45 @@ func diffBitsSha256(c1, c2 [32]uint8) int {
 
 sha256,sha384,sha512输出
 
+```go
+package main
+
+import (
+	"crypto/sha256"
+	"crypto/sha512"
+	"flag"
+	"fmt"
+	"os"
+)
+
+func main() {
+	var sha int
+	flag.IntVar(&sha, "sha", 256, "SHA")
+	var str string
+	str = os.Args[len(os.Args)-1]
+	fmt.Println(str)
+	flag.Parse()
+	switch sha {
+	case 256:
+		OutputSHA256(str)
+	case 384:
+		OutputSHA384(str)
+	case 512:
+		OutputSHA512(str)
+	}
+}
+
+func OutputSHA256(str string) {
+	fmt.Printf("%x\n", sha256.Sum256([]byte(str)))
+}
+func OutputSHA384(str string) {
+	fmt.Printf("%x\n", sha512.Sum384([]byte(str)))
+}
+func OutputSHA512(str string) {
+	fmt.Printf("%x\n", sha512.Sum512([]byte(str)))
+}
+```
+
 ### Slice
 
 语法
@@ -781,3 +820,196 @@ x = append(x, x...) // append the slice x
 fmt.Println(x)      // "[1 2 3 4 5 6 1 2 3 4 5 6]"
 ```
 - 内存分配策略类似于C++的Vector
+
+重写reverse函数，使用数组指针代替slice。
+
+```go
+package main
+
+import "fmt"
+
+// reverse reverses a slice of ints in place.
+func reverseSlice(s []int) {
+	for i, j := 0, len(s)-1; i < j; i, j = i+1, j-1 {
+		s[i], s[j] = s[j], s[i]
+	}
+}
+
+func reversePoint(p *[6]int) {
+	for i, j := 0, len(*p)-1; i < j; i, j = i+1, j-1 {
+		(*p)[i], (*p)[j] = (*p)[j], (*p)[i]
+	}
+}
+
+func main() {
+	a := [...]int{0, 1, 2, 3, 4, 5}
+	reverseSlice(a[:])
+	fmt.Println(a) // "[5 4 3 2 1 0]"
+	reversePoint(&a)
+	fmt.Println(a) // "[5 4 3 2 1 0]"
+}
+```
+
+编写一个rotate函数，通过一次循环完成旋转。
+
+```go
+package main
+
+import "fmt"
+
+// reverse reverses a slice of ints in place.
+func gcd(a, b int) int {
+	for b > 0 {
+		a, b = b, a%b
+	}
+	return a
+}
+
+// n > 0   <-------
+// n < 0   ------->
+func rotate(s []int, n int) {
+	length := len(s)
+	n = (n + length) % length
+	gcd := gcd(length, n)
+	loop := length / gcd
+
+	for i := 0; i < gcd; i++ {
+		temp := s[i]
+		j := 0
+		for ; j < loop-1; j++ {
+			s[(i+j*n)%length] = s[(i+j*n+n)%length]
+		}
+		s[(i+j*n)%length] = temp
+	}
+}
+
+func main() {
+	a := [...]int{0, 1, 2, 3, 4, 5}
+	rotate(a[:], 2)
+	fmt.Println(a) // "[5 4 3 2 1 0]"
+}
+```
+
+写一个函数在原地完成消除[]string中相邻重复的字符串的操作。
+
+```go
+package main
+
+import "fmt"
+
+func removeAdjRepeat(s []string) []string {
+	for i := 0; i < len(s)-1; i++ {
+		if s[i] == s[i+1] {
+			copy(s[i:], s[i+1:])
+			s = s[:len(s)-1]
+			i--
+		}
+	}
+	return s
+}
+
+func main() {
+	s := []string{"1", "1", "2"}
+	s = removeAdjRepeat(s)
+	fmt.Println(s)
+}
+```
+
+### Map
+
+底层数据结构
+
+- map是一个哈希表的引用
+- map中所有的key都有相同的类型，所有的value也有着相同的类型
+- map中的元素并不是一个变量，因此我们不能对map的元素进行取址操作：禁止对map元素取址的原因是map可能随着元素数量的增长而重新分配更大的内存空间，从而可能导致之前的地址无效。
+
+遍历
+
+- `for k, v := range map`
+- 迭代顺序是不确定的
+
+按顺序遍历key/value对方法
+
+```go
+import "sort"
+
+keys := make([]string, 0, len(map))
+for key := range map {
+    keys = append(keys, key)
+}
+sort.Strings(keys)
+for _, key := range keys {
+    fmt.Printf("%s\t%d\n", key, map[key])
+}
+```
+
+查找
+
+```go
+if age, ok := ages["bob"]; !ok { /* ... */ }
+```
+
+判断2个map是否相等
+
+```go
+func equal(x, y map[string]int) bool {
+    if len(x) != len(y) {
+        return false
+    }
+    for k, xv := range x {
+        if yv, ok := y[k]; !ok || yv != xv {
+            return false
+        }
+    }
+    return true
+}
+```
+
+### 结构体
+
+语法
+
+- 结构体成员名字是以大写字母开头的，那么该成员就是导出的；
+- 一个命名为S的结构体类型将不能再包含S类型的成员：因为一个聚合的值不能包含它自身。但是S类型的结构体可以包含*S指针类型的成员，这可以让我们创建递归的数据结构，比如链表和树结构等。
+
+比较
+
+- 如果结构体的全部成员都是可以比较的，那么结构体也是可以用`==`比较的
+
+结构体嵌入和匿名成员
+
+- Go语言有一个特性让我们只声明一个成员对应的数据类型而不指名成员的名字；这类成员就叫匿名成员。
+- 匿名成员的数据类型必须是命名的类型或指向一个命名的类型的指针。
+```go
+type Point struct {
+    X, Y int
+}
+
+type Circle struct {
+	Point
+	Radius int
+}
+
+type Wheel struct {
+	Circle
+	Spokes int
+}
+
+var w Wheel
+w.X = 8            // equivalent to w.Circle.Point.X = 8
+w.Y = 8            // equivalent to w.Circle.Point.Y = 8
+w.Radius = 5       // equivalent to w.Circle.Radius = 5
+w.Spokes = 20
+
+w = Wheel{Circle{Point{8, 8}, 5}, 20}
+
+w = Wheel{
+    Circle: Circle{
+        Point:  Point{X: 8, Y: 8},
+        Radius: 5,
+    },
+    Spokes: 20, // NOTE: trailing comma necessary here (and at Radius)
+}
+```
+- 这样就可以直接访问叶子属性而不需要给出完整的路径。同时完整的访问方式同样支持`w.Circle.Point.X`
+- 匿名成员也有一个隐式的名字，因此不能同时包含两个类型相同的匿名成员，这会导致名字冲突。
