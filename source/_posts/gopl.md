@@ -1275,12 +1275,82 @@ func (path Path) Distance() float64 {
 
 ### 基于指针对象的方法
 
-
+接收器`func (p *Point) ScaleBy(factor float64) {}`
 
 ### 通过潜入结构体来扩展类型
 
-### 方法值好方法表达式
+### 方法值和方法表达式
+
+```go
+type Rocket struct { /* ... */ }
+func (r *Rocket) Launch() { /* ... */ }
+r := new(Rocket)
+time.AfterFunc(10 * time.Second, func() { r.Launch() }) //等效于下一行的方法值
+time.AfterFunc(10 * time.Second, r.Launch)
+```
+
+```go
+p := Point{1, 2}
+q := Point{4, 6}
+
+distance := Point.Distance   // method expression
+fmt.Println(distance(p, q))  // "5"
+fmt.Printf("%T\n", distance) // "func(Point, Point) float64"
+
+scale := (*Point).ScaleBy
+scale(&p, 2)
+fmt.Println(p)            // "{2 4}"
+fmt.Printf("%T\n", scale) // "func(*Point, float64)"
+
+// 译注：这个Distance实际上是指定了Point对象为接收器的一个方法func (p Point) Distance()，
+// 但通过Point.Distance得到的函数需要比实际的Distance方法多一个参数，
+// 即其需要用第一个额外参数指定接收器，后面排列Distance方法的参数。
+// 看起来本书中函数和方法的区别是指有没有接收器，而不像其他语言那样是指有没有返回值。
+```
+
+另一个方法表达式的例子
+
+```go
+type Point struct{ X, Y float64 }
+
+func (p Point) Add(q Point) Point { return Point{p.X + q.X, p.Y + q.Y} }
+func (p Point) Sub(q Point) Point { return Point{p.X - q.X, p.Y - q.Y} }
+
+type Path []Point
+
+func (path Path) TranslateBy(offset Point, add bool) {
+    var op func(p, q Point) Point
+    if add {
+        op = Point.Add
+    } else {
+        op = Point.Sub
+    }
+    for i := range path {
+        // Call either path[i].Add(offset) or path[i].Sub(offset).
+        path[i] = op(path[i], offset)
+    }
+}
+```
 
 ### 示例：Bit数组
 
 ### 封装
+
+封装提供了三方面的优点。首先，因为调用方不能直接修改对象的变量值，其只需要关注少量的语句并且只要弄懂少量变量的可能的值即可。
+
+第二，隐藏实现的细节，可以防止调用方依赖那些可能变化的具体实现，这样使设计包的程序员在不破坏对外的api情况下能得到更大的自由。
+
+封装的第三个优点也是最重要的优点，是阻止了外部调用方对对象内部的值任意地进行修改。
+
+## 接口
+
+### 接口是合约
+
+### 接口类型
+### 实现接口的条件
+### flag.Value接口
+### 接口值
+### sort.Interface接口
+### http.Handler接口
+### error接口
+### 示例：表达式求值
