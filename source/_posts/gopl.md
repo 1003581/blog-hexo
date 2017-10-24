@@ -1013,3 +1013,274 @@ w = Wheel{
 ```
 - 这样就可以直接访问叶子属性而不需要给出完整的路径。同时完整的访问方式同样支持`w.Circle.Point.X`
 - 匿名成员也有一个隐式的名字，因此不能同时包含两个类型相同的匿名成员，这会导致名字冲突。
+
+### JSON
+
+marshaling:结构体slice转为JSON
+
+```go
+package main
+
+import (
+	"encoding/json"
+	"fmt"
+	"log"
+)
+
+type Movie struct {
+	Title  string
+	Year   int  `json:"released"`
+	Color  bool `json:"color,omitempty"`
+	Actors []string
+}
+
+var movies = []Movie{
+	{Title: "Casablanca", Year: 1942, Color: false,
+		Actors: []string{"Humphrey Bogart", "Ingrid Bergman"}},
+	{Title: "Cool Hand Luke", Year: 1967, Color: true,
+		Actors: []string{"Paul Newman"}},
+	{Title: "Bullitt", Year: 1968, Color: true,
+		Actors: []string{"Steve McQueen", "Jacqueline Bisset"}},
+	// ...
+}
+
+func main() {
+	data, err := json.Marshal(movies)
+	if err != nil {
+		log.Fatalf("JSON marshaling failed: %s", err)
+	}
+	fmt.Printf("%s\n", data)
+
+	data, err = json.MarshalIndent(movies, "", "    ")
+	if err != nil {
+		log.Fatalf("JSON marshaling failed: %s", err)
+	}
+	fmt.Printf("%s\n", data)
+}
+```
+
+- 成员Tag一般用原生字符串面值的形式书写
+- json开头键名对应的值用于控制encoding/json包的编码和解码的行为，并且encoding/...下面其它的包也遵循这个约定
+- 成员Tag中json对应值的第一部分用于指定JSON对象的名字
+- omitempty选项，表示当Go语言结构体成员为空或零值时不生成该JSON对象（这里false为零值）
+
+### 文本和HTML模板
+
+```go
+const templ = `{{.TotalCount}} issues:
+{{range .Items}}----------------------------------------
+Number: {{.Number}}
+User:   {{.User.Login}}
+Title:  {{.Title | printf "%.64s"}}
+Age:    {{.CreatedAt | daysAgo}} days
+{{end}}`
+```
+
+- 一个模板是一个字符串或一个文件，里面包含了一个或多个由双花括号包含的{{action}}对象。
+- 每一个action，都有一个当前值的概念，对应点操作符，写作“.”。
+- 模板中{{range .Items}}和{{end}}对应一个循环action，因此它们直接的内容可能会被展开多次，循环每次迭代的当前值对应当前的Items元素的值。
+- 一个action中，|操作符表示将前一个表达式的结果作为后一个函数的输入，类似于UNIX中管道的概念。
+- 对于Age部分，第二个动作是一个叫daysAgo的函数
+
+## 函数
+
+### 函数声明
+
+Go语言没有默认参数值
+
+### 递归
+
+Go语言使用可变栈，栈的大小按需增加(初始时很小)。这使得我们使用递归时不必考虑溢出和安全问题。
+
+### 多返回值
+
+如果一个函数所有的返回值都有显式的变量名，那么该函数的return语句可以省略操作数。这称之为bare return。
+
+```go
+func HourMinSec(t time.Time) (hour, minute, second int)
+```
+
+### 错误
+
+错误形式只有一种,ok
+
+```go
+value, ok := cache.Lookup(key)
+if !ok {
+    // ...cache[key] does not exist…
+}
+```
+
+错误形式多种,error
+
+```go
+fmt.Println(err)
+fmt.Printf("%v", err)
+```
+
+错误传递
+
+```go
+doc, err := html.Parse(resp.Body)
+resp.Body.Close()
+if err != nil {
+    return nil, fmt.Errorf("parsing %s as HTML: %v", url,err)
+}
+```
+
+- fmt.Errorf函数使用fmt.Sprintf格式化错误信息并返回
+- 我们使用该函数添加额外的前缀上下文信息到原始错误信息。当错误最终由main函数处理时，错误信息应提供清晰的从原因到后果的因果链
+- 错误信息中应避免大写和换行符。最终的错误信息可能很长
+
+错误等待代码
+
+```go
+func WaitForServer(url string) error {
+    const timeout = 1 * time.Minute
+    deadline := time.Now().Add(timeout)
+    for tries := 0; time.Now().Before(deadline); tries++ {
+        _, err := http.Head(url)
+        if err == nil {
+            return nil // success
+        }
+        log.Printf("server not responding (%s);retrying…", err)
+        time.Sleep(time.Second << uint(tries)) // exponential back-off
+    }
+    return fmt.Errorf("server %s failed to respond after %s", url, timeout)
+}
+```
+
+错误打印
+
+- log包中的所有函数会为没有换行符的字符串增加换行符
+
+通过`io.EOF`错误判断文件结束
+
+```go
+in := bufio.NewReader(os.Stdin)
+for {
+    r, _, err := in.ReadRune()
+    if err == io.EOF {
+        break // finished reading
+    }
+    if err != nil {
+        return fmt.Errorf("read failed:%v", err)
+    }
+    // ...use r…
+}
+```
+
+### 函数值
+
+- 函数被看作第一类值（first-class values）
+- 函数类型的零值是nil。调用值为nil的函数值会引起panic错误
+- 函数值可以与nil比较,但是函数值之间是不可比较的，也不能用函数值作为map的key
+
+### 匿名函数
+
+- 使用时注意循环变量的作用域问题
+
+### 可变参数
+
+```go
+func sum(vals...int) int {
+    total := 0
+    for _, val := range vals {
+        total += val
+    }
+    return total
+}
+fmt.Println(sum())           // "0"
+fmt.Println(sum(3))          // "3"
+fmt.Println(sum(1, 2, 3, 4)) // "10"
+values := []int{1, 2, 3, 4}
+fmt.Println(sum(values...)) // "10"
+```
+
+### Deferred函数
+
+defer语句经常被用于处理成对的操作，如打开、关闭、连接、断开连接、加锁、释放锁。通过defer机制，不论函数逻辑多复杂，都能保证在任何执行路径下，资源被释放。释放资源的defer应该直接跟在请求资源的语句后。
+
+### Panic函数
+
+```
+goroutine 1 [running]:
+main.printStack()
+src/gopl.io/ch5/defer2/defer.go:20
+main.f(0)
+src/gopl.io/ch5/defer2/defer.go:27
+main.f(1)
+src/gopl.io/ch5/defer2/defer.go:29
+main.f(2)
+src/gopl.io/ch5/defer2/defer.go:29
+main.f(3)
+src/gopl.io/ch5/defer2/defer.go:29
+main.main()
+src/gopl.io/ch5/defer2/defer.go:15
+```
+
+### Recover捕获异常
+
+如果在deferred函数中调用了内置函数recover，并且定义该defer语句的函数发生了panic异常，recover会使程序从panic中恢复，并返回panic value。导致panic异常的函数不会继续运行，但能正常返回。在未发生panic时调用recover，recover会返回nil。
+
+```go
+func Parse(input string) (s *Syntax, err error) {
+    defer func() {
+        if p := recover(); p != nil {
+            err = fmt.Errorf("internal error: %v", p)
+        }
+    }()
+    // ...parser...
+}
+```
+
+## 方法
+
+### 方法声明
+
+```go
+package geometry
+
+import "math"
+
+type Point struct{ X, Y float64 }
+
+// traditional function
+func Distance(p, q Point) float64 {
+    return math.Hypot(q.X-p.X, q.Y-p.Y)
+}
+
+// same thing, but as a method of the Point type
+func (p Point) Distance(q Point) float64 {
+    return math.Hypot(q.X-p.X, q.Y-p.Y)
+}
+
+// A Path is a journey connecting the points with straight lines.
+type Path []Point
+// Distance returns the distance traveled along the path.
+func (path Path) Distance() float64 {
+    sum := 0.0
+    for i := range path {
+        if i > 0 {
+            sum += path[i-1].Distance(path[i])
+        }
+    }
+    return sum
+}
+```
+
+- Path是一个命名的slice类型，而不是Point那样的struct类型，然而我们依然可以为它定义方法。
+- Go语言里，我们为一些简单的数值、字符串、slice、map来定义一些附加行为很方便。
+- 不可以为指针和interface定义额外的方法
+
+### 基于指针对象的方法
+
+
+
+### 通过潜入结构体来扩展类型
+
+### 方法值好方法表达式
+
+### 示例：Bit数组
+
+### 封装
