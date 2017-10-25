@@ -1,8 +1,10 @@
 ---
 title: nvidia-docker命令详解
 date: 2017-09-14 16:03:26
-tags: nvidia-docker
-categories: gpu docker
+tags: nvidia
+categories: 
+- gpu
+- docker
 ---
 
 ## 准备

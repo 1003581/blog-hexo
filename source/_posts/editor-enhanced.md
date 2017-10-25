@@ -141,7 +141,15 @@ E36B85CC 84991F19 7575D828 470A92AB
 }
 ```
 
+附：[MarkdownEditing GitHub](https://github.com/SublimeText-Markdown/MarkdownEditing)
+
+## MarkdownPreview
+
+[test.md](https://github.com/revolunet/sublimetext-markdown-preview/blob/master/tests/test.md)
+
 ## pylint
+
+[Sublime配置pylinter实现查错,格式化,代码自动规范,对错误显示图标(python语法检查)](https://www.zhaokeli.com/Article/6353.html)
 
 ```
 {
@@ -181,13 +189,21 @@ E36B85CC 84991F19 7575D828 470A92AB
 }
 ```
 
+## python环境
+
+[blog](http://www.cnblogs.com/jxldjsn/p/6034158.html)
+
 ## ConvertToUTF8
 
 ## SublimeREPL
 
 ## SublimeCodeIntel
 
+## GoSublime & GoImports
+
 # VSCode
+
+## 设置
 
 `Crtl+,`->`用户设置`
 
@@ -213,6 +229,23 @@ E36B85CC 84991F19 7575D828 470A92AB
 }
 ```
 
+## 编译C++
+
+[Windows下VSCode编译调试c/c++](http://blog.csdn.net/c_duoduo/article/details/51615381)
+
+
+# Atom
+
+## Markdown配置
+
+[blog](http://www.cnblogs.com/libin-1/p/6638165.html)
+
 # 字体
 
 [Source Code Pro](https://github.com/adobe-fonts/source-code-pro)
+
+# Markdown相关
+
+[Flow语法](http://blog.csdn.net/KimBing/article/details/52934959?locationNum=2&fps=1)
+
+[序列图和流程图](http://blog.csdn.net/u011729865/article/details/49207455)

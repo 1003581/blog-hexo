@@ -1,7 +1,7 @@
 ---
 title: nvidia-smi命令详解
 date: 2017-09-14 16:03:29
-tags: nvidia-smi
+tags: nvidia
 categories: gpu
 ---
 

@@ -11,24 +11,75 @@ categories: python
 
 [https://github.com/liqiang311/python.git](https://github.com/liqiang311/python.git)
 
-## 文件首
+# 各类资料
 
-```
+## 文档
+
+- [Python语言规范](http://zh-google-styleguide.readthedocs.io/en/latest/google-python-styleguide/python_language_rules/)
+
+## 发布命令行工具
+
+- [如何发布一个Python命令行工具](http://blog.csdn.net/starsliu/article/details/50999603)
+- [15.4. argparse](https://docs.python.org/2/library/argparse.html?highlight=argparser)
+- [Argparse Tutorial](https://docs.python.org/2/howto/argparse.html)
+
+## pyenv
+
+- [github](https://github.com/pyenv/pyenv)
+
+## ElementTree
+
+- [使用Python库ElementTree解析Hadoop的xml配置文件](http://www.fx114.net/qa-10-166440.aspx)
+- [Python xml属性/节点/文本的增删改[xml.etree.ElementTree]](http://blog.csdn.net/wklken/article/details/7603071)
+
+## Docker
+
+- [Docker SDK for Python](https://docker-py.readthedocs.io/en/stable/index.html)
+
+## PyNLPIR
+
+- [docs.io](http://pynlpir.readthedocs.io/en/latest/tutorial.html)
+
+## ChatterBot
+
+- [docs.io](https://chatterbot.readthedocs.io/en/stable/)
+
+## whoosh
+
+- [docs.io](https://whoosh.readthedocs.io/en/latest/)
+
+## hdfs3
+
+- [docs.io](http://hdfs3.readthedocs.io/en/latest/install.html#pypi-and-apt-get)
+
+## requests
+
+- [Requests: 让 HTTP 服务人类](http://cn.python-requests.org/zh_CN/latest/)
+
+## Theano
+
+- [docs.io](http://deeplearning.net/software/theano/index.html)
+
+## PyTorch
+
+- [docs.io](http://pytorch.org/tutorials/)
+
+## six
+
+- [pypi](https://pypi.python.org/pypi/six#downloads)
+
+# 常用代码
+
+## 文件头
+
+```python
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 ```
 
-让源代码按照UTF-8编码读取
+## utf8-reload(python2)
 
-第一行注释是为了告诉Linux/OS X系统，这是一个Python可执行程序，Windows系统会忽略这个注释；
-
-第二行注释是为了告诉Python解释器，按照UTF-8编码读取源代码，否则，你在源代码中写的中文输出可能会有乱码。
-
-## utf8-reload
-
-python2
-
-```
+```python
 import sys
 reload(sys)
 sys.setdefaultencoding("utf-8")
@@ -49,13 +100,10 @@ importlib.reload(sys)
 
 ## 类型转换
 
-字符转数字`ord('A')`
-
-数字转字符`chr(65)`
-
-Unicode编码转换为utf-8`u'ABC'.encode('utf-8')`
-
-utf-8编码转换wieldUnicode`'abc'.decode('utf-8')`
+- 字符转数字`ord('A')`
+- 数字转字符`chr(65)`
+- Unicode编码转换为utf-8`u'ABC'.encode('utf-8')`
+- utf-8编码转换wieldUnicode`'abc'.decode('utf-8')`
 
 ## 发布为exe文件
 
