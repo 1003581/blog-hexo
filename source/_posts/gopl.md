@@ -1346,11 +1346,642 @@ func (path Path) TranslateBy(offset Point, add bool) {
 
 ### 接口是合约
 
+io.Writer
+
+```go
+package io
+
+// Writer is the interface that wraps the basic Write method.
+type Writer interface {
+    // Write writes len(p) bytes from p to the underlying data stream.
+    // It returns the number of bytes written from p (0 <= n <= len(p))
+    // and any error encountered that caused the write to stop early.
+    // Write must return a non-nil error if it returns n < len(p).
+    // Write must not modify the slice data, even temporarily.
+    //
+    // Implementations must not retain p.
+    Write(p []byte) (n int, err error)
+}
+```
+
+- 这种类型都包含一个Write函数
+- Fprintf接受任何满足io.Writer接口的值都可以工作
+
 ### 接口类型
+
+```go
+package io
+type Reader interface {
+    Read(p []byte) (n int, err error)
+}
+type Closer interface {
+    Close() error
+}
+```
+
 ### 实现接口的条件
+
+一个类型如果拥有一个接口需要的所有方法，那么这个类型就实现了这个接口。
+
+io.ReadWriter或者io.Reader,io.Writer都是接口类型，更多方法的接口类型表示对实现它的类型要求更加严格。
+
+interface{}被称为空接口类型。空接口类型对实现它的类型没有要求，所以我们可以将任意一个值赋给空接口类型。
+
+interface{}没有任何方法，我们不能对它持有的值做操作。
+
 ### flag.Value接口
+
+自定义flag.Value接口类型
+
+```go
+package main
+
+import (
+	"flag"
+	"fmt"
+)
+
+type Celsius float64    // 摄氏温度
+type Fahrenheit float64 // 华氏温度
+
+func CToF(c Celsius) Fahrenheit { return Fahrenheit(c*9/5 + 32) }
+
+func FToC(f Fahrenheit) Celsius { return Celsius((f - 32) * 5 / 9) }
+
+func (c Celsius) String() string { return fmt.Sprintf("%g°C", c) }
+
+type celsiusFlag struct{ Celsius }
+
+func (f *celsiusFlag) Set(s string) error {
+	var unit string
+	var value float64
+	fmt.Sscanf(s, "%f%s", &value, &unit) // no error check needed
+	switch unit {
+	case "C", "°C":
+		f.Celsius = Celsius(value)
+		return nil
+	case "F", "°F":
+		f.Celsius = FToC(Fahrenheit(value))
+		return nil
+	}
+	return fmt.Errorf("invalid temperature %q", s)
+}
+
+func CelsiusFlag(name string, value Celsius, usage string) *Celsius {
+	f := celsiusFlag{value}
+	flag.CommandLine.Var(&f, name, usage)
+	return &f.Celsius
+}
+
+var temp = CelsiusFlag("temp", 20.0, "the temperature")
+
+func main() {
+	flag.Parse()
+	fmt.Println(*temp)
+}
+```
+
+flag.Value接口类型定义如下
+
+```go
+package flag
+
+// Value is the interface to the value stored in a flag.
+type Value interface {
+    String() string
+    Set(string) error
+}
+```
+
+- Set方法解析它的字符串参数并且更新标记变量的值
+- celsiusFlag内嵌了一个Celsius类型，因此不用实现本身就已经有String方法了。为了实现flag.Value，我们只需要定义Set方法：
+- CelsiusFlag函数将所有逻辑都封装在一起。它返回一个内嵌在celsiusFlag变量f中的Celsius指针给调用者
+- 解释为什么帮助信息在它的默认值是20.0没有包含°C的情况下输出了°C。
+	- 因为调用了String()方法
+
 ### 接口值
+
+空类型
+
+![](http://outz1n6zr.bkt.clouddn.com/8870e0b98ddeeb663bb319023a6de7af.png)
+
+```go
+var w io.Writer = os.Stdout
+```
+
+![](http://outz1n6zr.bkt.clouddn.com/13b45de433b748a038c9bd9a1a1d799c.png)
+
+```go
+var x interface{} = time.Now()
+```
+
+![](http://outz1n6zr.bkt.clouddn.com/040f73a4cbe187aba67802a835bdeb8f.png)
+
 ### sort.Interface接口
+
+```go
+package main
+
+import (
+	"fmt"
+	"os"
+	"sort"
+	"text/tabwriter"
+	"time"
+)
+
+type Track struct {
+	Title  string
+	Artist string
+	Album  string
+	Year   int
+	Length time.Duration
+}
+
+var tracks = []*Track{
+	{"Go", "Delilah", "From the Roots Up", 2012, length("3m38s")},
+	{"Go", "Moby", "Moby", 1992, length("3m37s")},
+	{"Go Ahead", "Alicia Keys", "As I Am", 2007, length("4m36s")},
+	{"Ready 2 Go", "Martin Solveig", "Smash", 2011, length("4m24s")},
+}
+
+func length(s string) time.Duration {
+	d, err := time.ParseDuration(s)
+	if err != nil {
+		panic(s)
+	}
+	return d
+}
+func printTracks(tracks []*Track) {
+	const format = "%v\t%v\t%v\t%v\t%v\t\n"
+	tw := new(tabwriter.Writer).Init(os.Stdout, 0, 8, 2, ' ', 0)
+	fmt.Fprintf(tw, format, "Title", "Artist", "Album", "Year", "Length")
+	fmt.Fprintf(tw, format, "-----", "------", "-----", "----", "------")
+	for _, t := range tracks {
+		fmt.Fprintf(tw, format, t.Title, t.Artist, t.Album, t.Year, t.Length)
+	}
+	tw.Flush() // calculate column widths and print table
+}
+
+type byArtist []*Track
+
+func (x byArtist) Len() int           { return len(x) }
+func (x byArtist) Less(i, j int) bool { return x[i].Artist < x[j].Artist }
+func (x byArtist) Swap(i, j int)      { x[i], x[j] = x[j], x[i] }
+
+func main() {
+	sort.Sort(byArtist(tracks))
+	printTracks(tracks)
+	sort.Sort(sort.Reverse(byArtist(tracks)))
+	printTracks(tracks)
+}
+```
+
 ### http.Handler接口
+
+```go
+package main
+
+import (
+	"fmt"
+	"log"
+	"net/http"
+)
+
+func main() {
+	db := database{"shoes": 50, "socks": 5}
+	mux := http.NewServeMux()
+	mux.Handle("/list", http.HandlerFunc(db.list))
+	mux.Handle("/price", http.HandlerFunc(db.price))
+	log.Fatal(http.ListenAndServe("localhost:8000", mux))
+}
+
+type dollars float32
+
+func (d dollars) String() string { return fmt.Sprintf("$%.2f", d) }
+
+type database map[string]dollars
+
+func (db database) list(w http.ResponseWriter, req *http.Request) {
+	for item, price := range db {
+		fmt.Fprintf(w, "%s: %s\n", item, price)
+	}
+}
+
+func (db database) price(w http.ResponseWriter, req *http.Request) {
+	item := req.URL.Query().Get("item")
+	price, ok := db[item]
+	if !ok {
+		w.WriteHeader(http.StatusNotFound) // 404
+		fmt.Fprintf(w, "no such item: %q\n", item)
+		return
+	}
+	fmt.Fprintf(w, "%s\n", price)
+}
+```
+
 ### error接口
+
+errors.New
+
+fmt.Errorf
+
 ### 示例：表达式求值
+
+### 类型断言
+
+x.(T)被称为断言类型
+
+- 如果断言的类型T是一个具体类型，然后类型断言检查x的动态类型是否和T相同。如果这个检查成功了，类型断言的结果是x的动态值，当然它的类型是T。如果检查失败，接下来这个操作会抛出panic。
+- 如果相反地断言的类型T是一个接口类型，然后类型断言检查是否x的动态类型满足T。从一个接口类型转换到另一个接口类型，检查是否满足第二个接口类型的要求。
+- 如果断言操作的对象是一个nil接口值，那么不论被断言的类型是什么这个类型断言都会失败
+
+### 基于类型断言区别错误类型
+
+```go
+import (
+    "errors"
+    "syscall"
+)
+
+var ErrNotExist = errors.New("file does not exist")
+
+// IsNotExist returns a boolean indicating whether the error is known to
+// report that a file or directory does not exist. It is satisfied by
+// ErrNotExist as well as some syscall errors.
+func IsNotExist(err error) bool {
+    if pe, ok := err.(*PathError); ok {
+        err = pe.Err
+    }
+    return err == syscall.ENOENT || err == ErrNotExist
+}
+```
+
+### 通过类型断言询问行为
+
+### 类型分支
+
+```go
+switch x.(type) {
+    case nil:       // ...
+    case int, uint: // ...
+    case bool:      // ...
+    case string:    // ...
+    default:        // ...
+}
+```
+
+### 示例: 基于标记的XML解码
+
+## Goroutines和Channels
+
+顺序通信进程”(communicating sequential processes)或被简称为CSP
+
+### Goroutines
+
+当一个程序启动时，其主函数即在一个单独的goroutine中运行，我们叫它main goroutine。
+
+除了从主函数退出或者直接终止程序之外，没有其它的编程方法能够让一个goroutine来打断另一个的执行。
+
+等待转圈代码
+
+```go
+func spinner(delay time.Duration) {
+    for {
+        for _, r := range `-\|/` {
+            fmt.Printf("\r%c", r)
+            time.Sleep(delay)
+        }
+    }
+}
+```
+
+### 示例: 并发的Clock服务
+
+TCP服务器程序
+
+```go
+package main
+
+import (
+	"io"
+	"log"
+	"net"
+	"time"
+)
+
+func main() {
+	listener, err := net.Listen("tcp", "localhost:8000")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	for {
+		conn, err := listener.Accept()
+		if err != nil {
+			log.Print(err) // e.g., connection aborted
+			continue
+		}
+		go handleConn(conn) // handle one connection at a time
+	}
+}
+
+func handleConn(c net.Conn) {
+	defer c.Close()
+	for {
+		_, err := io.WriteString(c, time.Now().Format("15:04:05\n"))
+		if err != nil {
+			return // e.g., client disconnected
+		}
+		time.Sleep(1 * time.Second)
+	}
+}
+```
+
+TCP客户端程序
+
+```go
+package main
+
+import (
+	"io"
+	"log"
+	"net"
+	"os"
+)
+
+func main() {
+	conn, err := net.Dial("tcp", "localhost:8000")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer conn.Close()
+	mustCopy(os.Stdout, conn)
+}
+
+func mustCopy(dst io.Writer, src io.Reader) {
+	if _, err := io.Copy(dst, src); err != nil {
+		log.Fatal(err)
+	}
+}
+```
+
+### 示例: 并发的Echo服务
+
+### Channels
+
+- channels则是goroutines之间的通信机制
+- 可以让一个goroutine通过它给另一个goroutine发送值信息
+- 每个channel都有一个特殊的类型，也就是channels可发送数据的类型
+- 创建
+```go
+ch := make(chan int) // ch has type 'chan int'
+```
+- channel也对应一个make创建的底层数据结构的引用
+- 两个相同类型的channel可以使用==运算符比较
+- 一个发送语句将一个值从一个goroutine通过channel发送到另一个执行接收操作的goroutine
+- 发送和接收两个操作都使用`<-`运算符
+```go
+ch <- x  // a send statement
+x = <-ch // a receive expression in an assignment statement
+<-ch     // a receive statement; result is discarded
+```
+- 关闭channel，随后对基于该channel的任何发送操作都将导致panic异常
+- 试图重复关闭一个channel将导致panic异常
+- 试图关闭一个nil值的channel也将导致panic异常
+- 关闭一个channels还会触发一个广播机制
+```go
+close(ch)
+```
+- 对一个已经被close过的channel进行接收操作依然可以接受到之前已经成功发送的数据；如果channel中已经没有数据的话将直接返回并产生一个零值的数据。
+- 创建带缓存的Channel
+```go
+ch = make(chan int)    // unbuffered channel
+ch = make(chan int, 0) // unbuffered channel
+ch = make(chan int, 3) // buffered channel with capacity 3
+```
+
+不带缓存的Channels
+
+- 一个基于无缓存Channels的发送操作将导致发送者goroutine阻塞，直到另一个goroutine在相同的Channels上执行接收操作，当发送的值通过Channels成功传输之后，两个goroutine可以继续执行后面的语句。反之，如果接收操作先发生，那么接收者goroutine也将阻塞，直到有另一个goroutine在相同的Channels上执行发送操作。
+- 基于无缓存Channels的发送和接收操作将导致两个goroutine做一次同步操作。因为这个原因，无缓存Channels有时候也被称为同步Channels。
+- 当通过一个无缓存Channels发送数据时，接收者收到数据发生在唤醒发送者goroutine之前（译注：**happens before**，这是Go语言并发内存模型的一个关键术语！）。
+
+串联的Channels（Pipeline）
+
+- 一个Channel的输出作为下一个Channel的输入。这种串联的Channels就是所谓的管道（pipeline）。
+- Channel可以被range
+
+单方向的Channel
+
+- 类型`chan<- int`表示一个只发送int的channel
+- 类型`<-chan int`表示一个只接收int的channel
+- 对一个只接收的channel调用close将是一个编译错误
+- 任何双向channel向单向channel变量的赋值操作都将导致该隐式转换
+- 不能将一个类似chan<- int类型的单向型的channel转换为chan int类型的双向型的channel
+
+带缓存的Channels
+
+- 向缓存Channel的发送操作就是向内部缓存队列的尾部插入元素，接收操作则是从队列的头部删除元素。如果内部缓存队列是满的，那么发送操作将阻塞直到因另一个goroutine执行接收操作而释放了新的队列空间。相反，如果channel是空的，接收操作将阻塞直到有另一个goroutine执行发送操作而向队列插入元素。
+- 内置的cap函数获取缓存的容量`cap(ch)`
+- 内置的len函数获取缓存内有效元素的个数`len(ch)`
+
+goroutines泄漏，这是一个BUG。和垃圾变量不同，泄漏的goroutines并不会被自动回收，
+
+### 并发的循环
+
+注意循环变量失效问题
+
+sync.WaitGroup
+
+```go
+// makeThumbnails6 makes thumbnails for each file received from the channel.
+// It returns the number of bytes occupied by the files it creates.
+func makeThumbnails6(filenames <-chan string) int64 {
+    sizes := make(chan int64)
+    var wg sync.WaitGroup // number of working goroutines
+    for f := range filenames {
+        wg.Add(1)
+        // worker
+        go func(f string) {
+            defer wg.Done()
+            thumb, err := thumbnail.ImageFile(f)
+            if err != nil {
+                log.Println(err)
+                return
+            }
+            info, _ := os.Stat(thumb) // OK to ignore error
+            sizes <- info.Size()
+        }(f)
+    }
+
+    // closer
+    go func() {
+        wg.Wait()
+        close(sizes)
+    }()
+
+    var total int64
+    for size := range sizes {
+        total += size
+    }
+    return total
+}
+```
+
+- Add和Done方法的不对称。Add是为计数器加一，必须在worker goroutine开始之前调用，而不是在goroutine中
+- Done却没有任何参数；其实它和Add(-1)是等价的。
+
+### 并发的Web爬虫
+
+### 基于select的多路复用
+
+select{}，会永远地等待下去
+
+多个case同时就绪时，select会随机地选择一个执行
+
+### 示例: 并发的目录遍历
+
+### 并发的退出
+
+关闭一个channel来进行广播
+
+```go
+var done = make(chan struct{})
+
+func cancelled() bool {
+    select {
+    case <-done:
+        return true
+    default:
+        return false
+    }
+}
+```
+
+### 示例: 聊天服务
+
+```go
+package main
+
+import (
+	"bufio"
+	"fmt"
+	"log"
+	"net"
+)
+
+func main() {
+	listener, err := net.Listen("tcp", "localhost:8000")
+	if err != nil {
+		log.Fatal(err)
+	}
+	go broadcaster()
+	for {
+		conn, err := listener.Accept()
+		if err != nil {
+			log.Print(err)
+			continue
+		}
+		go handleConn(conn)
+	}
+}
+
+type client chan<- string // an outgoing message channel
+
+var (
+	entering = make(chan client)
+	leaving  = make(chan client)
+	messages = make(chan string) // all incoming client messages
+)
+
+func broadcaster() {
+	clients := make(map[client]bool) // all connected clients
+	for {
+		select {
+		case msg := <-messages:
+			// Broadcast incoming message to all
+			// clients' outgoing message channels.
+			for cli := range clients {
+				cli <- msg
+			}
+		case cli := <-entering:
+			clients[cli] = true
+
+		case cli := <-leaving:
+			delete(clients, cli)
+			close(cli)
+		}
+	}
+}
+
+func handleConn(conn net.Conn) {
+	ch := make(chan string) // outgoing client messages
+	go clientWriter(conn, ch)
+
+	who := conn.RemoteAddr().String()
+	ch <- "You are " + who
+	messages <- who + " has arrived"
+	entering <- ch
+
+	input := bufio.NewScanner(conn)
+	for input.Scan() {
+		messages <- who + ": " + input.Text()
+	}
+	// NOTE: ignoring potential errors from input.Err()
+
+	leaving <- ch
+	messages <- who + " has left"
+	conn.Close()
+}
+
+func clientWriter(conn net.Conn, ch <-chan string) {
+	for msg := range ch {
+		fmt.Fprintln(conn, msg) // NOTE: ignoring network errors
+	}
+}
+```
+
+## 基于共享变量的并发
+
+### 竞争条件
+
+数据竞争会在两个以上的goroutine并发访问相同的变量且至少其中一个为写操作时发生
+
+不要使用共享数据来通信；使用通信来共享数据
+
+### sync.Mutex互斥锁
+
+### sync.RWMutex读写锁
+
+“多读单写”锁(multiple readers, single writer lock)
+
+```go
+var mu sync.RWMutex
+var balance int
+func Balance() int {
+    mu.RLock() // readers lock
+    defer mu.RUnlock()
+    return balance
+}
+```
+
+### 内存同步
+
+```go
+var x, y int
+go func() {
+    x = 1 // A1
+    fmt.Print("y:", y, " ") // A2
+}()
+go func() {
+    y = 1                   // B1
+    fmt.Print("x:", x, " ") // B2
+}()
+```
+
+可能出现`x:0 y:0`
+
+因为赋值和打印指向不同的变量，编译器可能会断定两条语句的顺序不会影响执行结果，并且会交换两个语句的执行顺序。如果两个goroutine在不同的CPU上执行，每一个核心有自己的缓存，这样一个goroutine的写入对于其它goroutine的Print，在主存同步之前就是不可见的了。
+
+### sync.Once初始化
