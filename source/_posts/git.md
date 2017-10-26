@@ -2,7 +2,7 @@
 title: Git相关
 date: 2017-10-25 23:00:00
 tags: git
-categories: git
+categories: tool
 ---
 
 Git相关

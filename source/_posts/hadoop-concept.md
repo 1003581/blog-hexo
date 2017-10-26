@@ -2,7 +2,7 @@
 title: Hadoop相关概念
 date: 2017-09-14 16:01:29
 tags: hadoop
-categories: bigdata
+categories: 大数据
 ---
 
 # 分布式文件系统

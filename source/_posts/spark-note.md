@@ -2,7 +2,7 @@
 title: 大数据学习相关
 date: 2017-10-25 23:00:00
 tags: spark
-categories: bigdata
+categories: 大数据
 ---
 
 相关资料

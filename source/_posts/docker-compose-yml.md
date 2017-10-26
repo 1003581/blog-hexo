@@ -1,7 +1,7 @@
 ---
 title: Docker Compose文件详解
 date: 2017-09-14 15:12:00
-tags: docker-compose
+tags: docker
 categories: docker
 ---
 

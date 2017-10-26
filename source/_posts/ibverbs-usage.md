@@ -4,7 +4,7 @@ date: 2017-09-14 15:58:43
 tags: 
 - rdma
 - ibverbs
-categories: rdma
+categories: c++
 ---
 
 [百度云下载](https://pan.baidu.com/s/1o78iHmi)

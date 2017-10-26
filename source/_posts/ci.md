@@ -2,7 +2,7 @@
 title: 自动化CI
 date: 2017-10-25 23:30:00
 tags: ci
-categories: ci
+categories: tool
 ---
 
 资料

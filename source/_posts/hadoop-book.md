@@ -2,7 +2,7 @@
 title: Hadoop权威指南学习
 date: 2017-09-14 16:01:16
 tags: hadoop
-categories: bigdata
+categories: 大数据
 ---
 
 # 《Hadoop权威指南》

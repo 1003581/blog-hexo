@@ -1,7 +1,7 @@
 ---
 title: 各种编辑器的加强功能
 date: 2017-09-14 15:58:21
-tags: tool
+tags: editor
 categories: tool
 ---
 

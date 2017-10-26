@@ -177,6 +177,15 @@ int main() {
 }
 ```
 
+操作步骤如下：
+
+1. 将代码复制到`info.cu`文件中，或者通过ftp将文件上传。
+2. 编译文件 `nvcc info.cu`
+3. 若出现错误，请检查语法错误。
+4. 运行可执行文件 `./a.out`
+
+
+
 输出如下
 
 ```
@@ -211,3 +220,415 @@ CUDA Toolkit（CUDA SDK）不断升级，从2007年推出的1.0到2017年推出�
 并发：并发是一个程序、算法或者问题的可分解属性，它由多个顺序不依赖性或者局部顺序依赖性的结构或单元组成。这就意味着这些单元无论以何种顺序执行或者运算，最终结果都是一样的。
 
 并行：并行(parallelism)是指在具有多个处理单元(如GPU或者多核CPU)的系统上，通过将计算或数据划分为多个部分，将各个部分分配到不同的处理单元上，各处理单元相互协作，同时运行，已达到加快求解速度或提高求解问题规模的目的。
+
+### CUDA并行编程模型
+
+![](http://outz1n6zr.bkt.clouddn.com/a97718b65efee4716903ba08446b2317.png)
+
+- 线程级并行（核函数）
+- CPU+GPU同时工作
+- 内存+显存同时利用
+- CPU与GPU通信
+    - 存储器复制、映射
+- 串行或部分并行（CPU）+并行（GPU）
+
+一个简单的向量加法程序
+
+```c++
+#include <stdio.h>
+
+//核函数
+__global__ void add( int* dev_a, int* dev_b, size_t len, int *dev_c) {
+    int tid = threadIdx.x;
+    if (tid < len) dev_c[tid] = dev_a[tid] + dev_b[tid];
+}
+
+int main( void ) {
+
+    //CPU上执行初始化操作
+    const int len = 10;
+    int a[len] ,b[len] , c[len];
+    for (int i=0; i<len; i++) {
+        a[i] = -i;
+        b[i] = i * i;
+    }
+
+    //GPU上分配空间
+    int *dev_a, *dev_b, *dev_c;
+ 
+    cudaMalloc( (void**)&dev_a, len * sizeof(int) );
+    cudaMalloc( (void**)&dev_b, len * sizeof(int) );
+    cudaMalloc( (void**)&dev_c, len * sizeof(int) );
+
+    //将数据从CPU拷贝至GPU上
+    cudaMemcpy( dev_a, a, len * sizeof(int), 
+                cudaMemcpyHostToDevice );
+    cudaMemcpy( dev_b, b, len * sizeof(int), 
+                cudaMemcpyHostToDevice );
+
+    //执行核函数
+    add<<<1,len>>>( dev_a, dev_b, len, dev_c );
+ 
+    //将数据从GPU拷贝至CPU上
+    cudaMemcpy( c, dev_c, len * sizeof(int), 
+                cudaMemcpyDeviceToHost );
+ 
+    //打印结果
+    for (int i=0; i<len; i++) {
+        printf("%d + %d = %d\n",a[i],b[i],c[i]);
+    }
+    
+    //释放GPU内存
+    cudaFree( dev_a );
+    cudaFree( dev_b );
+    cudaFree( dev_c );
+    return 0;
+}
+```
+
+结果
+
+![](http://outz1n6zr.bkt.clouddn.com/6f4edcb49f25d819d49ea0b025bfd3c2.png)
+
+### CUDA C基础
+
+CUDA C是对C/C++语言进行拓展后形成的变种，兼容C/C++语法，文件类型为“.cu”文件，编译器为“nvcc”，相比传统C/C++，主要添加了以下几个方面：
+- 函数类型限定符
+- 执行配置运算符
+- 五个内置变量
+- 变量类型限定符
+- 其他的还有数学函数、原子函数、纹理读取、绑定函数等。
+
+#### 函数类型限定符
+
+用来确定某个函数是在CPU还是GPU上运行，以及这个函数是从CPU调用还是从GPU调用。
+
+- `__device__` 表示从GPU上调用，在GPU上执行；
+- `__global__` 表示从CPU上调用，在GPU上执行，也称之为kernel函数；
+- `__host__` 表示在CPU上调用，在CPU上执行，这也是默认的C函数。
+
+若违反调用规则，则编译器会报错。在计算能力3.0及以后的设备中，`__global__`类型的函数也可以调用`__global__`类型函数。
+
+正确的调用方式：
+
+```c++
+#include <stdio.h>
+ 
+__device__ void device_func( void ) {
+}
+ 
+__global__ void global_func( void ) {
+    device_func();
+}
+ 
+int main() {
+    printf("%s\n", __FILE__);
+    global_func<<<1,1>>>();
+    return 0;
+}
+```
+
+错误的调用方式：
+
+```c++
+#include <stdio.h>
+ 
+__device__ void device_func( void ) {
+}
+ 
+__global__ void global_func( void ) {
+}
+ 
+int main() {
+    printf("%s\n", __FILE__);
+    global_func<<<1,1>>>();
+    device_func<<<1,1>>>();
+    return 0;
+}
+```
+
+错误信息
+
+```
+error: a __device__ function call cannot be configured
+```
+
+#### 执行配置运算符
+
+执行配置运算符<<< >>>，用来传递内核函数的执行参数。格式如下：
+
+**kernel<<<gridDim, blockDim, memSize, stream>>>(para1, para2, ...);**
+
+- gridDim 表示网格的大小，可以为1维、2维或者3维。
+- blockDim 表示块的大小，可以为1维、2维或者3维。
+- memSize 表示动态分配的共享存储器大小，默认为0。
+- stream 表示执行的流，默认为0。
+- para1,para2等为核函数参数。
+
+```c++
+#include <stdio.h>
+ 
+__global__ void func(int a, int b) {
+}
+ 
+int main() {
+    int a = 0, b = 0;
+    func<<<128,128>>>(a, b);
+    func<<<dim3(128,128),dim3(16,16)>>>(a, b);
+    func<<<dim3(128,128,128),dim3(16,16,2)>>>(a, b);
+    return 0;
+}
+```
+
+#### 五个内置变量
+
+这些内置变量用来在运行时获得Grid和Block的尺寸及线程索引等信息。
+
+- `gridDim`：包含三个元素x,y,z的结构体，表示Grid在三个方向上的尺寸，对应于执行配置中的第一个参数。
+- `blockDim`：包含三个元素x,y,z的结构体，表示Block在三个方向上的尺寸，对应于执行配置中的第二个参数。
+- `blockIdx`：包含三个元素x,y,z的结构体，分别表示当前线程所在块在网格中x,y,z方向上的索引
+- `threadIdx`：包含三个元素x,y,z的结构体，分别表示当前线程在其所在块中x,y,z方向上的索引。
+- `warpSize`：表明warp的尺寸。
+
+
+
+一维结构中，利用内置变量来确定线程Idx：
+
+```c++
+int tid = threadIdx.x + blockIdx.x * blockDim.x;
+```
+
+![](http://outz1n6zr.bkt.clouddn.com/4271bf457dd3942214ababb5020046bf.png)
+
+二维结构中，利用内置变量来确定线程Idx：
+
+```c++
+//左边有x个线程
+int x = threadIdx.x + blockIdx.x * blockDim.x;
+//上方有y个线程
+int y = threadIdx.y + blockIdx.y * blockDim.y; 
+//实际线程Idx
+int offset = x + y * blockDim.x * gridDim.x; 
+```
+
+![](http://outz1n6zr.bkt.clouddn.com/04795d344f33b2a88945624f9428b27e.png)
+
+#### 变量类型限定符
+
+用来确定某个变量在设备上的内存位置。
+
+- `__device__` 表示位于全局内存空间，默认类型；
+- `__shared__` 表示位于共享内存空间；
+- `__constant__` 表示位于常量内存空间；
+- `texture` 表示其绑定的变量可以被纹理缓存加速访问。
+
+`__device__` 类型变量的申请、赋值与释放：
+
+```c++
+cudaMalloc( (void**)&dev_a, N * sizeof(int) );
+cudaMemcpy( dev_a, a, N * sizeof(int), cudaMemcpyHostToDevice );
+cudaMemcpy( c, dev_c, N * sizeof(int), cudaMemcpyDeviceToHost );
+cudaFree( dev_a );
+```
+
+全部程序参照上文的“一个简单的向量加法程序”节。
+
+将“`__share__`”添加到变量声明中，对于GPU中的每个线程块，CUDA C编译器都创建该变量的一个副本。同一线程块中的线程共享这块内存，不同线程块之间内存不可见。而且，共享内存缓冲区驻留在物理GPU上，而不是驻留在GPU之外的系统内存中。因此，在访问共享内存时的延迟要远远低于访问普通缓冲区的延迟，使得共享内存变得十分高效。
+
+CUDA还提供了函数“`__syncthreads()`”来进行线程同步。
+
+将“`__constant__`”添加到变量声明中，则该变量位于常量内存，常量内存中的数据为只读权限。相比于全局内存，常量内存具有以下优点：
+
+- 对常量内存的单次读操作，可以广播到其他的邻近线程（线程束中一半的线程），这将节约15次读取操作。
+- 常量内存的数据将缓存起来，因此对相同地址的连续读操作将不会产生额外的内存通信量。
+
+全局内存
+
+```c++
+People *dev_peoples;
+cudaMalloc( (void**)&dev_peoples, N*sizeof(People) );
+cudaMemcpy( dev_peoples, peoples, N*sizeof(People), cudaMemcpyHostToDevice);
+```
+
+常量内存
+
+```c++
+__constant__ People dev_peoples[N]; //全局变量
+ 
+cudaMemcpyToSymbol( dev_peoples, peoples, N * sizeof(People) );
+```
+
+将“texture”绑定到某全局变量上，则在读取该变量时，GPU将缓存该块内存附近的数据，并分享到线程束中的其他线程。
+
+```c++
+// 创建纹理内存引用, 必须为全局变量
+texture<float>  texValue;
+ 
+/* 初始化函数中 */
+// 首先在GPU上分配内存
+float *dev_value;
+cudaMalloc( (void**)&dev_value, size );
+// 告诉GPU我们希望将指定的缓冲区作为纹理来使用
+// 我们希望将纹理引用作为纹理的"名字"
+// 当读取内存时, 用纹理引用texValue, 当要写内存时, 需用全局变量dev_value
+cudaBindTexture( NULL, texValue, dev_value, size );
+ 
+/* 核函数中 */
+// 核函数中读取方式不再是[]读取, 而要调用函数
+float c = tex1Dfetch(texValue, offset)
+ 
+// 释放函数
+cudaUnbindTexture( texValue );
+cudaFree( dev_value );
+```
+
+
+
+#### 共享内存与线程同步
+
+上文我们实现了向量加法，这里我们将介绍新的运算——向量的点积。
+
+假设向量大小为N，按照上文的方法，我们将申请大小为N的空间，用来存放向量元素互乘的结果，然后在CPU上对N个乘积进行累加。
+
+若我们需要在GPU上进行累加操作呢？
+
+受限于GPU线程块中线程个数的上限问题，若向量尺寸过大，则需分配到多个线程块中。
+
+我们计划在每个线程块中计算各自的点积结果，并返回线程块个数个点积结果，并在CPU上进行累加。
+
+代码如下。
+
+```c++
+#include <stdio.h>
+ 
+const int N = 100000; //向量维度
+const int threadsPerBlock = 256; //每个线程块中的线程数
+const int blocksNum = (N + threadsPerBlock - 1) / threadsPerBlock; //线程块个数
+ 
+__global__ void dot( float *a, float *b, float *c ) {
+    //共享变量声明
+    __shared__ float cache[threadsPerBlock]; 
+ 
+    //根据内置变量定位当前线程Idx
+    int tid = threadIdx.x + blockIdx.x * blockDim.x;
+    int cacheIndex = threadIdx.x;
+ 
+    //向量乘法运算
+    if (tid < N) cache[cacheIndex] = a[tid] * b[tid];
+ 
+    //同步块内线程
+    __syncthreads();
+
+    //将块内的乘积进行累加
+    int i = blockDim.x/2;
+    while (i != 0) {
+        if (cacheIndex < i)
+            cache[cacheIndex] += cache[cacheIndex + i];
+        __syncthreads();
+        i /= 2;
+    }
+ 
+    if (cacheIndex == 0)
+        c[blockIdx.x] = cache[0];
+}
+
+int main() {
+    //初始化原始数据
+    float   *a, *b, c, *partial_c;
+    a = (float*)malloc( N*sizeof(float) );
+    b = (float*)malloc( N*sizeof(float) );
+    partial_c = (float*)malloc( blocksNum*sizeof(float) );
+    for (int i=0; i<N; i++) {
+        a[i] = i;
+        b[i] = i*2;
+    }
+ 
+    //分配GPU空间
+    float   *dev_a, *dev_b, *dev_partial_c;
+    cudaMalloc( (void**)&dev_a, N*sizeof(float) );
+    cudaMalloc( (void**)&dev_b, N*sizeof(float) );
+    cudaMalloc( (void**)&dev_partial_c, 
+                blocksNum*sizeof(float) );
+ 
+    //将数据从CPU复制到GPU
+    cudaMemcpy( dev_a, a, N*sizeof(float), 
+                cudaMemcpyHostToDevice );
+    cudaMemcpy( dev_b, b, N*sizeof(float), 
+                cudaMemcpyHostToDevice );
+
+    //核函数执行
+    dot<<<blocksNum,threadsPerBlock>>>(
+        dev_a, dev_b, dev_partial_c );
+ 
+    //将结果中GPU复制到CPU
+    cudaMemcpy( partial_c, dev_partial_c,
+                blocksNum*sizeof(float),
+                cudaMemcpyDeviceToHost );
+ 
+    //在CPU中计算最后的结果
+    c = 0;
+    for (int i=0; i<blocksNum; i++) {
+        c += partial_c[i];
+    }
+ 
+    //比较结果是否正确
+    #define sum_squares(x)  (x*(x+1)*(2*x+1)/6)
+    printf( "Does GPU value %g = %g?\n", c,
+             2 * sum_squares( (float)(N - 1) ) );
+ 
+    //释放内存和显存
+    cudaFree( dev_a );
+    cudaFree( dev_b );
+    cudaFree( dev_partial_c );
+    free( a );
+    free( b );
+    free( partial_c );
+}
+```
+
+## 实战
+
+### 函数调用检查
+
+检查CUDA API调用是否正常
+
+```c++
+static void HandleError( cudaError_t err,
+                         const char *file,
+                         int line ) {
+    if (err != cudaSuccess) {
+        printf( "%s in %s at line %d\n", cudaGetErrorString( err ),
+                file, line );
+        exit( EXIT_FAILURE );
+    }
+}
+#define HANDLE_ERROR( err ) (HandleError( err, __FILE__, __LINE__ ))
+```
+
+### 性能测量
+
+如何评判我的GPU程序运行快慢？
+
+CUDA提供使用事件来在GPU上记录时间戳。
+
+```c++
+cudaEvent_t     start, stop;
+cudaEventCreate( &start );
+cudaEventCreate( &stop );
+cudaEventRecord( start, 0 );
+ 
+//在GPU上执行一些工作
+ 
+cudaEventRecord( stop, 0 );
+cudaEventSynchronize( stop );
+float   elapsedTime;
+cudaEventElapsedTime( &elapsedTime, start, stop );
+printf( "时间花费为:  %3.1f ms\n", elapsedTime );
+ 
+cudaEventDestroy( start );
+cudaEventDestroy( stop );
+```
+
+### 中位数
+
+代码见[Github](https://github.com/liqiang311/oj/tree/master/media)

@@ -2,7 +2,7 @@
 title: Spark集群以及Docker安装
 date: 2017-09-14 16:04:02
 tags: spark
-categories: bigdata
+categories: 大数据
 ---
 
 相关代码

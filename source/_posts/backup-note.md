@@ -1,7 +1,7 @@
 ---
 title: 定时提交代码到gitlab
 date: 2017-09-14 15:11:16
-tags: tool
+tags: gitlab
 categories: tool
 ---
 

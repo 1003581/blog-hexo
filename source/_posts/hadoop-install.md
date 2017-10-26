@@ -2,7 +2,7 @@
 title: 虚拟机Hadoop集群安装
 date: 2017-09-14 16:01:38
 tags: hadoop
-categories: bigdata
+categories: 大数据
 ---
 
 [原文链接](http://dblab.xmu.edu.cn/blog/install-hadoop-simplify/)

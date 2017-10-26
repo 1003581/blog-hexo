@@ -1,7 +1,7 @@
 ---
 title: win7通过注册表关闭自动睡眠和锁屏
 date: 2017-09-14 15:11:28
-tags: tool
+tags: win7
 categories: tool
 ---
 

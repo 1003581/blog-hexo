@@ -4,7 +4,7 @@ date: 2017-09-14 15:59:32
 tags: 
 - tensorflow
 - rdma
-categories: rdma
+categories: tensorflow
 ---
 
 # rdma.cc

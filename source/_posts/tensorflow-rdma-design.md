@@ -4,7 +4,7 @@ date: 2017-09-14 15:59:41
 tags: 
 - tensorflow
 - rdma
-categories: rdma
+categories: tensorflow
 ---
 
 # [Code Link](https://github.com/tensorflow/tensorflow/tree/master/tensorflow/contrib/verbs)

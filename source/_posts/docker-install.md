@@ -3,7 +3,6 @@ title: Docker和Docker-Compose安装
 date: 2017-09-14 16:00:56
 tags: 
 - docker
-- docker-compose
 categories: docker
 ---
 

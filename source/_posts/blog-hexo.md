@@ -1,7 +1,9 @@
 ---
 title: 使用Hexo搭建个人博客(Github+Coding)
 date: 2017-09-16 22:38:13
-tags: 个人博客
+tags: 
+- hexo
+- traivs
 categories: tool
 ---
 
