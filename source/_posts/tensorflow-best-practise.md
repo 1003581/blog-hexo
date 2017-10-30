@@ -7,7 +7,6 @@ categories: tensorflow
 ---
 
 神经网络中一些重构后的代码。
-
 <!-- more -->
 
 # 标准

@@ -17,6 +17,14 @@ categories: tool
 
 点击view raw下载，然后安装
 
+## [划词翻译](https://github.com/Selection-Translator/crx-selection-translate)
+
+## [qiniu upload files](https://chrome.google.com/webstore/detail/qiniu-upload-files/emmfkgdgapbjphdolealbojmcmnphdcc)
+
+## [七牛在线存图](https://chrome.google.com/webstore/detail/%E4%B8%83%E7%89%9B%E5%9C%A8%E7%BA%BF%E5%AD%98%E5%9B%BE/ojgilmgaopbpimndoelnhacamaabdpni)
+
+
+
 # Vim
 
 [reference](http://www.cnblogs.com/wangj08/archive/2013/03/13/2957309.html)
@@ -200,6 +208,16 @@ E36B85CC 84991F19 7575D828 470A92AB
 ## SublimeCodeIntel
 
 ## GoSublime & GoImports
+
+## Anaconda
+
+自动格式化代码`ctrl`+`alt`+`R`
+
+```
+{
+	"auto_formatting": true
+}
+```
 
 # VSCode
 

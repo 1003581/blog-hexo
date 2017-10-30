@@ -8,7 +8,6 @@ categories: tensorflow
 ---
 
 # [Code Link](https://github.com/tensorflow/tensorflow/tree/master/tensorflow/contrib/verbs)
-
 <!-- more -->
 
 ## 如何编译和使用启用RDMA的TensorFlow

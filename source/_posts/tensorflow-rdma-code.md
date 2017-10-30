@@ -8,7 +8,6 @@ categories: tensorflow
 ---
 
 # rdma.cc
-
 <!-- more -->
 
 ## 相关结构体
