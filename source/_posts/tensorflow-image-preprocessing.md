@@ -1,5 +1,5 @@
 ---
-title: TensorFlot图像预处理常用手段
+title: TensorFlow 图像预处理常用手段
 date: 2017-10-27 17:00:00
 tags: tensorflow
 categories: tensorflow

@@ -1,5 +1,5 @@
 ---
-title: TensorFlow神经网络常用优化方法
+title: TensorFlow 神经网络常用优化方法
 date: 2017-09-21 14:29:57
 tags: 
 - tensorflow

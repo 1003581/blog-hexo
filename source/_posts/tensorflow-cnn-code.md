@@ -1,5 +1,5 @@
 ---
-title: TensorFlow最佳实践代码
+title: TensorFlow CNN代码
 date: 2017-09-26 09:00:00
 tags: 
 - tensorflow
