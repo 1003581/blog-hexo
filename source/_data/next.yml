@@ -55,7 +55,7 @@ footer:
     version: true
   # -------------------------------------------------------------
   # Any custom text can be defined here.
-  #custom_text: Hosted by <a target="_blank" href="https://pages.github.com">GitHub Pages</a>
+  custom_text: Hosted by <a target="_blank" href="https://liqiang311.github.com">GitHub Pages</a>
 
 # ---------------------------------------------------------------
 # SEO Settings
@@ -105,8 +105,8 @@ menu_icons:
 # Schemes
 #scheme: Muse
 #scheme: Mist
-#scheme: Pisces
-scheme: Gemini
+scheme: Pisces
+#scheme: Gemini
 
 
 # ---------------------------------------------------------------
@@ -183,7 +183,7 @@ sidebar:
   offset: 12
 
   # Back to top in sidebar (only for Pisces | Gemini).
-  b2t: false
+  b2t: true
 
   # Scroll percent label in b2t button.
   scrollpercent: false
@@ -365,7 +365,7 @@ changyan:
   appid:
   appkey:
 
-    
+
 # Valine. 
 # You can get your appid and appkey from https://leancloud.cn
 # more info please open https://github.com/xCss/Valine
