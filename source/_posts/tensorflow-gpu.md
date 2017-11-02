@@ -438,7 +438,7 @@ tf.train,ClusterSpec({
 ## 模型训练
 
 
-分布式代码
+分布式代码`dist_tf_mnist_async.py`
 
 ```python
 import time
@@ -452,7 +452,7 @@ BATCH_SIZE = 100
 LEARNING_RATE_BASE = 0.01
 LEARNING_RATE_DECAY = 0.99
 REGULARAZTION_RATE = 0.0001
-TRAINING_STEPS = 1000
+TRAINING_STEPS = 50000
 MOVING_AVERAGE_DECAY = 0.99
 
 # 模型保存的路径和文件名。
@@ -587,8 +587,9 @@ def main(argv=None):
             if step > 0 and step % 100 == 0:
                 duration = time.time() - start_time
                 sec_per_batch = duration / global_step_value
-                format_str = 'After %d training steps (%d global steps), '
-                'loss on training batch is %g.  (%.3f sec/batch)'
+                format_str = ('After %d training steps (%d global steps), '
+                              'loss on training batch is %g.  '
+                              '(%.3f sec/batch)')
                 print(format_str %
                       (step, global_step_value, loss_value, sec_per_batch))
             step += 1
@@ -597,4 +598,235 @@ def main(argv=None):
 
 if __name__ == "__main__":
     tf.app.run()
+```
+
+附：在八卡服务器上用docker模拟4台2卡服务器：
+
+```
+docker pull tensorflow/tensorflow:1.3.0-gpu-py3
+pip install nvidia-docker-compose
+```
+
+注：下文所用的`tensorflow:1.3.0-gpu-py3`镜像为自定义后的安装了SSH的镜像。
+
+`docker-compose.yml`文件如下：
+
+```yml
+version: '2'
+
+services:
+  tf1:
+    image: tensorflow:1.3.0-gpu-py3
+    ports:
+      - "20022:22"
+      - "26006:6006"
+    expose:
+      - "2222"
+    devices:
+      - /dev/nvidia0
+      - /dev/nvidia1
+    command: bash -c "service ssh start && sleep 10000000"
+    networks:
+      default:
+        aliases:
+          - tf1
+    restart: always
+
+  tf2:
+    image: tensorflow:1.3.0-gpu-py3
+    ports:
+      - "20023:22"
+      - "26007:6006"
+    expose:
+      - "2222"
+    devices:
+      - /dev/nvidia2
+      - /dev/nvidia3
+    command: bash -c "service ssh start && sleep 10000000"
+    networks:
+      default:
+        aliases:
+          - tf2
+    restart: always
+
+  tf3:
+    image: tensorflow:1.3.0-gpu-py3
+    ports:
+      - "20024:22"
+      - "26008:6006"
+    expose:
+      - "2222"
+    devices:
+      - /dev/nvidia4
+      - /dev/nvidia5
+    command: bash -c "service ssh start && sleep 10000000"
+    networks:
+      default:
+        aliases:
+          - tf3
+    restart: always
+
+  tf4:
+    image: tensorflow:1.3.0-gpu-py3
+    ports:
+      - "20025:22"
+      - "26009:6006"
+    expose:
+      - "2222"
+    devices:
+      - /dev/nvidia6
+      - /dev/nvidia7
+    command: bash -c "service ssh start && sleep 10000000"
+    networks:
+      default:
+        aliases:
+          - tf4
+    restart: always
+```
+
+使用`nvidia-docker-compose up -d`启动
+
+将[`mnist_inference.py`](https://github.com/caicloud/tensorflow-tutorial/blob/master/Deep_Learning_with_TensorFlow/1.0.0/Chapter10/mnist_inference.py)和MNIST_data拷贝到容器内。
+
+运行代码
+
+```shell
+python dist_tf_mnist_async.py \
+--job_name='ps' \
+--task_id=0 \
+--ps_hosts='tf1:2222' \
+--worker_hosts='tf2:2222,tf3:2222,tf4:2222'
+```
+
+```shell
+python dist_tf_mnist_async.py \
+--job_name='worker' \
+--task_id=0 \
+--ps_hosts='tf1:2222' \
+--worker_hosts='tf2:2222,tf3:2222,tf4:2222'
+```
+
+```shell
+python dist_tf_mnist_async.py \
+--job_name='worker' \
+--task_id=1 \
+--ps_hosts='tf1:2222' \
+--worker_hosts='tf2:2222,tf3:2222,tf4:2222'
+```
+
+```shell
+python dist_tf_mnist_async.py \
+--job_name='worker' \
+--task_id=2 \
+--ps_hosts='tf1:2222' \
+--worker_hosts='tf2:2222,tf3:2222,tf4:2222'
+```
+
+- 若运行失败，按`ctrl`+`z`退出任务，并执行命令`ps -ef|grep dist_tf_mnist_async.py|awk '{print $2}'|xargs kill -9`来停止进程。
+- 最好按照顺序来指定，出现过gRPC错误。
+- 训练步数最好长一点，出现过work1和work2结束了，work0还没开始跑，然后一直在等待work1和work2。
+- 出现过Save相关的错误，将缓存文件删除后正常。
+- 任务结束后PS没有退出，Worker们正常退出。
+
+
+
+附日志输出：
+
+ps
+
+```
+2017-11-02 19:44:15.985988: I tensorflow/core/distributed_runtime/rpc/grpc_channel.cc:215] Initialize GrpcChannelCache for job ps -> {0 -> localhost:2222}
+2017-11-02 19:44:15.986012: I tensorflow/core/distributed_runtime/rpc/grpc_channel.cc:215] Initialize GrpcChannelCache for job worker -> {0 -> tf2:2222, 1 -> tf3:2222, 2 -> tf4:2222}
+2017-11-02 19:44:15.992475: I tensorflow/core/distributed_runtime/rpc/grpc_server_lib.cc:316] Started server with target: grpc://localhost:2222
+2017-11-02 19:46:56.347213: W tensorflow/core/framework/op_kernel.cc:1192] Invalid argument: Unsuccessful TensorSliceReader constructor: Failed to get matching files on log_async/model.ckpt-0: Not found: log_async
+2017-11-02 19:46:56.347230: W tensorflow/core/framework/op_kernel.cc:1192] Invalid argument: Unsuccessful TensorSliceReader constructor: Failed to get matching files on log_async/model.ckpt-0: Not found: log_async
+```
+
+work0
+
+```
+2017-11-02 19:47:39.608580: I tensorflow/core/distributed_runtime/rpc/grpc_channel.cc:215] Initialize GrpcChannelCache for job ps -> {0 -> tf1:2222}
+2017-11-02 19:47:39.608617: I tensorflow/core/distributed_runtime/rpc/grpc_channel.cc:215] Initialize GrpcChannelCache for job worker -> {0 -> localhost:2222, 1 -> tf3:2222, 2 -> tf4:2222}
+2017-11-02 19:47:39.614075: I tensorflow/core/distributed_runtime/rpc/grpc_server_lib.cc:316] Started server with target: grpc://localhost:2222
+Extracting MNIST_data/train-images-idx3-ubyte.gz
+Extracting MNIST_data/train-labels-idx1-ubyte.gz
+Extracting MNIST_data/t10k-images-idx3-ubyte.gz
+Extracting MNIST_data/t10k-labels-idx1-ubyte.gz
+2017-11-02 19:47:40.341173: I tensorflow/core/distributed_runtime/master_session.cc:998] Start master session 939d3a7fc132946a with config: allow_soft_placement: true
+After 100 training steps (100 global steps), loss on training batch is 1.1583.  (0.013 sec/batch)
+After 200 training steps (200 global steps), loss on training batch is 0.997324.  (0.011 sec/batch)
+After 300 training steps (300 global steps), loss on training batch is 0.773724.  (0.010 sec/batch)
+...
+After 16700 training steps (47028 global steps), loss on training batch is 0.215591.  (0.003 sec/batch)
+After 16800 training steps (47309 global steps), loss on training batch is 0.224007.  (0.003 sec/batch)
+After 16900 training steps (47613 global steps), loss on training batch is 0.239601.  (0.003 sec/batch)
+After 17000 training steps (47912 global steps), loss on training batch is 0.273229.  (0.003 sec/batch)
+After 17100 training steps (48253 global steps), loss on training batch is 0.273473.  (0.003 sec/batch)
+After 17200 training steps (48537 global steps), loss on training batch is 0.194746.  (0.003 sec/batch)
+After 17300 training steps (48832 global steps), loss on training batch is 0.246353.  (0.003 sec/batch)
+After 17400 training steps (49116 global steps), loss on training batch is 0.256622.  (0.003 sec/batch)
+After 17500 training steps (49416 global steps), loss on training batch is 0.194089.  (0.003 sec/batch)
+After 17600 training steps (49761 global steps), loss on training batch is 0.203695.  (0.003 sec/batch)
+```
+
+work1
+
+```
+2017-11-02 19:46:00.304995: I tensorflow/core/distributed_runtime/rpc/grpc_channel.cc:215] Initialize GrpcChannelCache for job ps -> {0 -> tf1:2222}
+2017-11-02 19:46:00.305041: I tensorflow/core/distributed_runtime/rpc/grpc_channel.cc:215] Initialize GrpcChannelCache for job worker -> {0 -> tf2:2222, 1 -> localhost:2222, 2 -> tf4:2222}
+2017-11-02 19:46:00.309096: I tensorflow/core/distributed_runtime/rpc/grpc_server_lib.cc:316] Started server with target: grpc://localhost:2222
+Extracting MNIST_data/train-images-idx3-ubyte.gz
+Extracting MNIST_data/train-labels-idx1-ubyte.gz
+Extracting MNIST_data/t10k-images-idx3-ubyte.gz
+Extracting MNIST_data/t10k-labels-idx1-ubyte.gz
+2017-11-02 19:46:10.896843: I tensorflow/core/distributed_runtime/master.cc:209] CreateSession still waiting for response from worker: /job:worker/replica:0/task:2
+2017-11-02 19:46:20.897174: I tensorflow/core/distributed_runtime/master.cc:209] CreateSession still waiting for response from worker: /job:worker/replica:0/task:2
+2017-11-02 19:47:55.381434: I tensorflow/core/distributed_runtime/master_session.cc:998] Start master session 0eee8cbf90393028 with config: allow_soft_placement: true
+After 100 training steps (2882 global steps), loss on training batch is 0.320553.  (0.000 sec/batch)
+After 200 training steps (3182 global steps), loss on training batch is 0.399293.  (0.001 sec/batch)
+After 300 training steps (3459 global steps), loss on training batch is 0.502328.  (0.001 sec/batch)
+After 400 training steps (3758 global steps), loss on training batch is 0.413616.  (0.001 sec/batch)
+After 500 training steps (4043 global steps), loss on training batch is 0.391699.  (0.001 sec/batch)
+After 600 training steps (4388 global steps), loss on training batch is 0.354867.  (0.001 sec/batch)
+After 700 training steps (4687 global steps), loss on training batch is 0.403312.  (0.001 sec/batch)
+After 800 training steps (4986 global steps), loss on training batch is 0.306701.  (0.001 sec/batch)
+After 900 training steps (5262 global steps), loss on training batch is 0.254405.  (0.001 sec/batch)
+...
+After 15100 training steps (47961 global steps), loss on training batch is 0.268767.  (0.003 sec/batch)
+After 15200 training steps (48240 global steps), loss on training batch is 0.213911.  (0.003 sec/batch)
+After 15300 training steps (48520 global steps), loss on training batch is 0.226968.  (0.003 sec/batch)
+After 15400 training steps (48865 global steps), loss on training batch is 0.212593.  (0.003 sec/batch)
+After 15500 training steps (49163 global steps), loss on training batch is 0.250214.  (0.003 sec/batch)
+After 15600 training steps (49463 global steps), loss on training batch is 0.263818.  (0.003 sec/batch)
+After 15700 training steps (49747 global steps), loss on training batch is 0.242237.  (0.003 sec/batch)
+```
+
+work2
+
+```
+2017-11-02 19:46:22.534712: I tensorflow/core/distributed_runtime/rpc/grpc_channel.cc:215] Initialize GrpcChannelCache for job ps -> {0 -> tf1:2222}
+2017-11-02 19:46:22.534750: I tensorflow/core/distributed_runtime/rpc/grpc_channel.cc:215] Initialize GrpcChannelCache for job worker -> {0 -> tf2:2222, 1 -> tf3:2222, 2 -> localhost:2222}
+2017-11-02 19:46:22.541141: I tensorflow/core/distributed_runtime/rpc/grpc_server_lib.cc:316] Started server with target: grpc://localhost:2222
+Extracting MNIST_data/train-images-idx3-ubyte.gz
+Extracting MNIST_data/train-labels-idx1-ubyte.gz
+Extracting MNIST_data/t10k-images-idx3-ubyte.gz
+Extracting MNIST_data/t10k-labels-idx1-ubyte.gz
+2017-11-02 19:47:49.774579: I tensorflow/core/distributed_runtime/master_session.cc:998] Start master session 7a6b5cf0ec6e077a with config: allow_soft_placement: true
+After 100 training steps (1479 global steps), loss on training batch is 0.546933.  (0.001 sec/batch)
+After 200 training steps (1679 global steps), loss on training batch is 0.487746.  (0.002 sec/batch)
+After 300 training steps (1879 global steps), loss on training batch is 0.504862.  (0.002 sec/batch)
+After 400 training steps (2052 global steps), loss on training batch is 0.388676.  (0.002 sec/batch)
+After 500 training steps (2252 global steps), loss on training batch is 0.385591.  (0.002 sec/batch)
+After 600 training steps (2472 global steps), loss on training batch is 0.495955.  (0.002 sec/batch)
+...
+After 15600 training steps (47226 global steps), loss on training batch is 0.199302.  (0.003 sec/batch)
+After 15700 training steps (47525 global steps), loss on training batch is 0.247134.  (0.003 sec/batch)
+After 15800 training steps (47824 global steps), loss on training batch is 0.194688.  (0.003 sec/batch)
+After 15900 training steps (48104 global steps), loss on training batch is 0.224692.  (0.003 sec/batch)
+After 16000 training steps (48440 global steps), loss on training batch is 0.253766.  (0.003 sec/batch)
+After 16100 training steps (48740 global steps), loss on training batch is 0.253816.  (0.003 sec/batch)
+After 16200 training steps (49018 global steps), loss on training batch is 0.223733.  (0.003 sec/batch)
+After 16300 training steps (49318 global steps), loss on training batch is 0.286025.  (0.003 sec/batch)
+After 16400 training steps (49619 global steps), loss on training batch is 0.23656.  (0.003 sec/batch)
+After 16500 training steps (49935 global steps), loss on training batch is 0.21213.  (0.003 sec/batch)
 ```
