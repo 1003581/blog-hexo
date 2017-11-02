@@ -17,6 +17,7 @@ before_install:
   - git config --global user.name "liqiang311"
   - git config --global user.email "385098415@qq.com"
   - echo "$main-desktop                     = 90%" >> themes/next/source/css/_variables/custom.styl
+  - cat themes/next/source/css/_variables/custom.styl
 
 install:
   - npm install hexo-cli -g
@@ -27,6 +28,7 @@ cache:
   apt: true   
   directories:    
     - node_modules
+    - .deploy_git
 
 addons:
   ssh_known_hosts: 

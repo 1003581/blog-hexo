@@ -9,7 +9,7 @@ categories: go
 
 - [GitHub](https://github.com/golang-china/gopl-zh)
 - [读书地址](https://docs.hacknode.org/gopl-zh/)
-
+- [另一本书《the-way-to-go》](https://github.com/Unknwon/the-way-to-go_ZH_CN)
 <!-- more -->
 
 ## 前言
