@@ -59,3 +59,7 @@ categories: tool
     1. [1](https://huangyijie.com/2016/09/20/blog-with-github-travis-ci-and-coding-net-1/)
     2. [2](https://huangyijie.com/2016/10/05/blog-with-github-travis-ci-and-coding-net-2/)
     3. [3](https://huangyijie.com/2017/06/22/blog-with-github-travis-ci-and-coding-net-3/)
+
+# SEO相关
+
+[Hexo-优化：提交sitemap及解决百度爬虫抓取-GitHub-Pages-问题](http://www.yuan-ji.me/Hexo-%E4%BC%98%E5%8C%96%EF%BC%9A%E6%8F%90%E4%BA%A4sitemap%E5%8F%8A%E8%A7%A3%E5%86%B3%E7%99%BE%E5%BA%A6%E7%88%AC%E8%99%AB%E6%8A%93%E5%8F%96-GitHub-Pages-%E9%97%AE%E9%A2%98/)
