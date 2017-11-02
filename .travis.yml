@@ -16,6 +16,7 @@ before_install:
   - cp .travis/ssh_config ~/.ssh/config
   - git config --global user.name "liqiang311"
   - git config --global user.email "385098415@qq.com"
+  - echo "$main-desktop                     = 90%" >> themes/next/source/css/_variables/Pisces.styl
 
 install:
   - npm install hexo-cli -g

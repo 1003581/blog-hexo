@@ -55,7 +55,7 @@ footer:
     version: true
   # -------------------------------------------------------------
   # Any custom text can be defined here.
-  custom_text: Hosted by <a target="_blank" href="https://liqiang311.github.com">GitHub Pages</a>
+  #custom_text: Hosted by <a target="_blank" href="https://liqiang311.github.com">GitHub Pages</a>
 
 # ---------------------------------------------------------------
 # SEO Settings
