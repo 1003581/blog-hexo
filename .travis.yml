@@ -28,7 +28,6 @@ cache:
   apt: true   
   directories:    
     - node_modules
-    - .deploy_git
 
 addons:
   ssh_known_hosts: 
