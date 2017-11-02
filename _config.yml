@@ -14,7 +14,7 @@ timezone: Asia/Shanghai
 ## If your site is put in a subdirectory, set url as 'http://yoursite.com/child' and root as '/child/'
 url: http://liqiang311.com
 root: /
-permalink: :year/:month/:title/
+permalink: :title/
 permalink_defaults:
 
 # Directory
@@ -88,3 +88,10 @@ search:
   field: post
   format: html
   limit: 10000
+
+
+#hexo sitemap
+sitemap:
+  path: sitemap.xml
+baidusitemap:
+  path: baidusitemap.xml
