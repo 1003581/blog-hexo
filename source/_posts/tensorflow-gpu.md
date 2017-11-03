@@ -118,7 +118,7 @@ sess = tf.Session(config=tf.ConfigProto(allow_soft_placement=True, log_device_pl
 
 因为一机上的GPU卡性能相似，所以采用同步方式。
 
-关于数据存储，因为需要为不同的GPU提供不同的训练数据，所以通过placeholder的方式就需要手动准备多份数据。为了方便训练数据的获取过程，可以采用输入队列的方式从TFRecord中读取数据，于是在这里提供的数据文件路径为将MNIST训练数据转化为TFRecords格式后的路径，如何将MNIST转化为TFRecord见[TensorFlow TFRecord格式](http://liqiang311.com/2017/10/tensorflow-tfrecord/)
+关于数据存储，因为需要为不同的GPU提供不同的训练数据，所以通过placeholder的方式就需要手动准备多份数据。为了方便训练数据的获取过程，可以采用输入队列的方式从TFRecord中读取数据，于是在这里提供的数据文件路径为将MNIST训练数据转化为TFRecords格式后的路径，如何将MNIST转化为TFRecord见[TensorFlow TFRecord格式](http://liqiang311.com/tensorflow-tfrecord/)
 
 关于损失函数，对于给定的训练数据、正则化损失计算规则和命名空间，计算在这个命名空间下的总损失。之所以需要给定命名空间是因为不同的GPU上计算得出的正则化损失都会加入名为loss的集合，如果不通过命名空间就会将不同的GPU上的正则化损失都加进来。
 
@@ -437,256 +437,22 @@ tf.train,ClusterSpec({
 
 ## 模型训练
 
-
-分布式代码`dist_tf_mnist_async.py`
-
-```python
-import time
-import tensorflow as tf
-from tensorflow.examples.tutorials.mnist import input_data
-
-import mnist_inference
-
-# 配置神经网络的参数。
-BATCH_SIZE = 100
-LEARNING_RATE_BASE = 0.01
-LEARNING_RATE_DECAY = 0.99
-REGULARAZTION_RATE = 0.0001
-TRAINING_STEPS = 50000
-MOVING_AVERAGE_DECAY = 0.99
-
-# 模型保存的路径和文件名。
-MODEL_SAVE_PATH = "log_async"
-DATA_PATH = "MNIST_data"
-
-FLAGS = tf.app.flags.FLAGS
-
-# 指定当前程序是参数服务器还是计算服务器。
-# 参数服务器负责TensorFlow中变量的维护和管理
-# 计算服务器负责每一轮迭代时运行反向传播过程
-tf.app.flags.DEFINE_string('job_name', 'worker', ' "ps" or "worker" ')
-# 指定集群中的参数服务器地址。
-tf.app.flags.DEFINE_string(
-    'ps_hosts', ' tf-ps0:2222,tf-ps1:1111',
-    'Comma-separated list of hostname:port for the parameter server jobs. '
-    'e.g. "tf-ps0:2222,tf-ps1:1111" ')
-# 指定集群中的计算服务器地址。
-tf.app.flags.DEFINE_string(
-    'worker_hosts', ' tf-worker0:2222,tf-worker1:1111',
-    'Comma-separated list of hostname:port for the worker jobs. '
-    'e.g. "tf-worker0:2222,tf-worker1:1111" ')
-# 指定当前程序的任务ID。
-# TensorFlow会自动根据参数服务器/计算服务器列表中的端口号来启动服务。
-# 注意参数服务器和计算服务器的编号都是从0开始的。
-tf.app.flags.DEFINE_integer(
-    'task_id', 0, 'Task ID of the worker/replica running the training.')
-
-
-# 定义TensorFlow的计算图，并返回每一轮迭代时需要运行的操作。
-def build_model(x, y_, is_chief):
-    regularizer = tf.contrib.layers.l2_regularizer(REGULARAZTION_RATE)
-    # 通过和5.5节给出的mnist_inference.py代码计算神经网络前向传播的结果。
-    y = mnist_inference.inference(x, regularizer)
-    global_step = tf.Variable(0, trainable=False)
-
-    # 计算损失函数并定义反向传播过程。
-    cross_entropy = tf.nn.sparse_softmax_cross_entropy_with_logits(
-        logits=y, labels=tf.argmax(y_, 1))
-    cross_entropy_mean = tf.reduce_mean(cross_entropy)
-    loss = cross_entropy_mean + tf.add_n(tf.get_collection('losses'))
-    learning_rate = tf.train.exponential_decay(
-        LEARNING_RATE_BASE, global_step,
-        60000 / BATCH_SIZE, LEARNING_RATE_DECAY)
-    train_op = tf.train.GradientDescentOptimizer(
-        learning_rate).minimize(loss, global_step=global_step)
-
-    # 定义每一轮迭代需要运行的操作。
-    if is_chief:
-        # 计算变量的滑动平均值。
-        variable_averages = tf.train.ExponentialMovingAverage(
-            MOVING_AVERAGE_DECAY, global_step)
-        variables_averages_op = variable_averages.apply(
-            tf.trainable_variables())
-        with tf.control_dependencies([variables_averages_op, train_op]):
-            train_op = tf.no_op()
-    return global_step, loss, train_op
-
-
-def main(argv=None):
-    # 解析flags并通过tf.train.ClusterSpec配置TensorFlow集群。
-    ps_hosts = FLAGS.ps_hosts.split(',')
-    worker_hosts = FLAGS.worker_hosts.split(',')
-    cluster = tf.train.ClusterSpec({"ps": ps_hosts, "worker": worker_hosts})
-    # 通过tf.train.ClusterSpec以及当前任务创建tf.train.Server。
-    server = tf.train.Server(
-        cluster, job_name=FLAGS.job_name, task_index=FLAGS.task_id)
-
-    # 参数服务器只需要管理TensorFlow中的变量，不需要执行训练的过程。server.join()会
-    # 一致停在这条语句上。
-    if FLAGS.job_name == 'ps':
-        with tf.device("/cpu:0"):
-            server.join()
-
-    # 定义计算服务器需要运行的操作。
-    # 在所有的计算服务器中又一个是主计算服务器
-    # 它除了负责计算反向传播的结果，还负责日志和保存模块
-    is_chief = (FLAGS.task_id == 0)
-    mnist = input_data.read_data_sets(DATA_PATH, one_hot=True)
-
-    # 通过tf.train.replica_device_setter函数来指定执行每一个运算的设备。
-    # tf.train.replica_device_setter函数会自动将所有的参数分配到参数服务器上，而
-    # 计算分配到当前的计算服务器上，
-    device_setter = tf.train.replica_device_setter(
-        worker_device="/job:worker/task:%d" % FLAGS.task_id, cluster=cluster)
-    with tf.device(device_setter):
-
-        # 定义输入并得到每一轮迭代需要运行的操作。
-        x = tf.placeholder(
-            tf.float32, [None, mnist_inference.INPUT_NODE], name='x-input')
-        y_ = tf.placeholder(
-            tf.float32, [None, mnist_inference.OUTPUT_NODE], name='y-input')
-        global_step, loss, train_op = build_model(x, y_, is_chief)
-
-        # 定义用于保存模型的saver。
-        saver = tf.train.Saver()
-        # 定义日志输出操作。
-        summary_op = tf.summary.merge_all()
-        # 定义变量初始化操作。
-        init_op = tf.global_variables_initializer()
-        # 通过tf.train.Supervisor管理训练深度学习模型时的通用功能。
-        # tf.train.Supervisor能统一管理队列操作、模型保存、日志输出以及会话的生成
-        sv = tf.train.Supervisor(
-            is_chief=is_chief,          # 定义当前计算服务器是否为祝计算服务器
-                                        # 只有主服务器会保存模型以及输出日志
-            logdir=MODEL_SAVE_PATH,     # 指定保存模型和输出日志的地址
-            init_op=init_op,            # 指定初始化操作
-            summary_op=summary_op,      # 指定日志生成操作
-            saver=saver,                # 指定用于保存模型的saver
-            global_step=global_step,    # 指定当前迭代的轮次，这个会用于保存模型文件
-            save_model_secs=60,         # 指定保存模型的时间间隔
-            save_summaries_secs=60)     # 指定日志输出的时间间隔
-
-        sess_config = tf.ConfigProto(
-            allow_soft_placement=True, log_device_placement=False)
-        # 通过tf.train.Supervisor生成会话。
-        sess = sv.prepare_or_wait_for_session(
-            server.target, config=sess_config)
-
-        step = 0
-        start_time = time.time()
-
-        # 执行迭代过程。在迭代过程中，Supervisor会帮助输出日志并保存模型，不需要直接调用
-        while not sv.should_stop():
-            xs, ys = mnist.train.next_batch(BATCH_SIZE)
-            _, loss_value, global_step_value = sess.run(
-                [train_op, loss, global_step], feed_dict={x: xs, y_: ys})
-            if global_step_value >= TRAINING_STEPS:
-                break
-
-            # 每隔一段时间输出训练信息。
-            if step > 0 and step % 100 == 0:
-                duration = time.time() - start_time
-                sec_per_batch = duration / global_step_value
-                format_str = ('After %d training steps (%d global steps), '
-                              'loss on training batch is %g.  '
-                              '(%.3f sec/batch)')
-                print(format_str %
-                      (step, global_step_value, loss_value, sec_per_batch))
-            step += 1
-    sv.stop()
-
-
-if __name__ == "__main__":
-    tf.app.run()
-```
-
-附：在八卡服务器上用docker模拟4台2卡服务器：
+在八卡服务器上用docker模拟4台2卡服务器：
 
 ```
 docker pull tensorflow/tensorflow:1.3.0-gpu-py3
 pip install nvidia-docker-compose
 ```
 
-注：下文所用的`tensorflow:1.3.0-gpu-py3`镜像为自定义后的安装了SSH的镜像。
+注：docker-compose文件中所用的`tensorflow:1.3.0-gpu-py3`镜像为自定义后的安装了SSH的镜像。
 
-`docker-compose.yml`文件如下：
-
-```yml
-version: '2'
-
-services:
-  tf1:
-    image: tensorflow:1.3.0-gpu-py3
-    ports:
-      - "20022:22"
-      - "26006:6006"
-    expose:
-      - "2222"
-    devices:
-      - /dev/nvidia0
-      - /dev/nvidia1
-    command: bash -c "service ssh start && sleep 10000000"
-    networks:
-      default:
-        aliases:
-          - tf1
-    restart: always
-
-  tf2:
-    image: tensorflow:1.3.0-gpu-py3
-    ports:
-      - "20023:22"
-      - "26007:6006"
-    expose:
-      - "2222"
-    devices:
-      - /dev/nvidia2
-      - /dev/nvidia3
-    command: bash -c "service ssh start && sleep 10000000"
-    networks:
-      default:
-        aliases:
-          - tf2
-    restart: always
-
-  tf3:
-    image: tensorflow:1.3.0-gpu-py3
-    ports:
-      - "20024:22"
-      - "26008:6006"
-    expose:
-      - "2222"
-    devices:
-      - /dev/nvidia4
-      - /dev/nvidia5
-    command: bash -c "service ssh start && sleep 10000000"
-    networks:
-      default:
-        aliases:
-          - tf3
-    restart: always
-
-  tf4:
-    image: tensorflow:1.3.0-gpu-py3
-    ports:
-      - "20025:22"
-      - "26009:6006"
-    expose:
-      - "2222"
-    devices:
-      - /dev/nvidia6
-      - /dev/nvidia7
-    command: bash -c "service ssh start && sleep 10000000"
-    networks:
-      default:
-        aliases:
-          - tf4
-    restart: always
-```
+[docker-compose.yml](https://github.com/liqiang311/tf-code/blob/master/distributed/docker-compose.yml)
 
 使用`nvidia-docker-compose up -d`启动
 
 将[`mnist_inference.py`](https://github.com/caicloud/tensorflow-tutorial/blob/master/Deep_Learning_with_TensorFlow/1.0.0/Chapter10/mnist_inference.py)和MNIST_data拷贝到容器内。
+
+异步分布式代码[dist_tf_mnist_async.py](https://github.com/liqiang311/tf-code/blob/master/distributed_mnist/dist_tf_mnist_async.py)
 
 运行代码
 
@@ -722,13 +488,11 @@ python dist_tf_mnist_async.py \
 --worker_hosts='tf2:2222,tf3:2222,tf4:2222'
 ```
 
-- 若运行失败，按`ctrl`+`z`退出任务，并执行命令`ps -ef|grep dist_tf_mnist_async.py|awk '{print $2}'|xargs kill -9`来停止进程。
+- 若运行失败，按`ctrl`+`z`退出任务，并执行命令`ps -ef|grep dist_tf_mnist|awk '{print $2}'|xargs kill -9`来停止进程。或者直接按`ctrl`+`\`。
 - 最好按照顺序来指定，出现过gRPC错误。
 - 训练步数最好长一点，出现过work1和work2结束了，work0还没开始跑，然后一直在等待work1和work2。
 - 出现过Save相关的错误，将缓存文件删除后正常。
 - 任务结束后PS没有退出，Worker们正常退出。
-
-
 
 附日志输出：
 
@@ -738,8 +502,6 @@ ps
 2017-11-02 19:44:15.985988: I tensorflow/core/distributed_runtime/rpc/grpc_channel.cc:215] Initialize GrpcChannelCache for job ps -> {0 -> localhost:2222}
 2017-11-02 19:44:15.986012: I tensorflow/core/distributed_runtime/rpc/grpc_channel.cc:215] Initialize GrpcChannelCache for job worker -> {0 -> tf2:2222, 1 -> tf3:2222, 2 -> tf4:2222}
 2017-11-02 19:44:15.992475: I tensorflow/core/distributed_runtime/rpc/grpc_server_lib.cc:316] Started server with target: grpc://localhost:2222
-2017-11-02 19:46:56.347213: W tensorflow/core/framework/op_kernel.cc:1192] Invalid argument: Unsuccessful TensorSliceReader constructor: Failed to get matching files on log_async/model.ckpt-0: Not found: log_async
-2017-11-02 19:46:56.347230: W tensorflow/core/framework/op_kernel.cc:1192] Invalid argument: Unsuccessful TensorSliceReader constructor: Failed to get matching files on log_async/model.ckpt-0: Not found: log_async
 ```
 
 work0
@@ -757,13 +519,6 @@ After 100 training steps (100 global steps), loss on training batch is 1.1583.  
 After 200 training steps (200 global steps), loss on training batch is 0.997324.  (0.011 sec/batch)
 After 300 training steps (300 global steps), loss on training batch is 0.773724.  (0.010 sec/batch)
 ...
-After 16700 training steps (47028 global steps), loss on training batch is 0.215591.  (0.003 sec/batch)
-After 16800 training steps (47309 global steps), loss on training batch is 0.224007.  (0.003 sec/batch)
-After 16900 training steps (47613 global steps), loss on training batch is 0.239601.  (0.003 sec/batch)
-After 17000 training steps (47912 global steps), loss on training batch is 0.273229.  (0.003 sec/batch)
-After 17100 training steps (48253 global steps), loss on training batch is 0.273473.  (0.003 sec/batch)
-After 17200 training steps (48537 global steps), loss on training batch is 0.194746.  (0.003 sec/batch)
-After 17300 training steps (48832 global steps), loss on training batch is 0.246353.  (0.003 sec/batch)
 After 17400 training steps (49116 global steps), loss on training batch is 0.256622.  (0.003 sec/batch)
 After 17500 training steps (49416 global steps), loss on training batch is 0.194089.  (0.003 sec/batch)
 After 17600 training steps (49761 global steps), loss on training batch is 0.203695.  (0.003 sec/batch)
@@ -785,17 +540,7 @@ Extracting MNIST_data/t10k-labels-idx1-ubyte.gz
 After 100 training steps (2882 global steps), loss on training batch is 0.320553.  (0.000 sec/batch)
 After 200 training steps (3182 global steps), loss on training batch is 0.399293.  (0.001 sec/batch)
 After 300 training steps (3459 global steps), loss on training batch is 0.502328.  (0.001 sec/batch)
-After 400 training steps (3758 global steps), loss on training batch is 0.413616.  (0.001 sec/batch)
-After 500 training steps (4043 global steps), loss on training batch is 0.391699.  (0.001 sec/batch)
-After 600 training steps (4388 global steps), loss on training batch is 0.354867.  (0.001 sec/batch)
-After 700 training steps (4687 global steps), loss on training batch is 0.403312.  (0.001 sec/batch)
-After 800 training steps (4986 global steps), loss on training batch is 0.306701.  (0.001 sec/batch)
-After 900 training steps (5262 global steps), loss on training batch is 0.254405.  (0.001 sec/batch)
 ...
-After 15100 training steps (47961 global steps), loss on training batch is 0.268767.  (0.003 sec/batch)
-After 15200 training steps (48240 global steps), loss on training batch is 0.213911.  (0.003 sec/batch)
-After 15300 training steps (48520 global steps), loss on training batch is 0.226968.  (0.003 sec/batch)
-After 15400 training steps (48865 global steps), loss on training batch is 0.212593.  (0.003 sec/batch)
 After 15500 training steps (49163 global steps), loss on training batch is 0.250214.  (0.003 sec/batch)
 After 15600 training steps (49463 global steps), loss on training batch is 0.263818.  (0.003 sec/batch)
 After 15700 training steps (49747 global steps), loss on training batch is 0.242237.  (0.003 sec/batch)
@@ -812,21 +557,39 @@ Extracting MNIST_data/train-labels-idx1-ubyte.gz
 Extracting MNIST_data/t10k-images-idx3-ubyte.gz
 Extracting MNIST_data/t10k-labels-idx1-ubyte.gz
 2017-11-02 19:47:49.774579: I tensorflow/core/distributed_runtime/master_session.cc:998] Start master session 7a6b5cf0ec6e077a with config: allow_soft_placement: true
-After 100 training steps (1479 global steps), loss on training batch is 0.546933.  (0.001 sec/batch)
-After 200 training steps (1679 global steps), loss on training batch is 0.487746.  (0.002 sec/batch)
-After 300 training steps (1879 global steps), loss on training batch is 0.504862.  (0.002 sec/batch)
 After 400 training steps (2052 global steps), loss on training batch is 0.388676.  (0.002 sec/batch)
 After 500 training steps (2252 global steps), loss on training batch is 0.385591.  (0.002 sec/batch)
 After 600 training steps (2472 global steps), loss on training batch is 0.495955.  (0.002 sec/batch)
 ...
-After 15600 training steps (47226 global steps), loss on training batch is 0.199302.  (0.003 sec/batch)
-After 15700 training steps (47525 global steps), loss on training batch is 0.247134.  (0.003 sec/batch)
-After 15800 training steps (47824 global steps), loss on training batch is 0.194688.  (0.003 sec/batch)
-After 15900 training steps (48104 global steps), loss on training batch is 0.224692.  (0.003 sec/batch)
-After 16000 training steps (48440 global steps), loss on training batch is 0.253766.  (0.003 sec/batch)
-After 16100 training steps (48740 global steps), loss on training batch is 0.253816.  (0.003 sec/batch)
-After 16200 training steps (49018 global steps), loss on training batch is 0.223733.  (0.003 sec/batch)
-After 16300 training steps (49318 global steps), loss on training batch is 0.286025.  (0.003 sec/batch)
 After 16400 training steps (49619 global steps), loss on training batch is 0.23656.  (0.003 sec/batch)
 After 16500 training steps (49935 global steps), loss on training batch is 0.21213.  (0.003 sec/batch)
 ```
+
+同步代码[dist_tf_mnist_sync.py](https://github.com/liqiang311/tf-code/blob/master/distributed_mnist/dist_tf_mnist_sync.py)
+
+运行代码把`dist_tf_mnist_async.py`替换为`dist_tf_mnist_sync.py`
+
+日志
+
+ps
+
+```
+
+```
+
+work0
+
+```
+
+```
+
+work1
+
+```
+```
+
+work2
+
+```
+```
+

@@ -24,7 +24,7 @@ git clone https://github.com/alexanderzobnin/grafana-zabbix.git zabbix-grafana/g
 
 ### 下载docker镜像
 
-如何安装Docker和Docker-Compose见[http://liqiang311.com/2017/09/docker-install/](http://liqiang311.com/2017/09/docker-install/)
+如何安装Docker和Docker-Compose见[http://liqiang311.com/docker-install/](http://liqiang311.com/docker-install/)
 
 ```
 docker pull mysql:5.7

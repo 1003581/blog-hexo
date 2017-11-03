@@ -235,7 +235,7 @@ with tf.Session() as sess:
 
 ## 输入数据处理框架
 
-首先将MNIST数据集转换为TFRecord格式，代码见[blog](http://liqiang311.com/2017/10/tensorflow-tfrecord/)
+首先将MNIST数据集转换为TFRecord格式，代码见[blog](http://liqiang311.com/tensorflow-tfrecord/)
 
 处理代码
 
