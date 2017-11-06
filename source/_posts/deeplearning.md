@@ -5,8 +5,6 @@ tags: 深度学习
 categories: 机器学习
 ---
 
-<!-- more -->
-
 ### 宏观
 
 [机器视角：长文揭秘图像处理和卷积神经网络架构](https://mp.weixin.qq.com/s?__biz=MzA3MzI4MjgzMw==&mid=2650728746&idx=1&sn=61e9cb824501ec7c505eb464e8317915&chksm=871b2d54b06ca442bc049e97c97e117455fd31bd0fb0619be4592eebd0958c26e3c223bfbfe5&scene=21#wechat_redirect)
@@ -18,7 +16,7 @@ categories: 机器学习
 [一篇文讲清楚深度学习中「训练」和「推断」的区别](http://www.360doc.com/content/16/1007/10/37065397_596369919.shtml)
 
 [GitHub 上 57 款最流行的开源深度学习项目 - 产品 - 掘金](https://juejin.im/entry/583ff5b00ce46300576427d2)
-
+<!-- more -->
 ### 视频教程
 
 [Deep Learning SIMPLIFIED](https://www.youtube.com/watch?list=PLjJh1vlSEYgvGod9wWiydumYl8hOXixNu&v=b99UVkWzYTQ)
