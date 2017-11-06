@@ -21,7 +21,7 @@ categories: 机器学习
     1. **We have access to a lot more data.**
     1. **We have access to a lot more computational power.**
     1. Neural Networks are a brand new field.
-1. Recall this diagram of iterating over different ML ideas. Which of the statements below are true? (Check all that apply.) ![](111)
+1. Recall this diagram of iterating over different ML ideas. Which of the statements below are true? (Check all that apply.) ![](http://outz1n6zr.bkt.clouddn.com/20171106212040.png)
     1. **Being able to try out ideas quickly allows deep learning engineers to iterate more quickly.**
     1. **Faster computation can help speed up how long a team takes to iterate to a good idea.**
     1. It is faster to train on a big dataset than a small dataset.
@@ -30,10 +30,10 @@ categories: 机器学习
     1. True
     1. **False**
 1. Which one of these plots represents a ReLU activation function?
-    1. Figure 1: ![](111)
-    1. Figure 2: ![](111)
-    1. **Figure 3:** ![](111)
-    1. Figure 4: ![](111)
+    1. Figure 1: ![](http://outz1n6zr.bkt.clouddn.com/20171106212525.png)
+    1. Figure 2: ![](http://outz1n6zr.bkt.clouddn.com/20171106212535.png)
+    1. **Figure 3:** ![](http://outz1n6zr.bkt.clouddn.com/20171106212541.png)
+    1. Figure 4: ![](http://outz1n6zr.bkt.clouddn.com/20171106212548.png)
 1. Images for cat recognition is an example of “structured” data, because it is represented as a structured array in a computer. True/False?
     1. True
     1. **False**
@@ -45,7 +45,7 @@ categories: 机器学习
     1. It is strictly more powerful than a Convolutional Neural Network (CNN).
     1. **It is applicable when the input/output is a sequence (e.g., a sequence of words).**
     1. RNNs represent the recurrent process of Idea->Code->Experiment->Idea->....
-1. In this diagram which we hand-drew in lecture, what do the horizontal axis (x-axis) and vertical axis (y-axis) represent?
+1. In this diagram which we hand-drew in lecture, what do the horizontal axis (x-axis) and vertical axis (y-axis) represent?![](c)
     1.  - x-axis is the performance of the algorithm
         - y-axis (vertical axis) is the amount of data.
     1.  - x-axis is the input to the algorithm
@@ -64,4 +64,6 @@ categories: 机器学习
 
 符号约定
 
-![](www)
+![](http://outz1n6zr.bkt.clouddn.com/20171106212859.png)
+
+![](http://outz1n6zr.bkt.clouddn.com/20171106213014.png)
