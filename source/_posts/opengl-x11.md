@@ -5,6 +5,18 @@ tags: opengl
 categories: gpu
 ---
 
+参考
+
+- [Programming OpenGL in Linux: GLX and Xlib - OpenGL Wiki](https://www.khronos.org/opengl/wiki/Programming_OpenGL_in_Linux:_GLX_and_Xlib)
+- [2.1 glutInit](https://www.opengl.org/resources/libraries/glut/spec3/node10.html)
+- [2.3 glutInitDisplayMode](https://www.opengl.org/resources/libraries/glut/spec3/node12.html)
+- [4.1 glutCreateWindow](https://www.opengl.org/resources/libraries/glut/spec3/node16.html)
+- [Ubuntu下使用OpenGL图形库](http://ptbsare.org/2014/05/17/ubuntu%E4%B8%8B%E4%BD%BF%E7%94%A8opengl%E5%9B%BE%E5%BD%A2%E5%BA%93/)
+- [glew, glee与 gl glu glut glx glext的区别和关系](http://blog.csdn.net/delacroix_xu/article/details/5881942)
+- [freeglut / Bugs / #123 2.4.06 doesn't render on remote X server from ubuntu client.](https://sourceforge.net/p/freeglut/bugs/123/)
+- [opengl - freeglut (./light): ERROR: Internal error <FBConfig with necessary capabilities not found> in function fgOpenWindow - Stack Overflow](https://stackoverflow.com/questions/45546693/freeglut-light-error-internal-error-fbconfig-with-necessary-capabilities#comment78056960_45546693)
+
+
 容器启动
 
 <!-- more -->

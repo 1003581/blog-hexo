@@ -7,16 +7,14 @@ tags:
 categories: tensorflow
 ---
 
-# 资料
-
+### 资料
+- [Github](https://github.com/yahoo/TensorFlowOnSpark)
+- [Github Wiki](https://github.com/yahoo/TensorFlowOnSpark/wiki)
+- [Yahoo开源TensorFlow On Spark](http://www.datagold.com.cn/archives/7020.html)
+- [Open Sourcing TensorFlowOnSpark: Distributed Deep Learning on Big-Data Clusters](http://yahoohadoop.tumblr.com/post/157196317141/open-sourcing-tensorflowonspark-distributed-deep)
+- [TensorflowOnSpark：1)Standalone集群初体验 - PJ·Javis的专栏 - CSDN博客](http://blog.csdn.net/jiangpeng59/article/details/72867368)
+- [如何安装Spark & TensorflowOnSpark - 每天get√新知识 - CSDN博客](http://blog.csdn.net/fishseeker/article/details/61918138)
 <!-- more -->
-
-Yahoo开源项目
-
-[Github](https://github.com/yahoo/TensorFlowOnSpark)
-
-[Github Wiki](https://github.com/yahoo/TensorFlowOnSpark/wiki)
-
 ### [Background, Architecture and Interface](http://yahoohadoop.tumblr.com/post/157196317141/open-sourcing-tensorflowonspark-distributed-deep)
 
 ### [Start TensorFlowOnSpark on a Standalone Cluster installed locally](https://github.com/yahoo/TensorFlowOnSpark/wiki/GetStarted_standalone)

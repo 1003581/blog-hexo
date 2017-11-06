@@ -5,6 +5,26 @@ tags: openresty
 categories: openresty
 ---
 
+## 资料
+
+- [OpenResty® - 中文官方站](OpenResty® - 中文官方站)
+- [OpenResty Github](https://github.com/openresty/openresty)
+- [openresty/lua-nginx-module GitHub](https://github.com/openresty/lua-nginx-module)
+- [OpenResty 最佳实践-极客学院Wiki](http://wiki.jikexueyuan.com/project/openresty/)
+- [LuaJIT函数优化列表](http://wiki.luajit.org/NYI)
+- [Lua 在线工具 | 菜鸟工具](https://c.runoob.com/compile/66)
+- [基于nginx的api网关 - akin的博客 - 博客频道 - CSDN.NET](http://blog.csdn.net/akin_zhou/article/details/50373414)
+- [服务端架构中的“网关服务器” - 永远的朋友 - 51CTO技术博客](http://yaocoder.blog.51cto.com/2668309/1374280/)
+- [Nginx配置文件（nginx.conf）配置详解 - 浮云中的神马 - 博客频道 - CSDN.NET](http://blog.csdn.net/tjcyjd/article/details/50695922)
+- [第二章 OpenResty(Nginx+Lua)开发入门 - 开涛的博客—公众号：kaitao-1234567，一如既往的干货分享 - ITeye技术网站](http://jinnianshilongnian.iteye.com/blog/2186448)
+- [Nginx担当WebSockets代理 - mfrbuaa - 博客园](http://www.cnblogs.com/mfrbuaa/p/5413786.html)
+- [UrlEncode编码/UrlDecode解码 - 站长工具](http://tool.chinaz.com/tools/urlencode.aspx)
+- [如何在nginx中使用系统的环境变量(转) - 菜鸟刚起飞 - 博客频道 - CSDN.NET](http://blog.csdn.net/joker_zhou/article/details/49361753)
+- [请教一下关于 Nginx 反向代理到虚拟目录时如何处理使用绝对路径的静态文件 - V2EX](https://www.v2ex.com/t/129032)
+- [nginx常用代理配置 - Florian - 博客园](http://www.cnblogs.com/fanzhidongyzby/p/5194895.html)
+- [Module ngx_http_sub_module](http://nginx.org/en/docs/http/ngx_http_sub_module.html)
+- [编译nginx的源码安装subs_filter模块 - dudu - 博客园](编译nginx的源码安装subs_filter模块 - dudu - 博客园)
+
 ## 问题
 
 <!-- more -->

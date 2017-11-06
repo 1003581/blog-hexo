@@ -7,7 +7,13 @@ tags:
 categories: tensorflow
 ---
 
-# [Code Link](https://github.com/tensorflow/tensorflow/tree/master/tensorflow/contrib/verbs)
+## 相关资料
+
+- [Code Link](https://github.com/tensorflow/tensorflow/tree/master/tensorflow/contrib/verbs)
+- [my rdma code](https://github.com/liqiang311/rdma)
+- [Rendezvous](http://www.cnblogs.com/yao62995/p/5773184.html)
+- [Yahoo开源TensorFlow On Spark](http://www.datagold.com.cn/archives/7020.html)
+- [getopt和getopt_long函数 - Cashey1991的专栏 - 博客频道 - CSDN.NET](http://blog.csdn.net/cashey1991/article/details/7942809)
 <!-- more -->
 
 ## 如何编译和使用启用RDMA的TensorFlow

@@ -140,4 +140,6 @@ pyinstaller -F xxx.py
 
 见`Python抓包`。
 
+## UTF-8 & Unicode
 
+[link](https://www.zhihu.com/question/23374078)

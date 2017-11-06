@@ -7,6 +7,9 @@ categories: gpu
 
 ## `nvidia-smi`表含义解释
 
+参考：
+- http://blog.csdn.net/bruce_0712/article/details/63683787 
+
 <!-- more -->
 
 `P100`

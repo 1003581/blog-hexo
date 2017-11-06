@@ -12,6 +12,28 @@ categories: go
 - [另一本书《the-way-to-go》](https://github.com/Unknwon/the-way-to-go_ZH_CN)
 <!-- more -->
 
+## 相关链接
+
+- [Packages - The Go Programming Language](https://golang.org/pkg/)
+- [http - The Go Programming Language](https://golang.org/pkg/net/http/)
+- [使用Go构建RESTful的JSON API - 酱油蔡的酱油坛 - CSDN博客](http://blog.csdn.net/xingwangc2014/article/details/51623157)
+- [编写HTTP客户端 · Golang Web](http://dmdgeeker.com/goBook/docs/ch03/client.html)
+- [Go语言版crontab | Go语言中文网博客](http://blog.studygolang.com/2014/02/go_crontab/)
+- [go - Golang - Getting a slice of keys from a map - Stack Overflow](https://stackoverflow.com/questions/21362950/golang-getting-a-slice-of-keys-from-a-map)
+- [syncmap - GoDoc](https://godoc.org/golang.org/x/sync/syncmap)
+- [go - ERROR: need type assertion - Stack Overflow](https://stackoverflow.com/questions/40683635/error-need-type-assertion)
+- [The-Golang-Standard-Library-by-Example/02.3.md at master · polaris1119/The-Golang-Standard-Library-by-Example](https://github.com/polaris1119/The-Golang-Standard-Library-by-Example/blob/master/chapter02/02.3.md)
+- [golang时间处理 - Go语言中文网 - Golang中文社区](https://studygolang.com/articles/736)
+- [Go实现比较时间大小_Golang_脚本之家](http://m.jb51.net/article/64705.htm)
+- [Go 语言 JSON 简介 – Cizixs Writes Here](http://cizixs.com/2016/12/19/golang-json-guide)
+- [【GoLang笔记】遍历map时的key随机化问题及解决方法 - Go语言中文网 - Golang中文社区](https://studygolang.com/articles/2749)
+- [golang中时间(time)的相关操作 - 快乐编程](http://www.01happy.com/golang-time/)
+- [[Go语言]你真的了解fmt.Printlf和fmt.Println的区别？_stevewang_新浪博客](http://blog.sina.com.cn/s/blog_9be3b8f10101e6oe.html)
+- [strconv - The Go Programming Language](https://golang.org/pkg/strconv/)
+- [类型转换 - golang []interface{} 的数组如何转换为 []string 的数组 - SegmentFault](https://segmentfault.com/q/1010000003505053)
+- [go 语言获取文件名、后缀 - woquNOKIA的专栏 - CSDN博客](http://webcache.googleusercontent.com/search?q=cache:irMcZlR16XQJ:blog.csdn.net/woquNOKIA/article/details/50052219+&cd=2&hl=zh-CN&ct=clnk&gl=hk&client=aff-cs-360chromium)
+
+
 ## 前言
 
 ### Go与C++的比较

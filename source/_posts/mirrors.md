@@ -11,7 +11,9 @@ categories: tool
 
 # Ubuntu
 
-[163镜像源](http://mirrors.163.com/.help/ubuntu.html)
+- [163镜像源](http://mirrors.163.com/.help/ubuntu.html)
+- [Aliyun镜像源](http://mirrors.aliyun.com/help/ubuntu)
+- [tuna镜像源](https://mirrors.tuna.tsinghua.edu.cn/help/ubuntu/)
 
 使用方法
 
@@ -93,3 +95,10 @@ conda config --set show_channel_urls yes
 ```
 curl -sSL https://get.daocloud.io/daotools/set_mirror.sh | sh -s http://a6841873.m.daocloud.io
 ```
+
+# npm
+
+[taobao.org](https://my.oschina.net/anylain/blog/293936)
+
+[Windows环境下npm install 报错: operation not permitted, rename的解决方法](http://www.jb51.net/article/93520.htm)
+

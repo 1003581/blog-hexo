@@ -63,3 +63,35 @@ categories: tensorflow
         * ### [Operation Semantics](https://github.com/liqiang311/tensorflow/blob/master/tensorflow/docs_src/performance/xla/operation_semantics.md)
         * ### [Shapes and Layout](https://github.com/liqiang311/tensorflow/blob/master/tensorflow/docs_src/performance/xla/shapes.md)
         * ### [Using AOT compilation](https://github.com/liqiang311/tensorflow/blob/master/tensorflow/docs_src/performance/xla/tfcompile.md)
+    
+# 其他资料
+
+[Tutorials  |  TensorFlow](https://www.tensorflow.org/tutorials/)
+
+[tensorflow/tensorflow: Computation using data flow graphs for scalable machine learning](https://github.com/tensorflow/tensorflow)
+
+[API Documentation  |  TensorFlow](https://www.tensorflow.org/api_docs/)
+
+[tensorflow/flags.py at r1.3 · tensorflow/tensorflow](https://github.com/tensorflow/tensorflow/blob/r1.3/tensorflow/python/platform/flags.py)
+
+[tensorflow学习笔记（三十八）:损失函数加上正则项 - Keith - CSDN博客](http://blog.csdn.net/u012436149/article/details/70264257)
+
+[TensorFlow 中 name scope 和 variable scope 有什么区别？ | Sentiment Mining](http://sentiment-mining.blogspot.com/2016/12/tensorflow-name-scope-variable-scope.html)
+
+[06：Tensorflow的可视化工具Tensorboard的初步使用 - 点绛唇-墨色凤舞的博客 - CSDN博客](http://blog.csdn.net/sinat_33761963/article/details/62433234)
+
+[tensorflow 下的滑动平均模型 —— tf.train.ExponentialMovingAverage - 计算机科学与艺术 - CSDN博客](http://blog.csdn.net/lanchunhui/article/details/70803060)
+
+[查看Tensorflow版本 - Shiyu_Huang - 博客园](http://www.cnblogs.com/huangshiyu13/p/6534154.html)
+
+[机器之心GitHub项目：从零开始用TensorFlow搭建卷积神经网络 | 机器之心](https://www.jiqizhixin.com/articles/2017-08-29-14)
+
+[维度、广播操作与可视化：如何高效使用TensorFlow | 机器之心](https://www.jiqizhixin.com/articles/2017-08-10)
+
+[aymericdamien/TensorFlow-Examples: TensorFlow Tutorial and Examples for beginners](https://github.com/aymericdamien/TensorFlow-Examples)
+
+[tf-dev-summit-tensorboard-tutorial/mnist.py at master · dandelionmane/tf-dev-summit-tensorboard-tutorial](https://github.com/dandelionmane/tf-dev-summit-tensorboard-tutorial/blob/master/mnist.py)
+
+[A Neural Network Playground](http://playground.tensorflow.org/#activation=tanh&batchSize=10&dataset=circle&regDataset=reg-plane&learningRate=0.03&regularizationRate=0&noise=0&networkShape=4,2&seed=0.23713&showTestData=false&discretize=false&percTrainData=50&x=true&y=true&xTimesY=false&xSquared=false&ySquared=false&cosX=false&sinX=false&cosY=false&sinY=false&collectStats=false&problem=classification&initZero=false&hideText=false)
+
+[Add HDFS support · Issue #2218 · tensorflow/tensorflow](https://github.com/tensorflow/tensorflow/issues/2218)

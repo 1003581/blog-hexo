@@ -5,114 +5,109 @@ tags: linux
 categories: linux
 ---
 
-# 下载
-
-<!-- more -->
+## 下载
 
 [Ubuntu ISO 清华下载](https://mirrors.tuna.tsinghua.edu.cn/ubuntu-releases/)
+<!-- more -->
 
-# Ubuntu
+## 系统相关
 
-## 版本号
+### 版本号
+- `cat /etc/issue`
+- `lsb_release -a`
+- `uname -a`
+### 设置root密码
+`sudo passwd root`
+### 时区设置
+- 更改时区
+  ```
+  apt-get update
+  apt-get install tzdata
+  dpkg-reconfigure tzdata
+  ```
+- 或者无交互设置
+  ```
+  apt-get update
+  apt-get install -y tzdata
+  cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
+  echo 'Asia/Shanghai' > /etc/timezone
+  ```
+### 同步时间
+  ```
+  ntpdate cn.pool.ntp.org
+  ntpdate 10.30.1.105(自定义时间服务器)
+  date -s "29 Jun 2017 09:42:00"(手动指定时间)
+  ```
+### 重启网卡
+`sudo /etc/init.d/networking restart`
+### 重启电脑
+`reboot`
+### 修改crontab默认编辑器
+- 方法1：修改环境变量
+  ```shell
+  echo "export EDITOR=/usr/bin/vim" >> /etc/profile
+  source /etc/profile
+  ```
+- 方法2：输入以下命令，选择3即可。
+  ```
+  update-alternatives --config editor
+  ```
 
-```
-lsb_release -a
-cat /etc/issue
-uname -a
-```
+  ```
+  There are 4 choices for the alternative editor (providing /usr/bin/editor).
 
-## 设置root密码 
+    Selection    Path                Priority   Status
+  ------------------------------------------------------------
+  * 0            /bin/nano            40        auto mode
+    1            /bin/ed             -100       manual mode
+    2            /bin/nano            40        manual mode
+    3            /usr/bin/vim.basic   30        manual mode
+    4            /usr/bin/vim.tiny    10        manual mode
+  ```
+### [ubuntu网络重启后或主机重启后，/etc/resolv.conf恢复原样的解决](http://blog.csdn.net/bytxl/article/details/44201347)
 
-```
-sudo passwd root
-```
+## 系统监控
 
-## 为Root用户开启SSH登录
+### [查看CPU型號、核心數量、頻率和溫度](https://magiclen.org/linux-view-cpu/)
+### [查看程序端口占用情况](http://www.cnblogs.com/benio/archive/2010/09/15/1826728.html)
+`netstat –apn | grep 8080`
 
-```
-sed -i 's/^PermitRootLogin.*$/PermitRootLogin yes/g' /etc/ssh/sshd_config
-service ssh restart
-```
+## 用户
 
-## 添加管理员账户
-
+### [启动禁用账户](http://blog.csdn.net/rainylin/article/details/6132916)
+### [userdel](http://www.cnblogs.com/DaDaOnline/p/5527833.html)
+### 添加管理员账户
 ```
 su
 useradd -s /bin/bash -mr <username>
 passwd <username>
 visudo
 ```
+- 在`root    ALL=(ALL:ALL) ALL`下按格式对齐添加一行`<username>   ALL=(ALL:ALL) ALL`, `Ctrl+O`回车保存,`Ctrl+X`退出.
 
-在`root    ALL=(ALL:ALL) ALL`下按格式对齐添加一行`<username>   ALL=(ALL:ALL) ALL`, `Ctrl+O`回车保存,`Ctrl+X`退出.
+## SSH
 
-## 启动禁用账户
-
-[link](http://blog.csdn.net/rainylin/article/details/6132916)
-
-## 开机自启动
-
-```
-update-rc.d xxxxx defaults
-```
-
-## 时区设置
-
-更改时区
-
-```
-apt-get update
-apt-get install tzdata
-dpkg-reconfigure tzdata
-```
-
-或者无交互设置
-
-```
-apt-get update
-apt-get install -y tzdata
-cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
-echo 'Asia/Shanghai' > /etc/timezone
-```
-
-同步时间
-
-```
-ntpdate cn.pool.ntp.org
-ntpdate 10.30.1.105(自定义时间服务器)
-date -s "29 Jun 2017 09:42:00"(手动指定时间)
-```
-
-## 免密钥登录
-
+### 免密钥登录
 1. `ssh-keygen -t rsa`
 2. `ssh-copy-id -i ~/.ssh/id_rsa.pub root@10.42.10.xx`
+### 为Root用户开启SSH登录
+```
+sed -i 's/^PermitRootLogin.*$/PermitRootLogin yes/g' /etc/ssh/sshd_config
+service ssh restart
+```
+### [ssh-keygen命令](http://man.linuxde.net/ssh-keygen)
+### [ssh连接远程主机执行脚本的环境变量问题](http://blog.csdn.net/liuyuzhu111/article/details/51334635)
+### [SSH连接反应慢的分析解决](http://xjsunjie.blog.51cto.com/999372/658354/)
 
 ## 进程相关
 
-```
-# 查看所有进程
-ps -ef
-# 查看指定进程状态
-ps -ef | grep 进程名
-
-ps -aux
-```
-
-查看进行详细信息
-
-```
-# 查看指定进程详细信息
-pmap -d PID
-# 查看指定进程详细信息的最后一行
-pmap -d PID | tail -1
-
-# mapped 表示该进程映射的虚拟地址空间大小，即该进程预先分配的虚拟内存大小
-# writeable/private 表示进程所占用的私有地址空间大小，即该进程实际使用的内存大小
-# shared 表示进程和其他进程共享的内存大小
-```
-
-top
-
+### 查看指定进程详细信息
+`pmap -d PID`
+### 查看指定进程详细信息的最后一行
+- mapped 表示该进程映射的虚拟地址空间大小，即该进程预先分配的虚拟内存大小
+- writeable/private 表示进程所占用的私有地址空间大小，即该进程实际使用的内存大小
+- shared 表示进程和其他进程共享的内存大小
+### top
 ```
 # 所有进程状态
 top
@@ -134,166 +129,25 @@ top -p PID -d x
 # TIME+         进程启动后占用的总CPU时间
 # COMMAND       进程启动名称
 ```
+### 开机自启动进程
+`update-rc.d xxxxx defaults`
 
-## 用管道命令移动指定文件
+## Vim
+### [Vim命令合集]http://www.cnblogs.com/softwaretesting/archive/2011/07/12/2104435.html)
+### [Tab键不能自动补全问题](http://logicluo.iteye.com/blog/2145084)
 
-```
-find . -name "*.cpp" | xargs -i mv {} ./
-```
+## sed
+### http://www.cnblogs.com/dong008259/archive/2011/12/07/2279897.html 
+### http://www.frostsky.com/2014/01/linux-sed-command/ 
+### 在匹配行插入某个文件的内容
+`sed -i '/FROM/r common.ubuntu.head' $tmp`
 
-## \`dirname $0\`
+## stdin/stdout/stderr
+### [Shell标准输出、标准错误 >/dev/null 2>&1](http://blog.sina.com.cn/s/blog_4aae007d010192qc.html)
 
-[link](http://www.cnblogs.com/xupeizhi/archive/2013/02/19/2917644.html)
+## 积累命令
 
-在命令行状态下单纯执行$ cd \`dirname $0 \` 是毫无意义的。因为他返回当前路径的"."。
-
-这个命令写在脚本文件里才有作用，他返回这个脚本文件放置的目录，并可以根据这个目录来定位所要运行程序的相对位置（绝对位置除外）。
-
-在/home/admin/test/下新建test.sh内容如下:
-
-```
-cd `dirname $0`
-echo `pwd`
-```
-
-然后返回到/home/admin/执行
-
-```
-sh test/test.sh
-```
-
-运行结果:
-
-```
-/home/admin/test
-```
-
-这样就可以知道一些和脚本一起部署的文件的位置了，只要知道相对位置就可以根据这个目录来定位，而可以不用关心绝对位置。这样脚本的可移植性就提高了，扔到任何一台服务器，（如果是部署脚本）都可以执行。
-
-## 命令行设置静态IP(未成功)
-
-首先查看自己的ip和gateway
-
-```
-ifconfig
-netstat -rn
-```
-
-第一行0.0.0.0对应的就是，然后编辑文件
-
-```
-vim /etc/network/interfaces
-```
-
-初始内容为:
-
-```
-# interfaces(5) file used by ifup(8) and ifdown(8)
-auto lo
-iface lo inet loopback
-```
-
-后续追加内容如下:
-
-```
-auto eth0
-iface eth0 inet static　    #静态ip
-address 192.168.216.128　　 #要设置的ip
-gateway 192.168.216.2       #这个地址需要自己确认
-netmask 255.255.255.0       #子网掩码
-
-dns-nameservers 192.168.216.2
-```
-
-重启ubuntu的网卡
-
-```
-sudo /etc/init.d/networking restart
-```
-
-重启电脑
-
-```
-reboot
-```
-
-附:若出现无法出现eth0输入
-
-```
-ifconfig -a
-ifconfig eth0 up
-dhclient eth0
-ifconfig eth0
-reboot
-```
-
-## 批量重命名文件
-
-[参考](http://www.lx138.com/page.php?ID=Vkd0U1ZtVkJQVDA9)
-
-使用rename命令
-
-```
-$ rename
-Usage: rename [-v] [-n] [-f] perlexpr [filenames]
-```
-
-Perl语言版本 - 批量给文件添加前缀
-
-```
-root@lx138.com~# ls //显示目录内容
-A.bin B.bin C.bin D.bin E.bin F.bin G.bin
-root@lx138.com~# rename 's/^/backup_/'  *  //给当前目录所有文件增加 backup_ 前缀
-root@lx138.com~# ls     
-backup_A.bin backup_B.backup_bin backup_C.bin backup_D.bin backup_E.bin backup_F.bin  backup_G.bin
-```
-
-Perl语言版本 - 批量给文件添加后缀
-
-```
-root@lx138.com~# ls //显示目录内容
-A   B   C   D   E   F   G  
-root@lx138.com~# rename 's/$/\.bin/'  *  //给当前目录所有文件增加 .bin 后缀
-root@lx138.com~# ls     
-A.bin B.bin C.bin D.bin E.bin F.bin G.bin
-```
-
-Perl语言版本 - 批量给文件删除后缀
-
-```
-root@lx138.com~# ls //显示目录内容
-A.bin B.bin C.bin D.bin E.bin F.bin G.bin
-root@lx138.com~# rename 's/\.bin$//'  *  //给当前目录所有文件删除 .bin 后缀
-root@lx138.com~# ls     
-A   B   C   D   E   F   G
-```
-
-## 修改crontab默认编辑器
-
-方法1：修改环境变量
-
-```shell
-echo "export EDITOR=/usr/bin/vim" >> /etc/profile
-source /etc/profile
-```
-
-方法2：命令
-
-```
-update-alternatives --config editor
-```
-
-```
-There are 4 choices for the alternative editor (providing /usr/bin/editor).
-
-  Selection    Path                Priority   Status
-------------------------------------------------------------
-* 0            /bin/nano            40        auto mode
-  1            /bin/ed             -100       manual mode
-  2            /bin/nano            40        manual mode
-  3            /usr/bin/vim.basic   30        manual mode
-  4            /usr/bin/vim.tiny    10        manual mode
-```
-
-选择3即可。
-
+### 用管道命令移动指定文件 `find . -name "*.cpp" | xargs -i mv {} ./`
+### [\`dirname $0\`](http://www.cnblogs.com/xupeizhi/archive/2013/02/19/2917644.html)
+### [批量重命名文件]((http://www.lx138.com/page.php?ID=Vkd0U1ZtVkJQVDA9))
+### [pushd和popd](http://www.jianshu.com/p/53cccae3c443)
