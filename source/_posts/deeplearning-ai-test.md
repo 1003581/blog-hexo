@@ -45,7 +45,7 @@ categories: 机器学习
     1. It is strictly more powerful than a Convolutional Neural Network (CNN).
     1. **It is applicable when the input/output is a sequence (e.g., a sequence of words).**
     1. RNNs represent the recurrent process of Idea->Code->Experiment->Idea->....
-1. In this diagram which we hand-drew in lecture, what do the horizontal axis (x-axis) and vertical axis (y-axis) represent?![](c)
+1. In this diagram which we hand-drew in lecture, what do the horizontal axis (x-axis) and vertical axis (y-axis) represent?![](http://outz1n6zr.bkt.clouddn.com/20171106212556.png)
     1.  - x-axis is the performance of the algorithm
         - y-axis (vertical axis) is the amount of data.
     1.  - x-axis is the input to the algorithm
@@ -67,3 +67,4 @@ categories: 机器学习
 ![](http://outz1n6zr.bkt.clouddn.com/20171106212859.png)
 
 ![](http://outz1n6zr.bkt.clouddn.com/20171106213014.png)
+
