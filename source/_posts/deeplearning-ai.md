@@ -5,11 +5,13 @@ tags: 深度学习
 categories: 机器学习
 ---
 
-课程在[网易云课堂](https://mooc.study.163.com/course/deeplearning_ai-2001281002#/info)上免费观看，作业题如下：加粗为个人见解，非答案。
+课程在[网易云课堂](https://mooc.study.163.com/course/deeplearning_ai-2001281002#/info)上免费观看，作业题如下：加粗为答案。
 
 <!-- more -->
 
 # 第一周
+
+10个选择题，原见[Github](https://github.com/liqiang311/deeplearning.ai/blob/master/1_Neural%20Networks%20and%20Deep%20Learning/Quiz-week1-Introduction%20to%20deep%20learning.pdf)
 
 1. What does the analogy “AI is the new electricity” refer to?
     1. **Similar to electricity starting about 100 years ago, AI is transforming multiple industries.**
@@ -17,7 +19,7 @@ categories: 机器学习
     1. AI runs on computers and is thus powered by electricity, but it is letting computers do things not possible before.
     1. AI is powering personal devices in our homes and offices, similar to electricity.
 1. Which of these are reasons for Deep Learning recently taking off? (Check the three options that apply.)
-    1. **Deep learning has resulted in significant improvements in important applications such as online advertising, speech recognition, and image recognition.**
+    1. Deep learning has resulted in significant improvements in important applications such as online advertising, speech recognition, and image recognition.
     1. **We have access to a lot more data.**
     1. **We have access to a lot more computational power.**
     1. Neural Networks are a brand new field.
@@ -75,6 +77,8 @@ categories: 机器学习
 ![](http://outz1n6zr.bkt.clouddn.com/20171106213014.png)
 
 ## Neural-Network-Basics
+
+10个选择题，原见[Github](https://github.com/liqiang311/deeplearning.ai/blob/master/1_Neural%20Networks%20and%20Deep%20Learning/Quiz-week2-Coursera%20_%20Online%20Courses%20From%20Top%20Universities.pdf)
 
 1. What does a neuron compute?
     1. A neuron computes an activation function followed by a linear function (z = Wx + b)
@@ -551,17 +555,13 @@ print("y = " + str(np.squeeze(my_predicted_image)) + ", your algorithm predicts 
 
 ## Shallow Neural Networks
 
-$$
-X^2
-$$
-
-$X^2$
+10个选择题，原见[Github](https://github.com/liqiang311/deeplearning.ai/blob/master/1_Neural%20Networks%20and%20Deep%20Learning/Quiz-week3-Coursera%20_%20Online%20Courses%20From%20Top%20Universities.pdf)
 
 1. Which of the following are true? (Check all that apply.)
     1. **$a^{[2]}$ denotes the activation vector of the $2^{nd}$ layer.**
-    1. **$a^{[2](12)}$ denotes the activation vector of the $2^{nd}$ layer for the $12^{th}$ training example.**
+    1. **$a^{[2] (12)}$ denotes the activation vector of the $2^{nd}$ layer for the $12^{th}$ training example.**
     1. $X$ is a matrix in which each row is one training example.
-    1. $a^{[2](12)}$ denotes activation vector of the $12^{th}$ layer on the $2^{nd}$ training example.
+    1. $a^{[2] (12)}$ denotes activation vector of the $12^{th}$ layer on the $2^{nd}$ training example.
     1. **$X$ is a matrix in which each column is one training example.**
     1. **$a^{[2]}_4$ is the activation output by the $4^{th}$ neuron of the $2^{nd}$ layer**
     1. $a^{[2]}_4$ is the activation output of the $2^{nd}$ layer for the $4^{th}$ training example
@@ -599,7 +599,7 @@ $X^2$
     1. The first hidden layer’s neurons will perform different computations from each other even in the first iteration; their parameters will thus keep evolving in their own way.
 1. Logistic regression’s weights w should be initialized randomly rather than to all zeros, because if you initialize to all zeros, then logistic regression will fail to learn a useful decision boundary because it will fail to “break symmetry”, True/False?
     1. True
-    1. False
+    1. **False**
 1. You have built a network using the tanh activation for all the hidden units. You initialize the weights to relative large values, using np.random.randn(..,..)*1000. What will happen?
     1. **This will cause the inputs of the tanh to also be very large, thus causing gradients to be close to zero. The optimization algorithm will thus become slow.**
     1. This will cause the inputs of the tanh to also be very large, causing the units to be “highly activated” and thus speed up learning compared to if the weights had to start from small values.
@@ -619,8 +619,8 @@ $X^2$
 1. In the same network as the previous question, what are the dimensions of $Z^{[1]}$ and $A^{[1]}$?
     1. $Z^{[1]}$ and $A^{[1]}$ are (1, 4)
     1. $Z^{[1]}$ and $A^{[1]}$ are (4, 2)
-    1. $Z^{[1]}$ and $A^{[1]}$ are (4, m)
-    1. **$Z^{[1]}$ and $A^{[1]}$ are (4, 1)**
+    1. **$Z^{[1]}$ and $A^{[1]}$ are (4, m)**
+    1. $Z^{[1]}$ and $A^{[1]}$ are (4, 1)
     
 ## Planar data classification with one hidden layer
 

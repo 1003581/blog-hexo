@@ -68,7 +68,10 @@ categories: tool
 
 替换markdown渲染器
 
-[参考](https://peterxugo.github.io/2017/05/27/hexo%E5%86%99%E5%8D%9A%E5%AE%A2/)
+[参考1](https://peterxugo.github.io/2017/05/27/hexo%E5%86%99%E5%8D%9A%E5%AE%A2/)
+
+[参考2](http://blog.junyu.io/posts/0011-hexo-math-plugin-test-report.html)
 
 # 字体修改
+
 
