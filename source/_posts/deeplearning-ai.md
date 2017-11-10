@@ -70,11 +70,378 @@ categories: 机器学习
 
 # 第二周
 
-符号约定
+## Logistic Regression 相关公式推导
 
-![](http://outz1n6zr.bkt.clouddn.com/20171106212859.png)
+样本个数 $m$, 训练样本个数 $m_{train}$, 同理 $m_{test}$,$m_{valid}$
 
-![](http://outz1n6zr.bkt.clouddn.com/20171106213014.png)
+### 单个样本
+
+#### forward propagate
+
+input x的shape为$(n_x, 1)$，label y的shape为$(1, 1)$
+
+$$
+x = 
+\left[
+    \begin{matrix} 
+    x_1 \\ 
+    \vdots \\ 
+    x_n 
+    \end{matrix} 
+\right]
+\quad
+y = \left[
+    \begin{matrix}
+    y
+    \end{matrix}
+    \right]
+$$
+
+weights w的shape为$(n_x, 1)$，biases b的shape为$(1, 1)$
+
+$$
+w =
+\left[
+    \begin{matrix}
+    w_1 \\
+    \vdots \\
+    w_n
+    \end{matrix}
+\right]
+\quad
+b =
+\left[
+    \begin{matrix}
+    b
+    \end{matrix}
+\right]
+$$
+
+z的shape为$(1, 1)$
+
+$$
+\begin {aligned}
+z &= w^Tx+b \\
+&=\left[
+    \begin{matrix}
+    w_1 &
+    \cdots &
+    w_n
+    \end{matrix}
+\right]
+\left[
+    \begin{matrix} 
+    x_1 \\ 
+    \vdots \\ 
+    x_n 
+    \end{matrix} 
+\right]
++
+b
+\end {aligned}
+$$
+
+output $\hat{y}$的shape为$(1, 1)$
+
+$$
+\begin {aligned}
+\hat{y} &= a \\
+&= \sigma(z) \\
+&= \frac{1}{1+e^{-z}}
+\end {aligned}
+$$
+
+损失函数$l(\hat{y},y)$的shape为$(1, 1)$
+
+$$
+\begin {aligned}
+l(\hat{y},y) &= l(a,y) \\
+&= -(y\log{a}+(1-y)\log{(1-a)})
+\end {aligned}
+$$
+
+#### backward propagate
+
+损失函数对$\hat{y}$和$a$的偏导
+
+$$
+\begin {aligned}
+d_a &= \frac{\partial l}{\partial a}(-y\log{a}-(1-y)\log{(1-a)}) \\
+&= -\frac{y}{a} + \frac{1-y}{1-a}
+\end {aligned}
+$$
+
+损失函数对$z$的偏导
+
+$$
+\begin {aligned}
+d_z &= \frac{\partial l}{\partial a} \frac{\partial a}{\partial z} \\
+&= (\frac{y}{a} + \frac{1-y}{1-a}) * \frac{\partial a}{\partial z}(\frac{1}{1+e^{-z}}) \\
+&= (\frac{y}{a} + \frac{1-y}{1-a}) * (\frac{e^{-z}}{(1+e^{-z})^2}) \\
+&= (\frac{y}{a} + \frac{1-y}{1-a}) * (\frac{1}{1+e^{-z}} * \frac{e^{-z}}{1+e^{-z}}) \\
+&= (\frac{y}{a} + \frac{1-y}{1-a}) * (a * (1-a)) \\
+&= a-y
+\end {aligned}
+$$
+
+损失函数对$d_{w_1}$的偏导
+
+$$
+\begin {aligned}
+d_{w_1} &= \frac{\partial l}{\partial z} \frac{\partial z}{\partial w_1} \\
+&= (a-y) * \frac{\partial z}{\partial w_1}(w_1x_1+\cdots+w_nx_n+b) \\
+&= (a-y) * x_1
+\end {aligned}
+$$
+
+损失函数对$d_w$的偏导
+
+$$
+\begin {aligned}
+d_w &= \left[
+    \begin{matrix}
+    d_{w_1} \\
+    \vdots \\
+    d_{w_n}
+    \end{matrix}
+    \right] \\
+&= (a-y)
+\left[
+    \begin{matrix}
+    x_1 \\
+    \vdots \\
+    x_n
+    \end{matrix}
+\right]
+\end {aligned}
+$$
+
+损失函数对$d_b$的偏导
+
+$$
+\begin {aligned}
+d_b &= \frac{\partial l}{\partial z} \frac{\partial z}{\partial b} \\
+&= (a-y) * \frac{\partial z}{\partial b}(w_1x_1+\cdots+w_nx_n+b) \\
+&= a-y
+\end {aligned}
+$$
+
+根据导数对梯度进行更新的计算公式
+
+$$
+\begin {aligned}
+w &= w - \alpha d_w \\
+&= \left[
+    \begin{matrix}
+    w_1 \\
+    \vdots \\
+    w_n
+    \end{matrix}
+    \right] 
+    - \alpha 
+    \left[
+    \begin{matrix}
+    d_{w_1} \\
+    \vdots \\
+    d_{w_n}
+    \end{matrix}
+    \right]
+\end {aligned}
+$$
+
+$$
+b = b - \alpha d_b
+$$
+
+### m个样本
+
+#### forward propagate
+
+input X的shape为$(n_x, m)$，label Y的shape为$(1, m)$
+
+$$
+X = 
+\left[
+    \begin{matrix} 
+    x^{(1)} & \cdots & x^{(m)}
+    \end{matrix} 
+\right] =
+\left[
+    \begin{matrix} 
+    x^{(1)}_1 & \cdots & x^{(m)}_1\\ 
+    \vdots & \ddots & \vdots \\ 
+    x^{(1)}_n & \cdots & x^{(m)}_n
+    \end{matrix} 
+\right]
+\quad
+Y = \left[
+    \begin{matrix}
+    y^{(1)} & \cdots & y^{(m)}
+    \end{matrix}
+    \right]
+$$
+
+weights w的shape为$(n_x, 1)$，biases b的shape为$(1, 1)$ **和单个样本一样**
+
+$$
+w =
+\left[
+    \begin{matrix}
+    w_1 \\
+    \vdots \\
+    w_n
+    \end{matrix}
+\right]
+\quad
+b =
+\left[
+    \begin{matrix}
+    b
+    \end{matrix}
+\right]
+$$
+
+z的shape为$(1, m)$
+
+$$
+\begin {aligned}
+Z &= w^TX+b \\
+&=\left[
+    \begin{matrix}
+    w_1 &
+    \cdots &
+    w_n
+    \end{matrix}
+\right]
+\left[
+    \begin{matrix} 
+    x^{(1)}_1 & \cdots & x^{(m)}_1\\ 
+    \vdots & \ddots & \vdots \\ 
+    x^{(1)}_n & \cdots & x^{(m)}_n
+    \end{matrix} 
+\right]
++
+b \\
+& =
+\left[
+    \begin{matrix} 
+    z^{(1)} & \cdots & z^{(m)}
+    \end{matrix} 
+\right]
+\end {aligned}
+$$
+
+output $\hat{Y}$的shape为$(1, m)$
+
+$$
+\begin {aligned}
+\hat{Y} &= A\\
+&= \sigma(Z) \\
+&= \sigma(\left[
+    \begin{matrix} 
+    z^{(1)} & \cdots & z^{(m)}
+    \end{matrix} 
+\right]) \\
+&= 
+\left[
+    \begin{matrix} 
+    \frac{1}{1+e^{-z^{(1)}}} & \cdots & \frac{1}{1+e^{-z^{(m)}}}
+    z^{(1)} & \cdots & z^{(m)}
+    \end{matrix} 
+\right] \\
+&= \left[
+    \begin{matrix} 
+    a^{(1)} & \cdots & a^{(m)}
+    \end{matrix} 
+\right] \\
+&= \left[
+    \begin{matrix} 
+    \hat{y}^{(1)} & \cdots & \hat{y}^{(m)}
+    \end{matrix} 
+\right]
+\end {aligned}
+$$
+
+损失函数$J(w,b)$的shape为$(1, 1)$
+
+$$
+\begin {aligned}
+J(w,b) &=
+\frac{1}{m} \sum{m \atop i=0} l(\hat{y}^{(i)},y^{(i)}) \\
+&= -\frac{1}{m} \sum{m \atop i=0} [y\log{a}+(1-y)\log{(1-a)}]
+\end {aligned}
+$$
+
+#### backward propagate
+
+损失函数对$d_{w_1}$的偏导
+
+$$
+\begin {aligned}
+d_{w_1} &= \frac{\partial l}{\partial z} \frac{\partial z}{\partial w_1} \\
+&= (a-y) * \frac{\partial z}{\partial w_1}(w_1x_1+\cdots+w_nx_n+b) \\
+&= (a-y) * x_1
+\end {aligned}
+$$
+
+损失函数对$d_W$的偏导
+
+$$
+\begin {aligned}
+d_w &= \left[
+    \begin{matrix}
+    d_{w_1} \\
+    \vdots \\
+    d_{w_n}
+    \end{matrix}
+    \right] \\
+&= (a-y)
+\left[
+    \begin{matrix}
+    x_1 \\
+    \vdots \\
+    x_n
+    \end{matrix}
+\right]
+\end {aligned}
+$$
+
+损失函数对$d_b$的偏导
+
+$$
+\begin {aligned}
+d_b &= \frac{\partial l}{\partial z} \frac{\partial z}{\partial b} \\
+&= (a-y) * \frac{\partial z}{\partial b}(w_1x_1+\cdots+w_nx_n+b) \\
+&= a-y
+\end {aligned}
+$$
+
+根据导数对梯度进行更新的计算公式
+
+$$
+\begin {aligned}
+w &= w - \alpha d_w \\
+&= \left[
+    \begin{matrix}
+    w_1 \\
+    \vdots \\
+    w_n
+    \end{matrix}
+    \right] 
+    - \alpha 
+    \left[
+    \begin{matrix}
+    d_{w_1} \\
+    \vdots \\
+    d_{w_n}
+    \end{matrix}
+    \right]
+\end {aligned}
+$$
+
+$$
+b = b - \alpha d_b
+$$
 
 ## Neural-Network-Basics
 
@@ -569,14 +936,14 @@ print("y = " + str(np.squeeze(my_predicted_image)) + ", your algorithm predicts 
     1. **True**
     1. False
 1. Which of these is a correct vectorized implementation of forward propagation for layer $l$, where $1\leq{}l\leq{}L$?
-    1. - $Z^{[l]}=W^{[l]}A^{[l]}+b^{[l]}$
-       - $A^{[l+1]}=g^{[l+1]}(Z^{[l]})$
-    1. - $Z^{[l]}=W^{[l]}A^{[l-1]}+b^{[l]}$ **True**
-       - $A^{[l]}=g^{[l]}(Z^{[l]})$ **True**
-    1. - $Z^{[l]}=W^{[l]}A^{[l]}+b^{[l]}$
-       - $A^{[l+1]}=g^{[l]}(Z^{[l]})$
-    1. - $Z^{[l]}=W^{[l-1]}A^{[l]}+b^{[l-1]}$
-       - $A^{[l]}=g^{[l]}(Z^{[l]})$
+    1.  - $Z^{[l]}=W^{[l]}A^{[l]}+b^{[l]}$
+        - $A^{[l+1]}=g^{[l+1]}(Z^{[l]})$
+    1.  - $Z^{[l]}=W^{[l]}A^{[l-1]}+b^{[l]}$ **True**
+        - $A^{[l]}=g^{[l]}(Z^{[l]})$ **True**
+    1.  - $Z^{[l]}=W^{[l]}A^{[l]}+b^{[l]}$
+        - $A^{[l+1]}=g^{[l]}(Z^{[l]})$
+    1.  - $Z^{[l]}=W^{[l-1]}A^{[l]}+b^{[l-1]}$
+        - $A^{[l]}=g^{[l]}(Z^{[l]})$
 1. You are building a binary classifier for recognizing cucumbers (y=1) vs. watermelons (y=0). Which one of these activation functions would you recommend using for the output layer?
     1. ReLU
     1. Leaky ReLU
