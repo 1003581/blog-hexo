@@ -5,11 +5,8 @@ language: node_js
 node_js: '6.11.3'
 
 cache:
-  apt: true   
-  directories:    
-    - node_modules
-
-cache:
+  - apt:true
+  - directories:node_modules
   - pandoc
   - hexo-cli
   - hexo-renderer-pandoc
@@ -28,17 +25,14 @@ before_install:
   - cat themes/next/source/css/_variables/custom.styl
 
 install:
-  - wget https://github.com/jgm/pandoc/releases/download/2.0.1.1/pandoc-2.0.1.1-1-amd64.deb
+  - wget https://github.com/jgm/pandoc/releases/download/1.19.2.1/pandoc-1.19.2.1-1-amd64.deb
   - sudo dpkg -i pandoc*.deb
   - npm install hexo-cli -g
   - npm install hexo-generator-index --save
   - npm install hexo-generator-sitemap --save
   - npm install hexo-generator-baidu-sitemap --save
   - npm install
-  - npm uninstall hexo-renderer-marked --save
   - npm install hexo-renderer-pandoc --save
-
-
 
 addons:
   ssh_known_hosts: 

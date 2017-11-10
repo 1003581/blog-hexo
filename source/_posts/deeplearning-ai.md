@@ -551,6 +551,12 @@ print("y = " + str(np.squeeze(my_predicted_image)) + ", your algorithm predicts 
 
 ## Shallow Neural Networks
 
+$$
+X^2
+$$
+
+$X^2$
+
 1. Which of the following are true? (Check all that apply.)
     1. **$a^{[2]}$ denotes the activation vector of the $2^{nd}$ layer.**
     1. **$a^{[2](12)}$ denotes the activation vector of the $2^{nd}$ layer for the $12^{th}$ training example.**
