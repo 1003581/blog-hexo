@@ -63,3 +63,12 @@ categories: tool
 # SEO相关
 
 [Hexo-优化：提交sitemap及解决百度爬虫抓取-GitHub-Pages-问题](http://www.yuan-ji.me/Hexo-%E4%BC%98%E5%8C%96%EF%BC%9A%E6%8F%90%E4%BA%A4sitemap%E5%8F%8A%E8%A7%A3%E5%86%B3%E7%99%BE%E5%BA%A6%E7%88%AC%E8%99%AB%E6%8A%93%E5%8F%96-GitHub-Pages-%E9%97%AE%E9%A2%98/)
+
+# MathJax
+
+替换markdown渲染器
+
+[参考](https://peterxugo.github.io/2017/05/27/hexo%E5%86%99%E5%8D%9A%E5%AE%A2/)
+
+# 字体修改
+
