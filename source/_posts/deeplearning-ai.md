@@ -190,7 +190,7 @@ $$
 \begin {aligned}
 d_{w_1} &= \frac{\partial l}{\partial z} \frac{\partial z}{\partial w_1} \\
 &= (a-y) * \frac{\partial z}{\partial w_1}(w_1x_1+\cdots+w_nx_n+b) \\
-&= (a-y) * x_1
+&= x_1 * (a-y)
 \end {aligned}
 $$
 
@@ -205,14 +205,14 @@ d_w &= \left[
     d_{w_n}
     \end{matrix}
     \right] \\
-&= (a-y)
+&= 
 \left[
     \begin{matrix}
     x_1 \\
     \vdots \\
     x_n
     \end{matrix}
-\right]
+\right] (a-y)
 \end {aligned}
 $$
 
@@ -245,12 +245,9 @@ w &= w - \alpha d_w \\
     \vdots \\
     d_{w_n}
     \end{matrix}
-    \right]
+    \right] \\
+b &= b - \alpha d_b
 \end {aligned}
-$$
-
-$$
-b = b - \alpha d_b
 $$
 
 ### m个样本
@@ -367,20 +364,23 @@ $$
 $$
 \begin {aligned}
 J(w,b) &=
-\frac{1}{m} \sum{m \atop i=0} l(\hat{y}^{(i)},y^{(i)}) \\
-&= -\frac{1}{m} \sum{m \atop i=0} [y\log{a}+(1-y)\log{(1-a)}]
+\frac{1}{m} \sum{m \atop i=1} l(\hat{y}^{(i)},y^{(i)}) \\
+&= -\frac{1}{m} \sum{m \atop i=1} [y^{(i)}\log{a^{(i)}}+(1-y^{(i)})\log{(1-a^{(i)})}]
 \end {aligned}
 $$
 
 #### backward propagate
 
+损失函数对$d_Z$的偏导
+
 损失函数对$d_{w_1}$的偏导
 
 $$
 \begin {aligned}
-d_{w_1} &= \frac{\partial l}{\partial z} \frac{\partial z}{\partial w_1} \\
-&= (a-y) * \frac{\partial z}{\partial w_1}(w_1x_1+\cdots+w_nx_n+b) \\
-&= (a-y) * x_1
+\frac{\partial J(w,b)}{\partial w_1} 
+&= \frac{1}{m} \sum{m \atop i=1} \frac{\partial l}{\partial w_1} l(\hat{y}^{(i)},y^{(i)}) \\
+&= \frac{1}{m} \sum{m \atop i=1} d_{w_1^{(i)}} \\
+&= \frac{1}{m} \sum{m \atop i=1} x_1^{(i)} * (a^{(i)}-y^{(i)})
 \end {aligned}
 $$
 
@@ -388,21 +388,46 @@ $$
 
 $$
 \begin {aligned}
-d_w &= \left[
+\frac{\partial J(w,b)}{\partial W}  &= \left[
     \begin{matrix}
-    d_{w_1} \\
+    \frac{\partial J(w,b)}{\partial w_1}  \\
     \vdots \\
-    d_{w_n}
+    \frac{\partial J(w,b)}{\partial w_n} 
     \end{matrix}
     \right] \\
-&= (a-y)
+&= \frac{1}{m} 
+\left[
+\begin{matrix}
+\sum{m \atop i=1} x_1^{(i)} * (a^{(i)}-y^{(i)}) \\
+\vdots \\
+\sum{m \atop i=1} x_n^{(i)} * (a^{(i)}-y^{(i)})
+\end{matrix}
+\right]
+\\
+&= \frac{1}{m} 
 \left[
     \begin{matrix}
-    x_1 \\
+    x_1^{(1)} * (a^{(1)}-y^{(1)}) + \cdots + x_1^{(m)} * (a^{(m)}-y^{(m)}) \\
     \vdots \\
-    x_n
+    x_n^{(1)} * (a^{(1)}-y^{(1)}) + \cdots + x_n^{(m)} * (a^{(m)}-y^{(m)})
+    \end{matrix}
+\right] \\
+&= \frac{1}{m}
+\left[
+    \begin{matrix}
+    x_1^{(1)} & \cdots & x_1^{(m)} \\
+    \vdots \\
+    x_n^{(1)} & \cdots & x_n^{(m)}
     \end{matrix}
 \right]
+\left[
+    \begin{matrix}
+    a^{(1)}-y^{(1)} \\
+    \vdots \\
+    a^{(m)}-y^{(m)}
+    \end{matrix}
+\right] \\
+&= \frac{1}{m} X {\frac{\partial J(w,b)}{\partial Z}}^T
 \end {aligned}
 $$
 
