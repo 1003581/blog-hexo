@@ -750,6 +750,17 @@ d_{b^{[1]}} &= \frac{1}{m} np.sum(d_{Z^{[1]}}, axis=1, keepdims=True) ||shape(n^
 \end {aligned}
 $$
 
+四种激活函数及其导数
+
+$$a=g(z)=sigmoid(z) = \frac{1}{1+e^{-z}}$$
+$$g'(z)=sigmoid(z)' = a(1-a)$$
+$$a=g(z)=tanh(z) = \frac{e^z-e^{-z}}{e^z+e^{-z}}$$
+$$g'(z)=tanh(z)' = 1-a^2$$
+$$a=g(z)=relu(z) = max(0, z)$$
+$$g'(z)=relu(z)' = \begin{cases} 0, &z<0\cr 1, &z \geq 0 \end{cases}$$
+$$a=g(z)=leakyRelu(z) = max(0.01z, z)$$
+$$g'(z)=leakyRelu(z)' = \begin{cases} 0.01, &z<0\cr 1, &z \geq 0 \end{cases}$$
+
 ## Shallow Neural Networks
 
 10个选择题，原见[Github](https://github.com/liqiang311/deeplearning.ai/blob/master/1_Neural%20Networks%20and%20Deep%20Learning/Quiz-week3-Coursera%20_%20Online%20Courses%20From%20Top%20Universities.pdf)
@@ -821,4 +832,32 @@ $$
     
 ## Planar data classification with one hidden layer
 
-相关数据集和输出见[github](https://github.com/liqiang311/deeplearning.ai/blob/master/1_Neural%20Networks%20and%20Deep%20Learning/week2/Logistic%20Regression%20as%20a%20Neural%20Network/my-Logistic%2BRegression%2Bwith%2Ba%2BNeural%2BNetwork%2Bmindset%2Bv3.ipynb)
+相关数据集和输出见[github](https://github.com/liqiang311/deeplearning.ai/blob/master/1_Neural%20Networks%20and%20Deep%20Learning/week3/my-Planar%2Bdata%2Bclassification%2Bwith%2Bone%2Bhidden%2Blayer.ipynb)
+
+# 第四层-深层神经网络
+
+## 公式
+
+$$
+\begin {aligned}
+Z^{[l]} &= W^{[l]}A^{[l-1]} + b^{[l]} \\
+A^{[l]} &= g^{[l]}(Z^{[l]})
+\end {aligned}
+$$
+
+其中，$l$为层数，总层数为$L$，$l=0$表示输入层$X$，$l=L$表示输出层
+
+$W^{[l]}$的shape为$(n^{[l]}, n^{[l-1]})$
+
+$Z^{[l]}$ $A^{[l]}$的shape为$(n^{[l]}, m)$
+
+$b^{[l]}$的shape为$(n^{[l]}, 1)$
+
+$$
+\begin {aligned}
+\mathrm{d}Z^{[l]} &= \mathrm{d}A^{[l]} * g^{[l]'}(Z^{[l]}) \\
+\mathrm{d}W^{[l]} &= \frac{1}{m} \mathrm{d}Z^{[l]} A^{[l-1]T} \\
+\mathrm{d}b^{[l]} &= \frac{1}{m} np.sum(\mathrm{d}Z^{[l]}, axis=1, keepdims=True) \\
+\mathrm{d}A^{[l-1]} &= W^{[l]T}\mathrm{d}Z^{[l]}
+\end {aligned}
+$$
