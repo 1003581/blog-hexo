@@ -9,7 +9,7 @@ categories: 机器学习
 
 <!-- more -->
 
-# 第一周
+# 第一周-深度学习概论
 
 10个选择题，原见[Github](https://github.com/liqiang311/deeplearning.ai/blob/master/1_Neural%20Networks%20and%20Deep%20Learning/Quiz-week1-Introduction%20to%20deep%20learning.pdf)
 
@@ -68,9 +68,9 @@ categories: 机器学习
     1. **Increasing the training set size generally does not hurt an algorithm’s performance, and it may help significantly.**
     1. **Increasing the size of a neural network generally does not hurt an algorithm’s performance, and it may help significantly.**
 
-# 第二周
+# 第二周Logistic Regression
 
-## Logistic Regression 相关公式推导
+## Logistic回归公式推导
 
 样本个数 $m$, 训练样本个数 $m_{train}$, 同理 $m_{test}$,$m_{valid}$
 
@@ -184,20 +184,14 @@ d_z &= \frac{\partial l}{\partial a} \frac{\partial a}{\partial z} \\
 \end {aligned}
 $$
 
-损失函数对$d_{w_1}$的偏导
+损失函数对$d_w$的偏导
 
 $$
 \begin {aligned}
 d_{w_1} &= \frac{\partial l}{\partial z} \frac{\partial z}{\partial w_1} \\
 &= (a-y) * \frac{\partial z}{\partial w_1}(w_1x_1+\cdots+w_nx_n+b) \\
-&= x_1 * (a-y)
-\end {aligned}
-$$
+&= x_1 * (a-y) \\
 
-损失函数对$d_w$的偏导
-
-$$
-\begin {aligned}
 d_w &= \left[
     \begin{matrix}
     d_{w_1} \\
@@ -373,6 +367,28 @@ $$
 
 损失函数对$d_Z$的偏导
 
+$$
+\begin {aligned}
+d_{z^{(1)}} &= \frac{\partial J(w,b)}{\partial a^{(1)}} \frac{\partial a^{(1)}}{\partial z^{(1)}} \\
+&= -\frac{1}{m} \frac{\partial l(a^{(1)}, y^{(1)})}{\partial a^{(1)}} \frac{\partial a^{(1)}}{\partial z^{(1)}} \\
+&= -\frac{1}{m} d_{z^{(1)}} \\
+&= a^{(1)}-y^{(1)} \\
+
+d_Z &= 
+\left[
+\begin {matrix}
+d_{z^{(1)}} & \cdots & d_{z^{(m)}}
+\end {matrix}
+\right] \\
+&= 
+\left[
+\begin {matrix}
+a^{(1)}-y^{(1)} & \cdots & a^{(m)}-y^{(m)}
+\end {matrix}
+\right]
+\end {aligned}
+$$
+
 损失函数对$d_{w_1}$的偏导
 
 $$
@@ -427,7 +443,7 @@ $$
     a^{(m)}-y^{(m)}
     \end{matrix}
 \right] \\
-&= \frac{1}{m} X {\frac{\partial J(w,b)}{\partial Z}}^T
+&= \frac{1}{m} X d_Z^T
 \end {aligned}
 $$
 
@@ -435,9 +451,11 @@ $$
 
 $$
 \begin {aligned}
-d_b &= \frac{\partial l}{\partial z} \frac{\partial z}{\partial b} \\
-&= (a-y) * \frac{\partial z}{\partial b}(w_1x_1+\cdots+w_nx_n+b) \\
-&= a-y
+d_b 
+&= \frac{\partial J(w,b)}{\partial b} \\
+&= \frac{\partial J(w,b)}{\partial Z} \frac{\partial Z}{\partial b} \\
+&= \frac{1}{m} \sum{m \atop i=1} d_Z \\
+&= \frac{1}{m} \sum{m \atop i=1} a^{(i)}-y^{(i)} \\
 \end {aligned}
 $$
 
@@ -445,7 +463,7 @@ $$
 
 $$
 \begin {aligned}
-w &= w - \alpha d_w \\
+W &= W - \alpha d_W \\
 &= \left[
     \begin{matrix}
     w_1 \\
@@ -460,12 +478,9 @@ w &= w - \alpha d_w \\
     \vdots \\
     d_{w_n}
     \end{matrix}
-    \right]
+    \right] \\
+b &= b - \alpha d_b
 \end {aligned}
-$$
-
-$$
-b = b - \alpha d_b
 $$
 
 ## Neural-Network-Basics
@@ -561,389 +576,179 @@ $$
 
 ## Logistic-Regression-with-a-Neural-Network-mindset
 
-相关数据集和输出见github
-
-```python
-# 1 - Packages
-import numpy as np
-import matplotlib.pyplot as plt
-import scipy
-from scipy import ndimage
-from lr_utils import load_dataset
-
-# %matplotlib inline
-
-# 2 - Overview of the Problem set
-
-# Loading the data (cat/non-cat)
-train_set_x_orig, train_set_y, test_set_x_orig, test_set_y, classes = load_dataset()
-
-# Example of a picture
-index = 25
-plt.imshow(train_set_x_orig[index])
-# plt.show()
-print("y = " + str(train_set_y[:, index]) + ", it's a '" +
-      classes[np.squeeze(train_set_y[:, index])].decode("utf-8") + "' picture.")
-
-
-# START CODE HERE ### (≈ 3 lines of code)
-m_train = train_set_x_orig.shape[0]
-m_test = test_set_x_orig.shape[0]
-num_px = train_set_x_orig.shape[1]
-# END CODE HERE ###
-
-print("Number of training examples: m_train = " + str(m_train))
-print("Number of testing examples: m_test = " + str(m_test))
-print("Height/Width of each image: num_px = " + str(num_px))
-print("Each image is of size: (" + str(num_px) + ", " + str(num_px) + ", 3)")
-print("train_set_x shape: " + str(train_set_x_orig.shape))
-print("train_set_y shape: " + str(train_set_y.shape))
-print("test_set_x shape: " + str(test_set_x_orig.shape))
-print("test_set_y shape: " + str(test_set_y.shape))
-
-# Reshape the training and test examples
-
-# START CODE HERE ### (≈ 2 lines of code)
-train_set_x_flatten = train_set_x_orig.reshape(m_train, -1).T
-test_set_x_flatten = test_set_x_orig.reshape(m_test, -1).T
-# END CODE HERE ###
-
-print("train_set_x_flatten shape: " + str(train_set_x_flatten.shape))
-print("train_set_y shape: " + str(train_set_y.shape))
-print("test_set_x_flatten shape: " + str(test_set_x_flatten.shape))
-print("test_set_y shape: " + str(test_set_y.shape))
-print("sanity check after reshaping: " + str(train_set_x_flatten[0:5, 0]))
-
-train_set_x = train_set_x_flatten / 255.
-test_set_x = test_set_x_flatten / 255.
-
-# 3 - General Architecture of the learning algorithm
-# 4 - Building the parts of our algorithm
-
-
-# 4.1 - Helper functions
-# GRADED FUNCTION: sigmoid
-def sigmoid(z):
-    """
-    Compute the sigmoid of z
-​
-    Arguments:
-    z -- A scalar or numpy array of any size.
-​
-    Return:
-    s -- sigmoid(z)
-    """
-
-    # START CODE HERE ### (≈ 1 line of code)
-    s = 1 / (1 + np.exp(-z))
-    # END CODE HERE ###
-
-    return s
-
-
-print("sigmoid([0, 2]) = " + str(sigmoid(np.array([0, 2]))))
-
-
-# 4.2 - Initializing parameters
-# GRADED FUNCTION: initialize_with_zeros
-def initialize_with_zeros(dim):
-    """
-    This function creates a vector of zeros of shape (dim, 1) for w and initializes b to 0.
-
-    Argument:
-    dim -- size of the w vector we want (or number of parameters in this case)
-
-    Returns:
-    w -- initialized vector of shape (dim, 1)
-    b -- initialized scalar (corresponds to the bias)
-    """
-
-    # START CODE HERE ### (≈ 1 line of code)
-    w = np.zeros((dim, 1))
-    b = 0
-
-    # END CODE HERE ###
-
-    assert(w.shape == (dim, 1))
-    assert(isinstance(b, float) or isinstance(b, int))
-
-    return w, b
-
-
-dim = 2
-w, b = initialize_with_zeros(dim)
-print("w = " + str(w))
-print("b = " + str(b))
-
-
-# 4.3 - Forward and Backward propagation
-# GRADED FUNCTION: propagate
-def propagate(w, b, X, Y):
-    """
-    Implement the cost function and its gradient for the propagation explained above
-​
-    Arguments:
-    w -- weights, a numpy array of size (num_px * num_px * 3, 1)
-    b -- bias, a scalar
-    X -- data of size (num_px * num_px * 3, number of examples)
-    Y -- true "label" vector (containing 0 if non-cat, 1 if cat) of size (1, number of examples)
-​
-    Return:
-    cost -- negative log-likelihood cost for logistic regression
-    dw -- gradient of the loss with respect to w, thus same shape as w
-    db -- gradient of the loss with respect to b, thus same shape as b
-
-    Tips:
-    - Write your code step by step for the propagation. np.log(), np.dot()
-    """
-
-    m = X.shape[1]
-
-    # FORWARD PROPAGATION (FROM X TO COST)
-    # START CODE HERE ### (≈ 2 lines of code)
-    A = sigmoid(np.dot(w.T, X) + b)                                # compute activation
-    cost = np.sum(Y * np.log(A) - (1 - Y) * np.log(1 - A)) / (-m)  # compute cost
-    # END CODE HERE ###
-
-    # BACKWARD PROPAGATION (TO FIND GRAD)
-    # START CODE HERE ### (≈ 2 lines of code)
-    # dw = da * dz * dw
-    dw = np.dot(X, (A - Y).T) / m
-    db = np.sum(A - Y) / m
-
-    # END CODE HERE ###
-    assert(dw.shape == w.shape)
-    assert(db.dtype == float)
-    cost = np.squeeze(cost)
-    assert(cost.shape == ())
-
-    grads = {"dw": dw,
-             "db": db}
-
-    return grads, cost
-
-
-w, b, X, Y = np.array([[1], [2]]), 2, np.array([[1, 2], [3, 4]]), np.array([[1, 0]])
-grads, cost = propagate(w, b, X, Y)
-print("dw = " + str(grads["dw"]))
-print("db = " + str(grads["db"]))
-print("cost = " + str(cost))
-
-
-# GRADED FUNCTION: optimize
-def optimize(w, b, X, Y, num_iterations, learning_rate, print_cost=False):
-    """
-    This function optimizes w and b by running a gradient descent algorithm
-
-    Arguments:
-    w -- weights, a numpy array of size (num_px * num_px * 3, 1)
-    b -- bias, a scalar
-    X -- data of shape (num_px * num_px * 3, number of examples)
-    Y -- true "label" vector (containing 0 if non-cat, 1 if cat), of shape (1, number of examples)
-    num_iterations -- number of iterations of the optimization loop
-    learning_rate -- learning rate of the gradient descent update rule
-    print_cost -- True to print the loss every 100 steps
-
-    Returns:
-    params -- dictionary containing the weights w and bias b
-    grads -- dictionary containing the gradients of the weights and bias with respect to the cost function
-    costs -- list of all the costs computed during the optimization, this will be used to plot the learning curve.
-
-    Tips:
-    You basically need to write down two steps and iterate through them:
-        1) Calculate the cost and the gradient for the current parameters. Use propagate().
-        2) Update the parameters using gradient descent rule for w and b.
-    """
-
-    costs = []
-
-    for i in range(num_iterations):
-
-        # Cost and gradient calculation (≈ 1-4 lines of code)
-        # START CODE HERE ###
-        grads, cost = propagate(w, b, X, Y)
-        # END CODE HERE ###
-
-        # Retrieve derivatives from grads
-        dw = grads["dw"]
-        db = grads["db"]
-
-        # update rule (≈ 2 lines of code)
-        # START CODE HERE ###
-        w = w - learning_rate * dw
-        b = b - learning_rate * db
-        # END CODE HERE ###
-
-        # Record the costs
-        if i % 100 == 0:
-            costs.append(cost)
-
-        # Print the cost every 100 training examples
-        if print_cost and i % 100 == 0:
-            print("Cost after iteration %i: %f" % (i, cost))
-
-    params = {"w": w,
-              "b": b}
-
-    grads = {"dw": dw,
-             "db": db}
-
-    return params, grads, costs
-
-
-params, grads, costs = optimize(w, b, X, Y, num_iterations=100, learning_rate=0.009, print_cost=False)
-
-print("w = " + str(params["w"]))
-print("b = " + str(params["b"]))
-print("dw = " + str(grads["dw"]))
-print("db = " + str(grads["db"]))
-
-
-# GRADED FUNCTION: predict
-def predict(w, b, X):
-    '''
-    Predict whether the label is 0 or 1 using learned logistic regression parameters (w, b)
-
-    Arguments:
-    w -- weights, a numpy array of size (num_px * num_px * 3, 1)
-    b -- bias, a scalar
-    X -- data of size (num_px * num_px * 3, number of examples)
-
-    Returns:
-    Y_prediction -- a numpy array (vector) containing all predictions (0/1) for the examples in X
-    '''
-
-    m = X.shape[1]
-    Y_prediction = np.zeros((1, m))
-    w = w.reshape(X.shape[0], 1)
-
-    # Compute vector "A" predicting the probabilities of a cat being present in the picture
-    # START CODE HERE ### (≈ 1 line of code)
-    A = sigmoid(np.dot(w.T, X) + b)
-    # END CODE HERE ###
-
-    for i in range(A.shape[1]):
-
-        # Convert probabilities a[0,i] to actual predictions p[0,i]
-        # START CODE HERE ### (≈ 4 lines of code)
-        if (A[0, i] > 0.5):
-            Y_prediction[0][i] = 1
-        else:
-            Y_prediction[0][i] = 0
-        # END CODE HERE ###
-
-    assert(Y_prediction.shape == (1, m))
-
-    return Y_prediction
-
-
-print("predictions = " + str(predict(w, b, X)))
-
-
-# 5 - Merge all functions into a model
-# GRADED FUNCTION: model
-def model(X_train, Y_train, X_test, Y_test, num_iterations=2000, learning_rate=0.5, print_cost=False):
-    """
-    Builds the logistic regression model by calling the function you've implemented previously
-
-    Arguments:
-    X_train -- training set represented by a numpy array of shape (num_px * num_px * 3, m_train)
-    Y_train -- training labels represented by a numpy array (vector) of shape (1, m_train)
-    X_test -- test set represented by a numpy array of shape (num_px * num_px * 3, m_test)
-    Y_test -- test labels represented by a numpy array (vector) of shape (1, m_test)
-    num_iterations -- hyperparameter representing the number of iterations to optimize the parameters
-    learning_rate -- hyperparameter representing the learning rate used in the update rule of optimize()
-    print_cost -- Set to true to print the cost every 100 iterations
-
-    Returns:
-    d -- dictionary containing information about the model.
-    """
-
-    # START CODE HERE ###
-
-    # initialize parameters with zeros (≈ 1 line of code)
-    w, b = initialize_with_zeros(X_train.shape[0])
-
-    # Gradient descent (≈ 1 line of code)
-    parameters, grads, costs = optimize(w, b, X_train, Y_train, num_iterations, learning_rate, print_cost)
-
-    # Retrieve parameters w and b from dictionary "parameters"
-    w = parameters["w"]
-    b = parameters["b"]
-
-    # Predict test/train set examples (≈ 2 lines of code)
-    Y_prediction_test = predict(w, b, X_test)
-    Y_prediction_train = predict(w, b, X_train)
-
-    # END CODE HERE ###
-
-    # Print train/test Errors
-    print("train accuracy: {} %".format(100 - np.mean(np.abs(Y_prediction_train - Y_train)) * 100))
-    print("test accuracy: {} %".format(100 - np.mean(np.abs(Y_prediction_test - Y_test)) * 100))
-
-    d = {"costs": costs,
-         "Y_prediction_test": Y_prediction_test,
-         "Y_prediction_train": Y_prediction_train,
-         "w": w,
-         "b": b,
-         "learning_rate": learning_rate,
-         "num_iterations": num_iterations}
-
-    return d
-
-
-d = model(train_set_x, train_set_y, test_set_x, test_set_y, num_iterations=2000, learning_rate=0.005, print_cost=True)
-
-# Example of a picture that was wrongly classified.
-index = 1
-plt.imshow(test_set_x[:, index].reshape((num_px, num_px, 3)))
-#plt.show()
-print("y = " + str(test_set_y[0, index]) + ", you predicted that it is a \"" +
-      classes[int(d["Y_prediction_test"][0, index])].decode("utf-8") + "\" picture.")
-
-# Plot learning curve (with costs)
-costs = np.squeeze(d['costs'])
-plt.plot(costs)
-plt.ylabel('cost')
-plt.xlabel('iterations (per hundreds)')
-plt.title("Learning rate =" + str(d["learning_rate"]))
-#plt.show()
-
-learning_rates = [0.01, 0.001, 0.0001]
-models = {}
-for i in learning_rates:
-    print("learning rate is: " + str(i))
-    models[str(i)] = model(train_set_x, train_set_y, test_set_x, test_set_y,
-                           num_iterations=1500, learning_rate=i, print_cost=False)
-    print('\n' + "-------------------------------------------------------" + '\n')
-
-for i in learning_rates:
-    plt.plot(np.squeeze(models[str(i)]["costs"]), label=str(models[str(i)]["learning_rate"]))
-
-plt.ylabel('cost')
-plt.xlabel('iterations')
-
-legend = plt.legend(loc='upper center', shadow=True)
-frame = legend.get_frame()
-frame.set_facecolor('0.90')
-#plt.show()
-
-# START CODE HERE ## (PUT YOUR IMAGE NAME)
-my_image = "Lion_waiting_in_Namibia.jpg"   # change this to the name of your image file
-# END CODE HERE ##
-
-# We preprocess the image to fit your algorithm.
-fname = "images/" + my_image
-image = np.array(ndimage.imread(fname, flatten=False))
-my_image = scipy.misc.imresize(image, size=(num_px, num_px)).reshape((1, num_px * num_px * 3)).T
-my_predicted_image = predict(d["w"], d["b"], my_image)
-
-plt.imshow(image)
-print("y = " + str(np.squeeze(my_predicted_image)) + ", your algorithm predicts a \"" +
-      classes[int(np.squeeze(my_predicted_image)), ].decode("utf-8") + "\" picture.")
-```
-
-# 第三周
+相关数据集和输出见[github](https://github.com/liqiang311/deeplearning.ai/blob/master/1_Neural%20Networks%20and%20Deep%20Learning/week2/Logistic%20Regression%20as%20a%20Neural%20Network/my-Logistic%2BRegression%2Bwith%2Ba%2BNeural%2BNetwork%2Bmindset%2Bv3.ipynb)
+
+# 第三周-浅层神经网络
+
+## 公式推导
+
+右上角`[]`表示层数，右上角`()`表示样本数
+
+$a^{[0]}=X$ 第0层为输入层
+
+$a^{[1]}_2$ 表示第一层中第二个神经元
+
+$g(1)$为第一层网络的激活函数
+
+## forward propagate
+
+输入X的shape为$(n^{[0]},m)$, Y的shape为$(1,m)$
+
+$$
+X = 
+\left[
+\begin {matrix}
+x^{(1)}_1 & \cdots & x^{(m)}_1 \\
+\vdots & \ddots & \vdots \\
+x^{(1)}_n & \cdots & x^{(m)}_n
+\end {matrix}
+\right]
+
+\quad
+
+Y =
+\left[
+\begin {matrix}
+y^{(1)} & \cdots & y^{(m)}
+\end {matrix}
+\right]
+$$
+
+权重矩阵$W^{[1]}$的shape为 $(n^{[1]}, n^{[0]})$, 偏置$b^{[1]}$的shape为 $(n^{[1]}, 1)$
+
+$$
+\begin {aligned}
+W^{[1]} &=
+\left[
+\begin {matrix}
+w_{1,1} & \cdots & w_{1,n^{[0]}} \\
+\vdots & \ddots & \vdots \\
+w_{n^{[1]},1} & \cdots & w_{n^{[1]},n^{[0]}}
+\end {matrix}
+\right] \\
+
+b^{[1]} &=
+\left[
+\begin {matrix}
+b_{1} \\
+\vdots \\
+b_{n^{[1]}}
+\end {matrix}
+\right]
+\end {aligned}
+$$
+
+第一层神经元$Z^{[1]}$、$A^{[1]}$的shape为$(n^{[1]},m)$
+
+$$
+\begin {aligned}
+Z^{[1]} 
+&= W^{[1]} X + b^{[1]} \\
+&= 
+\left[
+\begin {matrix}
+w_{1,1} & \cdots & w_{1,n^{[0]}} \\
+\vdots & \ddots & \vdots \\
+w_{n^{[1]},1} & \cdots & w_{n^{[1]},n^{[0]}}
+\end {matrix}
+\right]
+\left[
+\begin {matrix}
+x^{(1)}_1 & \cdots & x^{(m)}_1 \\
+\vdots & \ddots & \vdots \\
+x^{(1)}_n & \cdots & x^{(m)}_n
+\end {matrix}
+\right]
++
+\left[
+\begin {matrix}
+b_{1} \\
+\vdots \\
+b_{n^{[1]}}
+\end {matrix}
+\right] \\
+&= 
+\left[
+\begin {matrix}
+z_{1}^{[1] (1)} & \cdots & z_{1}^{[1] (m)} \\
+\vdots & \ddots & \vdots \\
+z_{n^{[1]}}^{[1] (1)} & \cdots & z_{n^{[1]}}^{[1] (m)}
+\end {matrix}
+\right] \\
+
+A^{[1]} &=
+g(1)(Z^{[1]})
+\end {aligned}
+$$
+
+权重矩阵$W^{[2]}$的shape为 $(n^{[2]}, n^{[1]})$, 偏置$b^{[2]}$的shape为 $(n^{[2]}, 1)$
+
+$$
+\begin {aligned}
+W^{[2]} &=
+\left[
+\begin {matrix}
+w_{1,1} & \cdots & w_{1,n^{[1]}} \\
+\vdots & \ddots & \vdots \\
+w_{n^{[2]},1} & \cdots & w_{n^{[2]},n^{[1]}}
+\end {matrix}
+\right] \\
+
+b^{[2]} &=
+\left[
+\begin {matrix}
+b_{1} \\
+\vdots \\
+b_{n^{[2]}}
+\end {matrix}
+\right]
+\end {aligned}
+$$
+
+第二层神经元$Z^{[2]}$、$A^{[2]}$的shape为$(n^{[2]},m)$
+
+$$
+\begin {aligned}
+Z^{[2]} 
+&= W^{[2]} A^{[1]} + b^{[2]} \\
+&= 
+\left[
+\begin {matrix}
+z_{1}^{[2] (1)} & \cdots & z_{1}^{[2] (m)} \\
+\vdots & \ddots & \vdots \\
+z_{n^{[1]}}^{[2] (1)} & \cdots & z_{n^{[1]}}^{[2] (m)}
+\end {matrix}
+\right] \\
+
+A^{[2]} &=
+g(2)(Z^{[2]})
+\end {aligned}
+$$
+
+损失函数为
+
+$$
+\begin {aligned}
+J(W^{[1]},b^{[1]},W^{[2]},b^{[2]})
+&= \frac{1}{m} \sum{m \atop i=1} l(\hat{y}^{(i)},y^{(i)}) \\
+&= \frac{1}{m} \sum{m \atop i=1} l(a^{[2] (i)},y^{(i)})
+\end {aligned}
+$$
+
+## backward propagate
+
+当$g(2)$为sigmoid函数时
+
+$$
+\begin {aligned}
+d_{Z^{[2]}} &= A^{[2]} - Y ||shape(n^{[2]}, m)\\
+d_{W^{[2]}} &= \frac{1}{m} d_{Z^{[2]}} A^{[1]T} ||shape(n^{[2]}, n^{[1]})\\
+d_{b^{[2]}} &= \frac{1}{m} np.sum(d_{Z^{[2]}}, axis=1, keepdims=True) ||shape(n^{[2]}, 1)\\
+d_{Z^{[1]}} &= W^{[2]T}d_{Z^{[2]}} * g^{[1]'}(Z^{[1]}) || shape(n^{[1]}, m)\\
+d_{W^{[1]}} &= \frac{1}{m} d_{Z^{[1]}} X^T ||shape(n^{[1]}, n^{[0]}) \\
+d_{b^{[1]}} &= \frac{1}{m} np.sum(d_{Z^{[1]}}, axis=1, keepdims=True) ||shape(n^{[1]}, 1) \\
+\end {aligned}
+$$
 
 ## Shallow Neural Networks
 
@@ -1016,307 +821,4 @@ print("y = " + str(np.squeeze(my_predicted_image)) + ", your algorithm predicts 
     
 ## Planar data classification with one hidden layer
 
-```python
-# Package imports
-import numpy as np
-import matplotlib.pyplot as plt
-from testCases import *
-import sklearn
-import sklearn.datasets
-import sklearn.linear_model
-from planar_utils import plot_decision_boundary, sigmoid, load_planar_dataset, load_extra_datasets
-
-np.random.seed(1)  # set a seed so that the results are consistent
-
-# 2 - Dataset
-X, Y = load_planar_dataset()
-
-# Visualize the data:
-plt.scatter(X[0, :], X[1, :], c=Y, s=40, cmap=plt.cm.Spectral)
-# plt.show()
-
-# START CODE HERE ### (≈ 3 lines of code)
-shape_X = X.shape
-shape_Y = Y.shape
-m = shape_X[1]  # training set size
-# END CODE HERE ###
-
-print('The shape of X is: ' + str(shape_X))
-print('The shape of Y is: ' + str(shape_Y))
-print('I have m = %d training examples!' % (m))
-
-# 3 - Simple Logistic Regression
-# Train the logistic regression classifier
-clf = sklearn.linear_model.LogisticRegressionCV()
-clf.fit(X.T, Y.T)
-
-# Plot the decision boundary for logistic regression
-plot_decision_boundary(lambda x: clf.predict(x), X, Y)
-plt.title("Logistic Regression")
-# plt.show()
-
-# Print accuracy
-LR_predictions = clf.predict(X.T)
-print('Accuracy of logistic regression: %d ' %
-      float((np.dot(Y, LR_predictions) +
-             np.dot(1 - Y, 1 - LR_predictions)) / float(Y.size) * 100) +
-      '% ' + "(percentage of correctly labelled datapoints)")
-
-# 4 - Neural Network model
-# 4.1 - Defining the neural network structure
-# GRADED FUNCTION: layer_sizes
-
-
-def layer_sizes(X, Y):
-    """
-    Arguments:
-    X -- input dataset of shape (input size, number of examples)
-    Y -- labels of shape (output size, number of examples)
-
-    Returns:
-    n_x -- the size of the input layer
-    n_h -- the size of the hidden layer
-    n_y -- the size of the output layer
-    """
-    # START CODE HERE ### (≈ 3 lines of code)
-    n_x = X.shape[0]  # size of input layer
-    n_h = X.shape[1]
-    n_y = Y.shape[0]  # size of output layer
-    # END CODE HERE ###
-    return (n_x, n_h, n_y)
-
-
-X_assess, Y_assess = layer_sizes_test_case()
-(n_x, n_h, n_y) = layer_sizes(X_assess, Y_assess)
-print("The size of the input layer is: n_x = " + str(n_x))
-print("The size of the hidden layer is: n_h = " + str(n_h))
-print("The size of the output layer is: n_y = " + str(n_y))
-
-# 4.2 - Initialize the model's parameters
-# GRADED FUNCTION: initialize_parameters
-
-
-def initialize_parameters(n_x, n_h, n_y):
-    """
-    Argument:
-    n_x -- size of the input layer
-    n_h -- size of the hidden layer
-    n_y -- size of the output layer
-
-    Returns:
-    params -- python dictionary containing your parameters:
-                    W1 -- weight matrix of shape (n_h, n_x)
-                    b1 -- bias vector of shape (n_h, 1)
-                    W2 -- weight matrix of shape (n_y, n_h)
-                    b2 -- bias vector of shape (n_y, 1)
-    """
-
-    np.random.seed(2)  # we set up a seed so that your output matches ours although the initialization is random.
-
-    # START CODE HERE ### (≈ 4 lines of code)
-    W1 = np.random.randn(n_h, n_x) * 0.01
-    b1 = np.zeros((n_h, 1))
-    W2 = np.random.randn(n_y, n_h) * 0.01
-    b2 = np.zeros((n_y, 1))
-    # END CODE HERE ###
-
-    assert (W1.shape == (n_h, n_x))
-    assert (b1.shape == (n_h, 1))
-    assert (W2.shape == (n_y, n_h))
-    assert (b2.shape == (n_y, 1))
-
-    parameters = {"W1": W1,
-                  "b1": b1,
-                  "W2": W2,
-                  "b2": b2}
-
-    return parameters
-
-
-n_x, n_h, n_y = initialize_parameters_test_case()
-
-parameters = initialize_parameters(n_x, n_h, n_y)
-print("W1 = " + str(parameters["W1"]))
-print("b1 = " + str(parameters["b1"]))
-print("W2 = " + str(parameters["W2"]))
-print("b2 = " + str(parameters["b2"]))
-
-
-# 4.3 - The Loop
-# GRADED FUNCTION: forward_propagation
-def forward_propagation(X, parameters):
-    """
-    Argument:
-    X -- input data of size (n_x, m)
-    parameters -- python dictionary containing your parameters (output of initialization function)
-
-    Returns:
-    A2 -- The sigmoid output of the second activation
-    cache -- a dictionary containing "Z1", "A1", "Z2" and "A2"
-    """
-    # Retrieve each parameter from the dictionary "parameters"
-    # START CODE HERE ### (≈ 4 lines of code)
-    W1 = parameters["W1"]
-    b1 = parameters["b1"]
-    W2 = parameters["W2"]
-    b2 = parameters["b2"]
-    # END CODE HERE ###
-
-    # Implement Forward Propagation to calculate A2 (probabilities)
-    # START CODE HERE ### (≈ 4 lines of code)
-    Z1 = np.dot(W1, X) + b1
-    A1 = np.tanh(Z1)
-    Z2 = np.dot(W2, A1) + b2
-    A2 = sigmoid(Z2)
-    # END CODE HERE ###
-
-    assert(A2.shape == (1, X.shape[1]))
-
-    cache = {"Z1": Z1,
-             "A1": A1,
-             "Z2": Z2,
-             "A2": A2}
-
-    return A2, cache
-
-
-X_assess, parameters = forward_propagation_test_case()
-
-A2, cache = forward_propagation(X_assess, parameters)
-
-# Note: we use the mean here just to make sure that your output matches ours.
-print(np.mean(cache['Z1']), np.mean(cache['A1']), np.mean(cache['Z2']), np.mean(cache['A2']))
-
-
-# GRADED FUNCTION: compute_cost
-def compute_cost(A2, Y, parameters):
-    """
-    Computes the cross-entropy cost given in equation (13)
-
-    Arguments:
-    A2 -- The sigmoid output of the second activation, of shape (1, number of examples)
-    Y -- "true" labels vector of shape (1, number of examples)
-    parameters -- python dictionary containing your parameters W1, b1, W2 and b2
-
-    Returns:
-    cost -- cross-entropy cost given equation (13)
-    """
-
-    m = Y.shape[1]  # number of example
-
-    # Compute the cross-entropy cost
-    # START CODE HERE ### (≈ 2 lines of code)
-    logprobs = Y * np.log(A2) + (1 - Y) * np.log(1 - A2)
-    cost = np.sum(logprobs) / -m
-    # END CODE HERE ###
-
-    cost = np.squeeze(cost)     # makes sure cost is the dimension we expect.
-    # E.g., turns [[17]] into 17
-    assert(isinstance(cost, float))
-
-    return cost
-
-
-A2, Y_assess, parameters = compute_cost_test_case()
-
-print("cost = " + str(compute_cost(A2, Y_assess, parameters)))
-
-
-# GRADED FUNCTION: backward_propagation
-def backward_propagation(parameters, cache, X, Y):
-    """
-    Implement the backward propagation using the instructions above.
-
-    Arguments:
-    parameters -- python dictionary containing our parameters
-    cache -- a dictionary containing "Z1", "A1", "Z2" and "A2".
-    X -- input data of shape (2, number of examples)
-    Y -- "true" labels vector of shape (1, number of examples)
-
-    Returns:
-    grads -- python dictionary containing your gradients with respect to different parameters
-    """
-    m = X.shape[1]
-
-    # First, retrieve W1 and W2 from the dictionary "parameters".
-    # START CODE HERE ### (≈ 2 lines of code)
-    W1 = parameters["W1"]
-    W2 = parameters["W2"]
-    # END CODE HERE ###
-
-    # Retrieve also A1 and A2 from dictionary "cache".
-    # START CODE HERE ### (≈ 2 lines of code)
-    A1 = cache["A1"]
-    A2 = cache["A2"]
-    # END CODE HERE ###
-
-    # Backward propagation: calculate dW1, db1, dW2, db2.
-    # START CODE HERE ### (≈ 6 lines of code, corresponding to 6 equations on slide above)
-    dZ2 = A2 - Y
-    dW2 = np.dot(dZ2, A1.T) / m
-    db2 = np.sum(dZ2, axis=1, keepdims=True) / m
-    dZ1 = np.dot(W2.T, dZ2) * (1 - A1**2)
-    dW1 = np.dot(dZ1, X.T) / m
-    db1 = np.sum(dZ1, axis=1, keepdims=True) / m
-    # END CODE HERE ###
-
-    grads = {"dW1": dW1,
-             "db1": db1,
-             "dW2": dW2,
-             "db2": db2}
-
-    return grads
-
-
-parameters, cache, X_assess, Y_assess = backward_propagation_test_case()
-
-grads = backward_propagation(parameters, cache, X_assess, Y_assess)
-print("dW1 = " + str(grads["dW1"]))
-print("db1 = " + str(grads["db1"]))
-print("dW2 = " + str(grads["dW2"]))
-print("db2 = " + str(grads["db2"]))
-
-
-# GRADED FUNCTION: update_parameters
-def update_parameters(parameters, grads, learning_rate=1.2):
-    """
-    Updates parameters using the gradient descent update rule given above
-
-    Arguments:
-    parameters -- python dictionary containing your parameters 
-    grads -- python dictionary containing your gradients 
-
-    Returns:
-    parameters -- python dictionary containing your updated parameters 
-    """
-    # Retrieve each parameter from the dictionary "parameters"
-    # START CODE HERE ### (≈ 4 lines of code)
-    W1 = None
-    b1 = None
-    W2 = None
-    b2 = None
-    ### END CODE HERE ###
-
-    # Retrieve each gradient from the dictionary "grads"
-    # START CODE HERE ### (≈ 4 lines of code)
-    dW1 = None
-    db1 = None
-    dW2 = None
-    db2 = None
-    ## END CODE HERE ###
-
-    # Update rule for each parameter
-    # START CODE HERE ### (≈ 4 lines of code)
-    W1 = None
-    b1 = None
-    W2 = None
-    b2 = None
-    ### END CODE HERE ###
-
-    parameters = {"W1": W1,
-                  "b1": b1,
-                  "W2": W2,
-                  "b2": b2}
-
-    return parameters
-```
+相关数据集和输出见[github](https://github.com/liqiang311/deeplearning.ai/blob/master/1_Neural%20Networks%20and%20Deep%20Learning/week2/Logistic%20Regression%20as%20a%20Neural%20Network/my-Logistic%2BRegression%2Bwith%2Ba%2BNeural%2BNetwork%2Bmindset%2Bv3.ipynb)

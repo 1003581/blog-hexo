@@ -74,6 +74,9 @@ categories: linux
 
 ## 用户
 
+### 显示普通账户和系统用户
+`awk -F: '{if($3>=1000){printf "Common User: %s \n",$1}}' /etc/passwd`  
+`awk -F: '{if($3>=1000){printf "Common User: %s \n",$1}else{printf "root or sysuser:%s\n",$1}}' /etc/passwd `
 ### [启动禁用账户](http://blog.csdn.net/rainylin/article/details/6132916)
 ### [userdel](http://www.cnblogs.com/DaDaOnline/p/5527833.html)
 ### 添加管理员账户
