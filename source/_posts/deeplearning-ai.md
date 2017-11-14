@@ -5,11 +5,15 @@ tags: 深度学习
 categories: 机器学习
 ---
 
-课程在[网易云课堂](https://mooc.study.163.com/course/deeplearning_ai-2001281002#/info)上免费观看，作业题如下：加粗为答案。
+课程在[网易云课堂](https://study.163.com/provider/2001053000/index.htm)上免费观看，作业题如下：加粗为答案。
 
 <!-- more -->
 
-# 第一周-深度学习概论
+# 神经网络和深度学习
+
+[网址](https://mooc.study.163.com/course/2001281002?tid=2001392029#/info)
+
+## 第一周 深度学习概论
 
 10个选择题，原见[Github](https://github.com/liqiang311/deeplearning.ai/blob/master/1_Neural%20Networks%20and%20Deep%20Learning/Quiz-week1-Introduction%20to%20deep%20learning.pdf)
 
@@ -68,15 +72,15 @@ categories: 机器学习
     1. **Increasing the training set size generally does not hurt an algorithm’s performance, and it may help significantly.**
     1. **Increasing the size of a neural network generally does not hurt an algorithm’s performance, and it may help significantly.**
 
-# 第二周Logistic Regression
+## 第二周Logistic Regression
 
-## Logistic回归公式推导
+### Logistic回归公式推导
 
 样本个数 $m$, 训练样本个数 $m_{train}$, 同理 $m_{test}$,$m_{valid}$
 
-### 单个样本
+#### 单个样本
 
-#### forward propagate
+##### forward propagate
 
 input x的shape为$(n_x, 1)$，label y的shape为$(1, 1)$
 
@@ -160,7 +164,7 @@ l(\hat{y},y) &= l(a,y) \\
 \end {aligned}
 $$
 
-#### backward propagate
+##### backward propagate
 
 损失函数对$\hat{y}$和$a$的偏导
 
@@ -244,9 +248,9 @@ b &= b - \alpha d_b
 \end {aligned}
 $$
 
-### m个样本
+#### m个样本
 
-#### forward propagate
+##### forward propagate
 
 input X的shape为$(n_x, m)$，label Y的shape为$(1, m)$
 
@@ -363,7 +367,7 @@ J(w,b) &=
 \end {aligned}
 $$
 
-#### backward propagate
+##### backward propagate
 
 损失函数对$d_Z$的偏导
 
@@ -483,7 +487,7 @@ b &= b - \alpha d_b
 \end {aligned}
 $$
 
-## Neural-Network-Basics
+### Neural-Network-Basics
 
 10个选择题，原见[Github](https://github.com/liqiang311/deeplearning.ai/blob/master/1_Neural%20Networks%20and%20Deep%20Learning/Quiz-week2-Coursera%20_%20Online%20Courses%20From%20Top%20Universities.pdf)
 
@@ -574,13 +578,13 @@ $$
     1. `J = a*b + b*c + a*c`
     1. `J = (b - 1) * (c + a)`
 
-## Logistic-Regression-with-a-Neural-Network-mindset
+### Logistic-Regression-with-a-Neural-Network-mindset
 
 相关数据集和输出见[github](https://github.com/liqiang311/deeplearning.ai/blob/master/1_Neural%20Networks%20and%20Deep%20Learning/week2/Logistic%20Regression%20as%20a%20Neural%20Network/my-Logistic%2BRegression%2Bwith%2Ba%2BNeural%2BNetwork%2Bmindset%2Bv3.ipynb)
 
-# 第三周-浅层神经网络
+## 第三周-浅层神经网络
 
-## 公式推导
+### 公式推导
 
 右上角`[]`表示层数，右上角`()`表示样本数
 
@@ -590,7 +594,7 @@ $a^{[1]}_2$ 表示第一层中第二个神经元
 
 $g(1)$为第一层网络的激活函数
 
-## forward propagate
+#### forward propagate
 
 输入X的shape为$(n^{[0]},m)$, Y的shape为$(1,m)$
 
@@ -735,7 +739,7 @@ J(W^{[1]},b^{[1]},W^{[2]},b^{[2]})
 \end {aligned}
 $$
 
-## backward propagate
+#### backward propagate
 
 当$g(2)$为sigmoid函数时
 
@@ -761,7 +765,7 @@ $$g'(z)=relu(z)' = \begin{cases} 0, &z<0\cr 1, &z \geq 0 \end{cases}$$
 $$a=g(z)=leakyRelu(z) = max(0.01z, z)$$
 $$g'(z)=leakyRelu(z)' = \begin{cases} 0.01, &z<0\cr 1, &z \geq 0 \end{cases}$$
 
-## Shallow Neural Networks
+### Shallow Neural Networks
 
 10个选择题，原见[Github](https://github.com/liqiang311/deeplearning.ai/blob/master/1_Neural%20Networks%20and%20Deep%20Learning/Quiz-week3-Coursera%20_%20Online%20Courses%20From%20Top%20Universities.pdf)
 
@@ -830,13 +834,13 @@ $$g'(z)=leakyRelu(z)' = \begin{cases} 0.01, &z<0\cr 1, &z \geq 0 \end{cases}$$
     1. **$Z^{[1]}$ and $A^{[1]}$ are (4, m)**
     1. $Z^{[1]}$ and $A^{[1]}$ are (4, 1)
     
-## Planar data classification with one hidden layer
+### Planar data classification with one hidden layer
 
 相关数据集和输出见[github](https://github.com/liqiang311/deeplearning.ai/blob/master/1_Neural%20Networks%20and%20Deep%20Learning/week3/my-Planar%2Bdata%2Bclassification%2Bwith%2Bone%2Bhidden%2Blayer.ipynb)
 
-# 第四层-深层神经网络
+## 第四层-深层神经网络
 
-## 公式
+### 公式
 
 $$
 \begin {aligned}
@@ -861,3 +865,104 @@ $$
 \mathrm{d}A^{[l-1]} &= W^{[l]T}\mathrm{d}Z^{[l]}
 \end {aligned}
 $$
+
+### Key concepts on Deep Neural Network
+
+1. What is the "cache" used for in our implementation of forward propagation and backward propagation?
+    1. **We use it to pass variables computed during forward propagation to the corresponding backward propagation step. It contains useful values for backward propagation to compute derivatives.**
+    1. We use it to pass variables computed during backward propagation to the corresponding forward propagation step. It contains useful values for forward propagation to compute activations.
+    1. It is used to cache the intermediate values of the cost function during training.
+    1. It is used to keep track of the hyperparameters that we are searching over, to speed up computation.
+1. Among the following, which ones are "hyperparameters"? (Check all that apply.)
+    1. **size of the hidden layers $n^{[l]}$**
+    1. **number of layers $L$ in the neural network**
+    1. **learning rate $α$**
+    1. activation values $a^{[l]}$
+    1. **number of iterations**
+    1. weight matrices $W^{[l]}$
+    1. bias vectors $b^{[l]}$
+1. Which of the following statements is true?
+    1. **The deeper layers of a neural network are typically computing more complex features of the input than the earlier layers.**
+    1. The earlier layers of a neural network are typically computing more complex features of the input than the deeper layers.
+1. Vectorization allows you to compute forward propagation in an $L$-layer neural network without an explicit for-loop (or any other explicit iterative loop) over the layers l=1, 2, …,L. True/False?
+    1. **True**
+    1. False
+1. Assume we store the values for $n^{[l]}$ in an array called layers, as follows: layer_dims = [$n_x$, 4,3,2,1]. So layer 1 has four hidden units, layer 2 has 3 hidden units and so on. Which of the following for-loops will allow you to initialize the parameters for the model?
+    1. Code1
+        ```python
+        for (i in range(1, len(layer_dims)/2)):
+            parameter['w' + str(i)] = np.random.randn(layers[i], layers[i-1]) * 0.01
+            parameter['b' + str(i)] = np.random.randn(layers[i], 1) *　0.01
+        ```
+    1. Code2 
+        ```python
+        for (i in range(1, len(layer_dims)/2)):
+            parameter['w' + str(i)] = np.random.randn(layers[i], layers[i-1]) * 0.01
+            parameter['b' + str(i)] = np.random.randn(layers[i-1], 1) *　0.01
+        ```
+    1. Code3 
+        ```python
+        for (i in range(1, len(layer_dims))):
+            parameter['w' + str(i)] = np.random.randn(layers[i-1], layers[i]) * 0.01
+            parameter['b' + str(i)] = np.random.randn(layers[i], 1) *　0.01
+        ```
+    1. **Code4**
+        ```python
+        for (i in range(1, len(layer_dims))):
+            parameter['w' + str(i)] = np.random.randn(layers[i], layers[i-1]) * 0.01
+            parameter['b' + str(i)] = np.random.randn(layers[i], 1) *　0.01
+        ```
+1. Consider the following neural network.  
+    ![](...)  
+    How many layers does this network have?
+    1. **The number of layers $L$ is 4. The number of hidden layers is 3.**
+    1. The number of layers $L$ is 3. The number of hidden layers is 3.
+    1. The number of layers $L$ is 4. The number of hidden layers is 4.
+    1. The number of layers $L$ is 5. The number of hidden layers is 4.
+1. During forward propagation, in the forward function for a layer $l$ you need to know what is the activation function in a layer (Sigmoid, tanh, ReLU, etc.). During backpropagation, the corresponding backward function also needs to know what is the activation function for layer $l$, since the gradient depends on it. True/False?
+    1. **True**
+    1. False
+1. There are certain functions with the following properties:  
+    (i) To compute the function using a shallow network circuit, you will need a large network (where we measure size by the number of logic gates in the network), but (ii) To compute it using a deep network circuit, you need only an exponentially smaller network. True/False?
+    1. **True**
+    1. False
+1. Consider the following 2 hidden layer neural network:  
+    ![](...)  
+    Which of the following statements are True? (Check all that apply).
+    1. **W[1] will have shape (4, 4)**
+    1. **b[1] will have shape (4, 1)**
+    1. W[1] will have shape (3, 4)
+    1. b[1] will have shape (3, 1)
+    1. **W[2] will have shape (3, 4)**
+    1. b[2] will have shape (1, 1)
+    1. W[2] will have shape (3, 1)
+    1. **b[2] will have shape (3, 1)**
+    1. W[3] will have shape (3, 1)
+    1. **b[3] will have shape (1, 1)**
+    1. **W[3] will have shape (1, 3)**
+    1. b[3] will have shape (3, 1)
+1. Whereas the previous question used a specific network, in the general case what is the dimension of W^{[l]}, the weight matrix associated with layer $l$?
+    1. **W[l] has shape (n[l],n[l−1])**
+    1. W[l] has shape (n[l+1],n[l])
+    1. W[l] has shape (n[l],n[l+1])
+    1. W[l] has shape (n[l−1],n[l])
+
+### Building your Deep Neural Network - Step by Step
+
+[ipynb](https://github.com/liqiang311/deeplearning.ai/blob/master/1_Neural%20Networks%20and%20Deep%20Learning/week4/Building%20your%20Deep%20Neural%20Network%20-%20Step%20by%20Step/my-Building%2Byour%2BDeep%2BNeural%2BNetwork%2B-%2BStep%2Bby%2BStep.ipynb)
+
+### Deep Neural Network - Application
+
+[ipynb](https://github.com/liqiang311/deeplearning.ai/blob/master/1_Neural%20Networks%20and%20Deep%20Learning/week4/Deep%20Neural%20Network%20Application%20Image%20Classification/my-Deep%2BNeural%2BNetwork%2B-%2BApplication.ipynb)
+
+# 改善深层神经网络：超参数调试、正则化以及优化
+
+[网址](https://mooc.study.163.com/course/2001281003?tid=2001391036#/info)
+
+## 第一周 深度学习的实用层面
+
+train 98% valid 1% test 1%
+
+## 第二周 优化算法
+
+## 第三周 超参数调试、Batch正则化和程序框架
