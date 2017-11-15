@@ -977,8 +977,159 @@ $$
 
 更多的数据、正则化
 
-#### 正则化
+#### 正则化-L2
+
+L2正则化，$J(w,b)=\frac{1}{m} \sum{m \atop i=1}{l(a^{(i)},y^{(i)})}+\frac{\lambda}{2m}||w||^2$
+
+$\lambda$表示正则化参数，python编程时用`lambd`表示。
+
+$||w||^2$表示权重矩阵中所有权重值的平方和。
+
+对上式子进行求导，会得到$\mathrm{d}W^{[l]}=(from backpropa)+\frac{\lambda}{m}W^{[l]}$
+
+权重更新公式为$W^{[l]}=W^{[l]}-\mathrm{d}W^{[l]}=(1-\frac{a\lambda}{m})W^{[l]}-a(from backpropa)$
+
+权重会不断的下降，所以也称之为权重衰减。weight decay
+
+$\lambda$越大，$Z$越小，tanh或者sigmoid激活函数越接近于线性，整个神经网络会向线性方向发展，这样就会避免过拟合。
+
+#### 正则化-dropout
+
+Inverted dropout
+
+```python
+d3 = np.random.randn(a3.shape[0], a3.shape[1]) < keep-prob
+a3 = np.multiply(d3, a3)
+a3 /= keep-prob
+```
+
+#### 其他正则化方法
+
+数据扩增，包含翻转、旋转、缩放、扭曲等。
+
+early stopping，在中间点停止迭代过程。
+
+#### 输入归一化
+
+将输入归一化为正太分布
+
+$$
+\begin {aligned}
+\mu &= \frac{1}{m}\sum{m \atop i=1}x^{(i)} \\
+x &= x - \mu \\
+\sigma^2 &= \frac{1}{m}\sum{m \atop i=1}x^{(i)2} \\
+x &= x / \sigma^2
+\end {aligned}
+$$
+
+使得代价函数更加圆滑，梯度更加合理
+
+#### 梯度消失和梯度爆炸
+
+vanishing/exploding gradients
+
+W^10000，W<1，消失 >1，爆炸
+
+#### 权重初始化
+
+[机器学习的模型（e.g. logistic regression, RBM）中为什么加入bias?](https://www.zhihu.com/question/24300697)
+
+对于relu神经元，$W^{[l]}=np.random.randn(shape)*np.sqrt(\frac{a}{n^{[l-1]}})$
+
+对于tanh神经元，会乘以$np.sqrt(\frac{1}{n^{[l-1]}})$或者$np.sqrt(\frac{2}{n^{[l-1]}+n^{[l]}})$，被称之为Xavierc初始化。
+
+#### 梯度检查
+
+grad check
+
+不要在训练中使用，仅仅debug
+
+如果检查失败，检查bug
+
+不要忘记正则化
+
+不要使用dropout
+
+### Practical aspects of deep learning
+
+1. If you have 10,000,000 examples, how would you split the train/dev/test set?
+    1. 60% train . 20% dev . 20% test
+    1. **98% train . 1% dev . 1% test**
+    1. 33% train . 33% dev . 33% test
+1. The dev and test set should:
+    1. **Come from the same distribution**
+    1. Come from different distributions
+    1. Be identical to each other (same (x,y) pairs)
+    1. Have the same number of examples
+1. If your Neural Network model seems to have high variance, what of the following would be promising things to try?
+    1. **Add regularization**        
+    1. Make the Neural Network deeper
+    1. Increase the number of units in each hidden layer
+    1. Get more test data
+    1. **Get more training data**
+1. You are working on an automated check-out kiosk for a supermarket, and are building a classifier for apples, bananas, and oranges. Suppose your classifier obtains a training set error of 0.5%, and a dev set error of 7%, Which of the following are promising things to try to improve your classfier? (Check all that apply.)
+    1. **Increase the regularization parameter lambda**
+    1. Decrease the regularization parameter lambda
+    1. **Get more training data**
+    1. Use a bigger neural network
+1. What is weight decay?
+    1. Gradual corruption of the weights in the neural network if it is trained on noisy data.
+    1. A technique to avoid vanishing gradient by imposing a ceiling on the values of the weights.
+    1. **A regularization technique (such as L2 regularization) that results in gradient descent shrinking the weights on every iteration.**
+    1. The process of gradually decreasing the learning rate during training.
+1. What happens when you increase the regularization hyperparameter lambda?
+    1. **Weights are pushed toward becoming smaller (closer to 0)**
+    1. Weights are pushed toward becoming bigger (further from 0)
+    1. Doubling lambda should roughly result in doubling the weights
+    1. Gradient descent taking bigger steps with each iteration (proportional to lambda)
+1. With the inverted dropout technique, at test time:
+    1. You apply dropout (randomly eliminating units) and do not keep the 1/keep_prob factor in the calculations used in training
+    1. You do not apply dropout (do not randomly eliminate units), but keep the 1/keep_prob factor in the calculations used in training.
+    1. **You do not apply dropout (do not randomly eliminate units) and do not keep the 1/keep_prob factor in the calculations used in training**
+    1. You apply dropout (randomly eliminating units) but keep the 1/keep_prob factor in the calculations used in training.
+1. Increasing the parameter keep_prob from (say) 0.5 to 0.6 will likely cause the following: (Check the two that apply)
+    1. Increasing the regularization effect
+    1. **Reducing the regularization effect**
+    1. Causing the neural network to end up with a higher training set error
+    1. **Causing the neural network to end up with a lower training set error**
+1. Which of these techniques are useful for reducing variance (reducing overfitting)? (Check all that apply.)
+    1. **Data augmentation**
+    1. Gradient Checking
+    1. Exploding gradient
+    1. **L2 regularization**
+    1. **Dropout**
+    1. Vanishing gradient
+    1. Xavier initialization
+1. Why do we normalize the inputs x?
+    1. It makes it easier to visualize the data
+    1. It makes the parameter initialization faster
+    1. Normalization is another word for regularization--It helps to reduce variance
+    1. **It makes the cost function faster to optimize**
+
+### Regularization
+
+[ipynb]()
+
+### Initialization
+
+[ipynb]()
+
+### Gradient_Checking
+
+[ipynb]()
 
 ## 第二周 优化算法
+
+### 理论
+
+#### Mini-batch
+
+#### 指数加权平均
+
+#### 动量梯度下降
+
+#### RMSprop
+
+#### Adam优化算法
 
 ## 第三周 超参数调试、Batch正则化和程序框架
