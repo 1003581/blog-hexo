@@ -1,5 +1,5 @@
 ---
-title: Docker命令及dockerfile详解
+title: Dockerfile详解
 date: 2017-09-14 15:11:50
 tags: docker
 categories: docker

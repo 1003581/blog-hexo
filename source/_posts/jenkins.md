@@ -11,7 +11,7 @@ categories: linux
 
 ## 准备工作
 
-下载安装Docker，如何安装Docker和Docker-Compose见[http://www.liqiang311.com/2017/09/docker-install/](http://www.liqiang311.com/2017/09/docker-install/)
+下载安装Docker，如何安装Docker和Docker-Compose见[http://liqiang311.com/docker-install/](http://liqiang311.com/docker-install/)
 
 下载jenkins镜像
 

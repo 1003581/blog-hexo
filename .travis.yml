@@ -31,8 +31,9 @@ install:
   - npm install hexo-generator-index --save
   - npm install hexo-generator-sitemap --save
   - npm install hexo-generator-baidu-sitemap --save
-  - npm install
+  - npm install hexo-generator-searchdb --save
   - npm install hexo-renderer-pandoc --save
+  - npm install
 
 addons:
   ssh_known_hosts: 
