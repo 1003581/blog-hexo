@@ -1,6 +1,6 @@
 ---
 title: deeplearning.ai
-date: 2017-11-06 23:00:00
+date: 2017-11-06 23:30:00
 tags: 深度学习
 categories: 机器学习
 ---
@@ -1128,14 +1128,120 @@ grad check
 
 不会稳定的想最小值发展，不会收敛
 
-#### 指数加权平均
-
-
-
 #### 动量梯度下降
+
+指数加权平均，滑动平均模型
+
+$$
+\begin {aligned}
+v_{\mathrm{d}W} &= \beta v_{\mathrm{d}W} + (1-\beta)\mathrm{d}W \\
+v_{\mathrm{d}b} &= \beta v_{\mathrm{d}b} + (1-\beta)\mathrm{d}b \\
+W &= W - \alpha v_{\mathrm{d}W} \\
+b &= b - \alpha v_{\mathrm{d}b} \\
+\end {aligned}
+$$
+
+包含两个超参数：学习率$\alpha$和滑动衰减率$\beta$，$\beta$一般取0.9或者0.99，越多模型越稳定。
+
+Momentum是为了对冲mini-batch带来的抖动。
 
 #### RMSprop
 
+$$
+\begin {aligned}
+S_{\mathrm{d}W} &= \beta S_{\mathrm{d}W} + (1-\beta)(\mathrm{d}W)^2 \\
+S_{\mathrm{d}b} &= \beta S_{\mathrm{d}b} + (1-\beta)(\mathrm{d}b)^2 \\
+W &= W - \alpha \frac{\mathrm{d}W}{\sqrt{S_{\mathrm{d}W}}+\varepsilon} \\
+b &= b - \alpha \frac{\mathrm{d}b}{\sqrt{S_{\mathrm{d}b}}+\varepsilon} \\
+\end {aligned}
+$$
+
+$\varepsilon$为了阻止除以极小值，一般取`e-8`
+
+RMSprop是为了对hyper-parameter进行归一。直观理解是将摆动大的梯度进行缩小。
+
 #### Adam优化算法
 
+Adaptive Moment Estimation 结合了动量和RMSprop
+
+mini-batch中计算出每次迭代过程$t$的$\mathrm{d}W$和$\mathrm{d}b$后，Adam优化算法公式如下：
+
+$$
+\begin {aligned}
+V_{\mathrm{d}W} = \beta_1 V_{\mathrm{d}W} + (1-\beta_1)\mathrm{d}W
+&\quad
+V_{\mathrm{d}b} = \beta_1 V_{\mathrm{d}b} + (1-\beta_1)\mathrm{d}b \\
+S_{\mathrm{d}W} = \beta_2 S_{\mathrm{d}W} + (1-\beta_2)(\mathrm{d}W)^2
+&\quad
+S_{\mathrm{d}b} = \beta_2 S_{\mathrm{d}b} + (1-\beta_2)(\mathrm{d}b)^2 \\
+V^{corrected}_{\mathrm{d}W} = \frac{V_{\mathrm{d}W}}{1-{\beta_1}^t} 
+&\quad
+V^{corrected}_{\mathrm{d}b} = \frac{V_{\mathrm{d}b}}{1-{\beta_1}^t} \\
+S^{corrected}_{\mathrm{d}W} = \frac{S_{\mathrm{d}W}}{1-{\beta_2}^t} 
+&\quad
+S^{corrected}_{\mathrm{d}b} = \frac{S_{\mathrm{d}b}}{1-{\beta_2}^t} \\
+W = W - \alpha \frac{V^{corrected}_{\mathrm{d}W}}{\sqrt{S^{corrected}_{\mathrm{d}W}}+\varepsilon}
+&\quad
+b = b - \alpha \frac{V^{corrected}_{\mathrm{d}b}}{\sqrt{S^{corrected}_{\mathrm{d}b}}+\varepsilon} \\
+\end {aligned}
+$$
+
+第三行和第四行公式为偏差修正
+
+- $\alpha$:全局学习率
+- $\beta_1$:默认0.9
+- $\beta_2$:默认0.999
+- $\varepsilon$:默认$10^{-8}$
+
+#### 学习率衰减
+
+学习率随着时间而慢慢变小，初始学习率，衰减率
+
+#### 局部最优问题
+
+鞍点saddle point----损失函数中的0梯度点
+
+平滑段使得训练变慢
+
 ## 第三周 超参数调试、Batch正则化和程序框架
+
+### 笔记
+
+#### 超参
+
+按重要程度排名
+
+- 学习率$\alpha$——最重要
+    - 对对数轴上均匀取值$[10^a,10^b]$,比如a,b的取值为[-4,-1]
+- 隐藏层神经元个数`#hidden units`——第二重要
+- mini-batch size——第二重要
+- moment beta——第二重要
+    - 0.9意味着取过去10个数字的平均值，0.999以为着取过去1000个数字的平均值
+    - 针对$1-\beta$对对数轴上均匀取值$[10^a,10^b]$,比如a,b的取值为[-3,-1]
+- 隐藏层数——第三重要
+- 学习率衰减值——第三重要
+- Adam算法中的$\beta_1,\beta_2,\varepsilon$，一般取默认值——不重要
+
+超参搜索
+
+- 随机选择超参组合
+    - 在各个参数的合理范围内随机取值
+    - 有助于发现潜在的最优值
+- 由粗到精的搜索
+
+#### Batch归一化
+
+将每一层的Z[l]归一化，在激活之前。可以加快训练速度
+
+$$
+\begin {aligned}
+\mu &= \frac{1}{m}\sum{z^{(i)}} \\
+\sigma^2 &= \frac{1}{m}\sum{(z^{(i)}-\mu)^2} \\
+z^{(i)}_{norm} &=\frac{z^{(i)}-\mu}{\sqrt{\sigma^2+\varepsilon}} \\
+\tilde{z}^{(i)} &= \gamma z^{(i)}_{norm} + \beta
+\end {aligned}
+$$
+
+#### Softmax层
+
+激活函数公式
