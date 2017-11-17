@@ -1108,15 +1108,15 @@ grad check
 
 ### Regularization
 
-[ipynb]()
+[ipynb](https://github.com/liqiang311/deeplearning.ai/blob/master/2_Improving%20Deep%20Neural%20Networks/week1_Regularization/my-Regularization.ipynb)
 
 ### Initialization
 
-[ipynb]()
+[ipynb](https://github.com/liqiang311/deeplearning.ai/blob/master/2_Improving%20Deep%20Neural%20Networks/week1_initialization/my-Initialization.ipynb)
 
 ### Gradient_Checking
 
-[ipynb]()
+[ipynb](https://github.com/liqiang311/deeplearning.ai/blob/master/2_Improving%20Deep%20Neural%20Networks/week1_Gradient_Checking/my-Gradient%2BChecking.ipynb)
 
 ## 第二周 优化算法
 
@@ -1203,6 +1203,70 @@ $$
 
 平滑段使得训练变慢
 
+### Optimization algorithms
+
+1. Which notation would you use to denote the 3rd layer’s activations when the input is the 7th example from the 8th minibatch?
+    1. a[8]{3}(7)
+    1. a[3]{7}(8)
+    1. a[8]{7}(3)
+    1. **a[3]{8}(7)**
+1. Which of these statements about mini-batch gradient descent do you agree with?
+    1. Training one epoch (one pass through the training set) using minibatch gradient descent is faster than training one epoch using batch gradient descent.
+    1. **One iteration of mini-batch gradient descent (computing on a single mini-batch) is faster than one iteration of batch gradient descent.**
+    1. You should implement mini-batch gradient descent without an explicit for-loop over different mini-batches, so that the algorithm processes all mini-batches at the same time(vectorization).
+1. Why is the best mini-batch size usually not 1 and not m, but instead something in-between?
+    1. **If the mini-batch size is m, you end up with batch gradient descent, which has to process the whole training set before making progress.**
+    1. If the mini-batch size is m, you end up with stochastic gradient descent, which is usually slower than mini-batch gradient descent.
+    1. **If the mini-batch size is 1, you lose the benefits of vectorization across examples in the mini-batch.**
+    1. If the mini-batch size is 1, you end up having to process the entire training set before making any progress.
+1. Suppose your learning algorithm’s cost , plotted as a function of the number of iterations, looks like this:  
+    ![](http://outz1n6zr.bkt.clouddn.com/201711170922.PNG)  
+    Which of the following do you agree with?
+    1. Whether you’re using batch gradient descent or mini-batch gradient descent, this looks acceptable.
+    1. **If you’re using mini-batch gradient descent, this looks acceptable. But if you’re using batch gradient descent, something is wrong.**
+    1. Whether you’re using batch gradient descent or mini-batch gradient descent, something is wrong.
+    1. If you’re using mini-batch gradient descent, something is wrong. But if you’re using batch gradient descent, this looks acceptable.
+1. Suppose the temperature in Casablanca over the first three days of January are the same:  
+    Jan 1st: $\theta_1 = 10^{\circ}C$  
+    Jan 2nd: $\theta_2 = 10^{\circ}C$  
+    (We used Fahrenheit in lecture, so will use Celsius here in honor of the metric world.)  
+    Say you use an exponentially weighted average with $\beta=0.5$ to track the temperature: $v_0=0,v_t=\beta v_{t-1}+(1-\beta)\theta_t$. If $v_2$ is the value computed after day 2 without bias correction, and $v_2^{corrected}$ is the value you compute with bias correction. What are these values? (You might be able to do this without a calculator, but you don't actually need one. Remember what is bias correction doing.)
+    1. $v_2=7.5,v_2^{corrected}=7.5$
+    1. $v_2=10,v_2^{corrected}=7.5$
+    1. $v_2=10,v_2^{corrected}=10$
+    1. $v_2=7.5,v_2^{corrected}=10$ **True**
+1. Which of these is NOT a good learning rate decay scheme? Here, t is the epoch number.
+    1. $\alpha=\frac{1}{1+2*t}\alpha_0$
+    1. $\alpha=e^t\alpha_0$ **True**
+    1. $\alpha=0.95^t\alpha_0$
+    1. $\alpha=\frac{1}{\sqrt{t}}\alpha_0$
+1. You use an exponentially weighted average on the London temperature dataset. You use the following to track the temperature: $v_t=\beta v_{t-1}+(1-\beta)\theta_t$. The red line below was computed using $\beta=0.9$. What would happen to your red curve as you vary $\beta$? (Check the two that apply)  
+    ![](http://outz1n6zr.bkt.clouddn.com/201711170944.PNG)
+    1. Decreasing $\beta$ will shift the red line slightly to the right.
+    1. **Increasing $\beta$ will shift the red line slightly to the right.**
+    1. Decreasing $\beta$ will create more oscillation within the red line.
+    1. Increasing $\beta$ will create more oscillations within the red line.
+1. Consider this figure:  
+    ![](http://outz1n6zr.bkt.clouddn.com/201711170947.PNG)  
+    These plots were generated with gradient descent; with gradient descent with momentum ($\beta$ = 0.5) and gradient descent with momentum ($\beta$ = 0.9). Which curve corresponds to which algorithm?
+    1. (1) is gradient descent with momentum (small $\beta$). (2) is gradient descent. (3) is gradient descent with momentum (large $\beta$)
+    1. (1) is gradient descent. (2) is gradient descent with momentum (large $\beta$) . (3) is gradient descent with momentum (small $\beta$)
+    1. **(1) is gradient descent. (2) is gradient descent with momentum (small $\beta$). (3) is gradient descent with momentum (large $\beta$)**
+    1. (1) is gradient descent with momentum (small $\beta$), (2) is gradient descent with momentum (small $\beta$), (3) is gradient descent
+1. Suppose batch gradient descent in a deep network is taking excessively long to find a value of the parameters that achieves a small value for the cost function $J(W^{[1]},b^{[1]},...,W^{[L]},b^{[L]})$. Which of the following techniques could help find parameter values that attain a small value for $J$? (Check all that apply)
+    1. Try initializing all the weights to zero
+    1. **Try tuning the learning rate $\alpha$**
+    1. **Try better random initialization for the weights**
+    1. **Try using Adam**
+    1. **Try mini-batch gradient descent**
+1. Which of the following statements about Adam is False?
+    1. **Adam should be used with batch gradient computations, not with mini-batches.**
+    1. We usually use “default” values for the hyperparameters and in Adam ($\beta_1=0.9$,$\beta_2=0.999$,$\varepsilon=10^{-8}$)
+    1. The learning rate hyperparameter $\alpha$ in Adam usually needs to be tuned.
+    1. Adam combines the advantages of RMSProp and momentum
+
+
+
 ## 第三周 超参数调试、Batch正则化和程序框架
 
 ### 笔记
@@ -1245,3 +1309,83 @@ $$
 #### Softmax层
 
 激活函数公式
+
+$$
+\begin {aligned}
+Z^{[l]} &= W^{[l]}A^{[l-1]}+b^{[l]} \\
+T^{[l]} &= e^{Z^{[l]}} \\
+A^{[l]} &= \frac{T^{[l]}}{\sum{T^{[l]}}}
+\end {aligned}
+$$
+
+Softmax相比于Hardmax
+
+Softmax: $[0.1, 0.2, 0.7]^T$，Hardmax: $[0, 0, 1]^T$，温和的给出概率，而不是直接定死
+
+损失函数定义：
+
+$$
+l(a,y) = - \sum^{n^L}_{j=1}y_j\log{a_j}
+$$
+
+### Hyperparameter tuning, Batch Normalization, Programming Frameworks
+
+1. If searching among a large number of hyperparameters, you should try values in a grid rather than random values, so that you can carry out the search more systematically and not rely on chance. True or False?
+    1. True
+    1. False
+1. Every hyperparameter, if set poorly, can have a huge negative impact on training, and so all hyperparameters are about equally important to tune well. True or False?
+    1. True
+    1. False
+1. During hyperparameter search, whether you try to babysit one model (“Panda” strategy) or train a lot of models in parallel (“Caviar”) is largely determined by:
+    1. Whether you use batch or mini-batch optimization
+    1. The presence of local minima (and saddle points) in your neural network
+    1. The amount of computational power you can access
+    1. The number of hyperparameters you have to tune
+1. If you think $\beta$(hyperparameter for momentum) is between on 0.9 and 0.99, which of the following is the recommended way to sample a value for beta?
+    1. Code1
+        ```python
+        r = np.random.rand()
+        beta = r*0.09 + 0.9
+        ```
+    1. Code2
+        ```python
+        r = np.random.rand()
+        beta = 1-10**(- r - 1)
+        ```
+    1. Code3
+        ```python
+        r = np.random.rand()
+        beta = 1-10**(- r + 1)
+        ```
+    1. Code4
+        ```python
+        r = np.random.rand()
+        beta = r*0.9 + 0.09
+        ```
+1. Finding good hyperparameter values is very time-consuming. So typically you should do it once at the start of the project, and try to find very good hyperparameters so that you don’t ever have to revisit tuning them again. True or false?
+    1. True
+    1. False
+1. In batch normalization as presented in the videos, if you apply it on the th layer of your neural network, what are you normalizing?
+    1. $z^{[l]}$
+    1. $W^{[l]}$
+    1. $a^{[l]}$
+    1. $b^{[l]}$
+1. In the normalization formula $z^{(i)}_{norm} =\frac{z^{(i)}-\mu}{\sqrt{\sigma^2+\varepsilon}}$, why do we use epsilon?
+    1. To have a more accurate normalization
+    1. To avoid division by zero
+    1. In case μ is too small
+    1. To speed up convergence
+1. Which of the following statements about $\gamma$ and $beta$ in Batch Norm are true?
+    1. They can be learned using Adam, Gradient descent with momentum, or RMSprop, not just with gradient descent.
+    1. β and γ are hyperparameters of the algorithm, which we tune via random sampling.
+    1. They set the mean and variance of the linear variable z[ l] of a given layer.
+    1. There is one global value of $\gamma \in R$ and one global value of $\beta \in R$ for each layer, and applies to all the hidden units in that layer.
+    1. The optimal values are γ = $\sqrt{\sigma^2+\varepsilon}$, and β
+1. After training a neural network with Batch Norm, at test time, to evaluate the neural network on a new example you should:
+    1. Use the most recent mini-batch’s value of μ and σ2 to perform the needed normalizations
+    1. If you implemented Batch Norm on mini-batches of (say) 256 examples, then to evaluate on one test example, duplicate that example 256 times so that you’re working with a mini-batch the same size as during training.
+    1. Perform the needed normalizations, use μ and σ2 estimated using an exponentially weighted average across mini-batches seen during training.
+    1. Skip the step where you normalize using and since a single test example cannot be normalized.
+1. Which of these statements about deep learning programming frameworks are true? (Check all that apply)
+    1. Even if a project is currently open source, good governance of the project helps ensure that the it remains open even in the long term, rather than become closed or modified to benifit only one company.
+    1. A programming framework allows you to code up deep learning algorithms with typically fewer lines of code than a lower-level language such as Python.
