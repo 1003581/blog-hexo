@@ -1328,18 +1328,24 @@ $$
 l(a,y) = - \sum^{n^L}_{j=1}y_j\log{a_j}
 $$
 
+对损失函数的导数如下：
+
+$$
+\frac{\partial J(W,b)}{\partial {Z^L}} = \hat{Y} - Y
+$$
+
 ### Hyperparameter tuning, Batch Normalization, Programming Frameworks
 
 1. If searching among a large number of hyperparameters, you should try values in a grid rather than random values, so that you can carry out the search more systematically and not rely on chance. True or False?
     1. True
-    1. False
+    1. **False**
 1. Every hyperparameter, if set poorly, can have a huge negative impact on training, and so all hyperparameters are about equally important to tune well. True or False?
     1. True
-    1. False
+    1. **False**
 1. During hyperparameter search, whether you try to babysit one model (“Panda” strategy) or train a lot of models in parallel (“Caviar”) is largely determined by:
     1. Whether you use batch or mini-batch optimization
     1. The presence of local minima (and saddle points) in your neural network
-    1. The amount of computational power you can access
+    1. **The amount of computational power you can access**
     1. The number of hyperparameters you have to tune
 1. If you think $\beta$(hyperparameter for momentum) is between on 0.9 and 0.99, which of the following is the recommended way to sample a value for beta?
     1. Code1
@@ -1347,7 +1353,7 @@ $$
         r = np.random.rand()
         beta = r*0.09 + 0.9
         ```
-    1. Code2
+    1. **Code2**
         ```python
         r = np.random.rand()
         beta = 1-10**(- r - 1)
@@ -1364,28 +1370,145 @@ $$
         ```
 1. Finding good hyperparameter values is very time-consuming. So typically you should do it once at the start of the project, and try to find very good hyperparameters so that you don’t ever have to revisit tuning them again. True or false?
     1. True
-    1. False
-1. In batch normalization as presented in the videos, if you apply it on the th layer of your neural network, what are you normalizing?
-    1. $z^{[l]}$
+    1. **False**
+1. In batch normalization as presented in the videos, if you apply it on the $l$th layer of your neural network, what are you normalizing?
+    1. $z^{[l]}$**True**
     1. $W^{[l]}$
     1. $a^{[l]}$
     1. $b^{[l]}$
 1. In the normalization formula $z^{(i)}_{norm} =\frac{z^{(i)}-\mu}{\sqrt{\sigma^2+\varepsilon}}$, why do we use epsilon?
     1. To have a more accurate normalization
-    1. To avoid division by zero
+    1. **To avoid division by zero**
     1. In case μ is too small
     1. To speed up convergence
-1. Which of the following statements about $\gamma$ and $beta$ in Batch Norm are true?
-    1. They can be learned using Adam, Gradient descent with momentum, or RMSprop, not just with gradient descent.
+1. Which of the following statements about $\gamma$ and $\beta$ in Batch Norm are true?
+    1. **They can be learned using Adam, Gradient descent with momentum, or RMSprop, not just with gradient descent.**
     1. β and γ are hyperparameters of the algorithm, which we tune via random sampling.
-    1. They set the mean and variance of the linear variable z[ l] of a given layer.
+    1. **They set the mean and variance of the linear variable z[ l] of a given layer.**
     1. There is one global value of $\gamma \in R$ and one global value of $\beta \in R$ for each layer, and applies to all the hidden units in that layer.
     1. The optimal values are γ = $\sqrt{\sigma^2+\varepsilon}$, and β
 1. After training a neural network with Batch Norm, at test time, to evaluate the neural network on a new example you should:
     1. Use the most recent mini-batch’s value of μ and σ2 to perform the needed normalizations
     1. If you implemented Batch Norm on mini-batches of (say) 256 examples, then to evaluate on one test example, duplicate that example 256 times so that you’re working with a mini-batch the same size as during training.
-    1. Perform the needed normalizations, use μ and σ2 estimated using an exponentially weighted average across mini-batches seen during training.
+    1. **Perform the needed normalizations, use μ and σ2 estimated using an exponentially weighted average across mini-batches seen during training.**
     1. Skip the step where you normalize using and since a single test example cannot be normalized.
 1. Which of these statements about deep learning programming frameworks are true? (Check all that apply)
-    1. Even if a project is currently open source, good governance of the project helps ensure that the it remains open even in the long term, rather than become closed or modified to benifit only one company.
-    1. A programming framework allows you to code up deep learning algorithms with typically fewer lines of code than a lower-level language such as Python.
+    1. **Even if a project is currently open source, good governance of the project helps ensure that the it remains open even in the long term, rather than become closed or modified to benifit only one company.**
+    1. **A programming framework allows you to code up deep learning algorithms with typically fewer lines of code than a lower-level language such as Python.**
+
+### TensorFlow Tutorial
+
+[ipynb]()
+
+# 结构化机器学习项目
+
+## 机器学习(ML)策略1
+
+### 笔记
+
+#### 正交化 orthogonalization
+
+- Fit training set well on cost function
+    - 按钮1：bigger network
+    - 按钮2：不同的优化算法
+    - ......
+- Fit dev set well on cost function
+    - 按钮1：正则化
+    - 按钮2：更大的训练集
+- Fit test set well on cost function
+    - 按钮1：更大的验证集
+- Performs well in real world
+    - 更改验证集
+    - 更改损失函数
+
+不推荐使用early stopping，因为这会同时影响训练和验证过程，不是非常正交。
+
+#### 单一数字评估指标
+
+在评估分类器时，使用查准率Precision和查全率Recall是比较合理的。
+
+| |真实值为1|真实值为0|
+|---|---|---|
+|预测值为1|真阳性True Positive|假阳性False Positive
+|预测值为0|假阴性False Negative|真阴性True Negative
+
+准确率，查准率，Precision （检索出的相关信息量/检索出的信息总量）x100%  
+
+$$
+\begin {aligned}
+Precison(\%)
+&= \frac{TruePositive}{NumberOfPredictedPositive} \times 100\% \\
+&= \frac{TruePositive}{TruePositive+FalsePositive} \times 100\% \\
+\end {aligned}
+$$
+
+召回率，查全率，Recall （检索出的相关信息量/系统中的相关信息总量）x100%
+
+$$
+\begin {aligned}
+Recall(\%)
+&= \frac{TruePositive}{NumberOfPredictedActuallyPositive} \times 100\% \\
+&= \frac{TruePositive}{TruePositive+TrueNegative} \times 100\% \\
+\end {aligned}
+$$
+
+在机器学习中，不推荐使用两个指标来衡量，此时最好使用F1 score，公式如下，理解为PR的调和平均值，也大致理解为PR的算术平均数。
+
+$$
+s = \frac{2}{\frac{1}{P}+\frac{1}{R}}
+$$
+
+在众多的指标中指定单一实数指标，比如平均值，最值等。
+
+#### 满足指标和优化指标
+
+优化指标Optimizing metric——准确度，一个
+
+满足指标Satisficing metric——运行时间（阈值），多个
+
+#### 训练/开发/测试数据
+
+开发集和评估指标，决定了靶心。
+
+开发集和测试集需要是一个分布
+
+#### 调整靶心
+
+通过权重修改损失函数来调节错误率。
+
+#### 可避免偏差
+
+训练错误和贝叶斯（人类表现）的差距叫可避免偏差
+
+训练错误和开发错误的差距叫做方差
+
+#### 人类水平表现 human-level performance
+
+贝叶斯误差的替代品 
+
+## 机器学习(ML)策略2
+
+# 卷积神经网络
+
+## 第一周 卷积神经网络
+
+### 理论
+
+PADDING：VALID SAME
+
+valid padding: NxN->N-f+1 x N-f+1
+
+为何卷积核的尺寸是奇数：
+
+1. 计算机视觉的惯例，有名的边缘检测算法都是奇数。
+1. 一个中心点的话，会比较好描述模版处于哪个位置。
+1. SAME会比较自然的填充。
+1. 会计算像素之间亚象素的过渡
+
+原图为n×n，卷积核为f×f，步长为s，PADDING大小为p，处理后图像大小为 (n+2p-f)/s+1 × (n+2p-f)/s+1，除法为向下整除 
+
+## 第二周 深度卷积神经网络
+
+## 第三周 目标检测
+
+## 第四周 特殊应用：人脸识别和神经风格转变
