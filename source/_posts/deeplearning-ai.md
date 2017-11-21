@@ -1532,10 +1532,30 @@ Activations: $a^{[l]} \rightarrow n_H^{[l]} \times n_W^{[l]} \times n_c^{[l]}$
 Weights: $f^{[l]} \times f^{[l]} \times n_c^{[l-1]} \times n_c^{[l]}$  
 biases: $n_c^{[l]} \rightarrow (1,1,1,n_c^{[l]})$ 
 
+池化层的超参数
 
+f: filter size 常用2、3  
+s: stride  常用2    
 
+为什么使用卷积？
+
+- 参数共享 parameter sharing
+    - 垂直边缘特征检测器适用于图像全部区域
+- 稀疏连接 sparsity of connections
+    - 在每一层中，每个输出值仅仅依赖于很小的一块输入
 
 ## 第二周 深度卷积神经网络
+
+### 笔记
+
+- Classic networks 经典网络
+    - LeNet-5
+    - AlexNet
+    - VGG
+- ResNet(152 layers)
+- Inception
+
+
 
 ## 第三周 目标检测
 
