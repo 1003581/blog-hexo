@@ -1507,6 +1507,34 @@ valid padding: NxN->N-f+1 x N-f+1
 
 原图为n×n，卷积核为f×f，步长为s，PADDING大小为p，处理后图像大小为 (n+2p-f)/s+1 × (n+2p-f)/s+1，除法为向下整除 
 
+单层卷积神经网络
+
+If layer $l$ is a convolution layer:
+
+$f^{[l]}$ = filter size  
+$p^{[l]}$ = padding  
+$s^{[l]}$ = stride  
+$n_c^{[l]}$ = number of filters  
+
+Input: $n_H^{[l-1]} \times n_W^{[l-1]} \times n_c^{[l-1]}$  
+Output: $n_H^{[l]} \times n_W^{[l]} \times n_c^{[l]}$  
+
+$$
+n_{H/W}^{[l]}=\lfloor \frac{n_{H/W}^{[l-1]}+2p^{[l]}-f^{[l]}}{s^{[l]}}+1 \rfloor
+$$
+
+$$
+A^{[l]} \rightarrow m \times n_H^{[l]} \times n_W^{[l]} \times n_c^{[l]}
+$$
+
+Each filter is: $f^{[l]} \times f^{[l]} \times n_c^{[l-1]}$  
+Activations: $a^{[l]} \rightarrow n_H^{[l]} \times n_W^{[l]} \times n_c^{[l]}$  
+Weights: $f^{[l]} \times f^{[l]} \times n_c^{[l-1]} \times n_c^{[l]}$  
+biases: $n_c^{[l]} \rightarrow (1,1,1,n_c^{[l]})$ 
+
+
+
+
 ## 第二周 深度卷积神经网络
 
 ## 第三周 目标检测
