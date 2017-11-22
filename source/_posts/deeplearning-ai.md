@@ -72,7 +72,7 @@ categories: 机器学习
     1. **Increasing the training set size generally does not hurt an algorithm’s performance, and it may help significantly.**
     1. **Increasing the size of a neural network generally does not hurt an algorithm’s performance, and it may help significantly.**
 
-## 第二周Logistic Regression
+## 第二周 Logistic Regression
 
 ### Logistic回归公式推导
 
@@ -571,7 +571,7 @@ $$
     1. This will multiply a 3x3 matrix a with a 3x1 vector, thus resulting in a 3x1 vector. That is, c.shape = (3,1).
     1. It will lead to an error since you cannot use “*” to operate on these two matrices. You need to instead use np.dot(a,b)
 1. Consider the following computation graph.  
-    ![](...)  
+    ![](http://outz1n6zr.bkt.clouddn.com/2017-11-22_094905.png)  
     What is the output J?
     1. `J = (c - 1)*(b + a)`
     1. **`J = (a - 1) * (b + c)`**
@@ -582,7 +582,7 @@ $$
 
 相关数据集和输出见[github](https://github.com/liqiang311/deeplearning.ai/blob/master/1_Neural%20Networks%20and%20Deep%20Learning/week2/Logistic%20Regression%20as%20a%20Neural%20Network/my-Logistic%2BRegression%2Bwith%2Ba%2BNeural%2BNetwork%2Bmindset%2Bv3.ipynb)
 
-## 第三周-浅层神经网络
+## 第三周 浅层神经网络
 
 ### 公式推导
 
@@ -818,7 +818,7 @@ $$g'(z)=leakyRelu(z)' = \begin{cases} 0.01, &z<0\cr 1, &z \geq 0 \end{cases}$$
     1. It doesn’t matter. So long as you initialize the weights randomly gradient descent is not affected by whether the weights are large or small.
     1. This will cause the inputs of the tanh to also be very large, thus causing gradients to also become large. You therefore have to set α to be very small to prevent divergence; this will slow down learning.
 1. Consider the following 1 hidden layer neural network:  
-    ![](...)
+    ![](http://outz1n6zr.bkt.clouddn.com/2017-11-22_095200.png)
     Which of the following statements are True? (Check all that apply).
     1. $W^{[1]}$ will have shape (2, 4)
     1. **$b^{[1]}$ will have shape (4, 1)**
@@ -838,7 +838,7 @@ $$g'(z)=leakyRelu(z)' = \begin{cases} 0.01, &z<0\cr 1, &z \geq 0 \end{cases}$$
 
 相关数据集和输出见[github](https://github.com/liqiang311/deeplearning.ai/blob/master/1_Neural%20Networks%20and%20Deep%20Learning/week3/my-Planar%2Bdata%2Bclassification%2Bwith%2Bone%2Bhidden%2Blayer.ipynb)
 
-## 第四层-深层神经网络
+## 第四周 深层神经网络
 
 ### 公式
 
@@ -927,7 +927,7 @@ $$
     1. **True**
     1. False
 1. Consider the following 2 hidden layer neural network:  
-    ![](...)  
+    ![](http://outz1n6zr.bkt.clouddn.com/2017-11-22_095336.png)  
     Which of the following statements are True? (Check all that apply).
     1. **W[1] will have shape (4, 4)**
     1. **b[1] will have shape (4, 1)**
@@ -1519,6 +1519,10 @@ $n_c^{[l]}$ = number of filters
 Input: $n_H^{[l-1]} \times n_W^{[l-1]} \times n_c^{[l-1]}$  
 Output: $n_H^{[l]} \times n_W^{[l]} \times n_c^{[l]}$  
 
+**卷积运算中，会先矩阵相乘，然后加上偏置，然后进入激活函数，得到卷积结果。**
+
+**池化层没有参数**
+
 $$
 n_{H/W}^{[l]}=\lfloor \frac{n_{H/W}^{[l-1]}+2p^{[l]}-f^{[l]}}{s^{[l]}}+1 \rfloor
 $$
@@ -1548,15 +1552,209 @@ s: stride  常用2
 
 ### 笔记
 
-- Classic networks 经典网络
-    - LeNet-5
-    - AlexNet
-    - VGG
-- ResNet(152 layers)
-- Inception
+#### Classic networks 经典网络
+
+##### LeNet-5
+
+![](http://outz1n6zr.bkt.clouddn.com/lenet5.PNG)
+
+1. `32x32x1` --(`conv f=5 s=1 VALID`)--> `28x28x6`
+1. --(`avg-pool f=2 s=2`)--> `14x14x6`
+1. --(`conv f=5 s=1 VALID`)--> `10x10x16`
+1. --(`avg-pool f=2 s=2`)--> `5x5x16`
+1. `5x5x16=400` --(`fc`)--> `120`
+1. --(`fc`)--> `84`
+1. --(`softmax`)--> `10 objects`
+
+- 大约60K，6万个参数
+- 论文中网络使用了Sigmoid和Tanh
+- 经典论文中还在池化后加入了激活函数
+
+##### AlexNet
+
+![](http://outz1n6zr.bkt.clouddn.com/alexnet.PNG)
+
+1. `227x227x3` --(`conv f=11 s=4 VALID`)--> `55x55x96`
+1. --(`max-pool f=3 s=2`)--> `27x27x96`
+1. --(`conv f=5 SAME`)--> `27x27x256`
+1. --(`max-pool f=3 s=2`)--> `13x13x256`
+1. --(`conv f=3 SAME`)--> `13x13x384`
+1. --(`conv f=3 SAME`)--> `13x13x384`
+1. --(`conv f=3 SAME`)--> `13x13x256`
+1. --(`max-pool f=3 s=2`)--> `6x6x256`
+1. `6x6x256=9216` --(`fc`)--> `4096`
+1. --(`fc`)--> `4096`
+1. --(`softmax`)--> `1000 objects`
 
 
+- 大约60M，6千万个参数 
+- 论文中使用了ReLU激活函数
+- 经典ALexNet中包含局部响应归一化层，用于将通道之间相同位置上的像素进行归一化。
+
+![](http://upload-images.jianshu.io/upload_images/1689929-063fb60285b6ed42.png?imageMogr2/auto-orient/strip%7CimageView2/2)
+
+##### VGG-16
+
+![](http://outz1n6zr.bkt.clouddn.com/vgg16.PNG)
+
+只用了2种网络：`CONV(f=3 s=1 SAME)` `MAX-POOL(f=2 s=2)`
+
+1. `224x224x3` --(`CONV 64`)x2--> `224x224x64`
+1. --(`MAX-POOL`)--> `112x112x64`
+1. --(`CONV 128`)x2--> `112x112x128`
+1. --(`MAX-POOL`)--> `56x56x128`
+1. --(`CONV 256`)x3--> `56x56x256`
+1. --(`MAX-POOL`)--> `28x28x256`
+1. --(`CONV 512`)x3--> `28x28x512`
+1. --(`MAX-POOL`)--> `14x14x512`
+1. --(`CONV 512`)x3--> `14x14x512`
+1. --(`MAX-POOL`)--> `7x7x512`
+1. `7x7x512=25088` --(`fc`)--> `4096`
+1. --(`fc`)--> `4096`
+1. --(`softmax`)--> `1000 objects`
+
+- VGG-16中16代表总共含有16层（卷积+FC）。
+- 大约含有138M，1.38亿个参数
+
+#### 残差网络 ResNet(152 layers)
+
+![](http://outz1n6zr.bkt.clouddn.com/2017-11-22_112752.png)
+
+![](http://outz1n6zr.bkt.clouddn.com/2017-11-22_112910.png)
+
+正常网络 plain network
+
+$$
+a^{[l+2]}=g(z^{[l+2]})
+$$
+
+残差网络 residual network
+
+$$
+a^{[l+2]}=g(z^{[l+2]} + a^{[l]})
+$$
+
+当$W^{[l+2]}$,$b^{[l+2]}$接近为0，使用ReLU时，$a^{[l+2]}=g(a^{[l]})=a^{[l]}$，这称之为学习恒等式，中间一层不会对网络的性能造成影响，而且有时会还学习到一些有用的信息。
+
+残差块的矩阵加法要求维度相同，故需要添加一个矩阵，$W_s$，即$a^{[l+2]}=g(z^{[l+2]} + W_s a^{[l]})$，该参数属于学习参数。
+
+![](http://outz1n6zr.bkt.clouddn.com/2017-11-22_142806.png)
+
+#### 1x1卷积
+
+在每个像素上的深度上的全连接运算。可以用来改变通道深度，或者对每个像素分别添加了非线性变换。
+
+Network in Network
+
+#### Inception
+
+一个Inception模块，帮你解决使用什么尺寸的卷积层和何时使用池化层。
+
+![](http://outz1n6zr.bkt.clouddn.com/2017-11-22_144756.png)
+
+为了解决计算成本问题，引入1x1卷积进行优化计算。
+
+![](http://outz1n6zr.bkt.clouddn.com/2017-11-22_144817.png)
+
+事实证明，只要合理构建瓶颈层，不仅不会降低网络性能，还会降低计算成本。
+
+具体模块
+
+![](http://outz1n6zr.bkt.clouddn.com/2017-11-22_145952.png)
+
+具体网络
+
+![](http://outz1n6zr.bkt.clouddn.com/2017-11-22_150301.png)
+
+#### 迁移学习
+
+冻结一部分网络，自己训练一部分网络，并替换输出层的softmax
+
+![](http://outz1n6zr.bkt.clouddn.com/2017-11-22_154149.png)
+
+#### 数据增强
+
+- 常用操作
+    - 镜像操作
+    - 随机修剪、裁剪
+- 颜色偏移
+    - 颜色通道分别加减值，改变RGB
+    - PCA颜色增强算法
+
+从硬盘中读取数据并且进行数据增强可以在CPU的线程中实现，并且可以与训练过程并行化。
 
 ## 第三周 目标检测
+
+### 笔记
+
+图像分类（图像中只有一个目标）->
+
+目标定位（图像中只有一个目标）->
+
+目标检测（图像中多个目标）
+
+#### 目标定位
+
+左上角(0,0)，右下角(1,1)
+
+神经网络不仅输出类别，还输出bounding box (bx,by),(bh,bw)
+
+输入图像如下，红框为标记位置。
+
+![](http://outz1n6zr.bkt.clouddn.com/2017-11-22_161948.png)
+
+此分类任务中包含4个类别：
+
+1. 行人pedestrian
+1. 车辆car
+1. 摩托车motorcycle
+1. 无目标background
+
+则Label y的维度为，其中$P_c$为是否存在目标，若不存在，则为0，(bx,by),(bh,bw)为目标的位置，c1,c2,c3为属于哪一类。
+
+$$
+y = \left[ \begin {matrix}
+P_c \\ b_x \\ b_y \\ b_h \\ b_w \\ c_1 \\ c_2 \\ c_3
+\end {matrix} \right]
+= \left[ \begin {matrix}
+1 \\ 0.5 \\ 0.7 \\ 0.3 \\ 0.4 \\ 0 \\ 1 \\ 0
+\end {matrix} \right]
+$$
+
+损失函数为分段函数，当$y_1$为0时，只考虑$y_1$的损失即可。当$y_1$为1时，需要考虑全部维度，各个维度采用不同的损失函数，如 $P_c$ 采用Logistic损失函数，bounding box (bx,by),(bh,bw)采用平方根，c1,c2,c3采用softmax中的对数表示方式。
+
+#### 特征点检测
+
+若想输出人脸中的眼角特征点的位置，则在神经网络的输出中添加4个数值即可。
+
+比如人脸中包含64个特征点，则神经网络的输出层中添加64x2个输出。
+
+#### 滑动窗口目标检测
+
+首先需要训练裁剪过后的小图片。
+
+然后针对输入的大图片，利用滑动窗口的技术对每个窗口进行检测。
+
+将窗口放大，再次遍历整个图像。
+
+将窗口再放大，再次遍历整个图像。
+
+滑动窗口技术计算成本过高，
+
+#### CNN中的滑动窗口
+
+将网络中的FC转化为卷积层，实际效果一样。
+
+![](http://outz1n6zr.bkt.clouddn.com/2017-11-22_170438.png)
+
+整个大图像做卷积运算。
+
+![](http://outz1n6zr.bkt.clouddn.com/2017-11-22_171833.png)
+
+#### 边界框预测
+
+YOLO算法（You Only Look Once）
+
+将整个大图像划分为3x3、19x19这样的格子，然后修改Label Y，每个小格子中，若目标对象的中心点位于该格内，则该格Label Y中的$P_c$为1。相邻格子就算包含了目标对象的一部分，$P_c$也为0
 
 ## 第四周 特殊应用：人脸识别和神经风格转变
