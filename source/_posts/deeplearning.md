@@ -2,7 +2,7 @@
 title: DeepLearning相关
 date: 2017-11-06 23:00:00
 tags: 深度学习
-categories: 机器学习
+categories: 深度学习
 ---
 
 ### 宏观

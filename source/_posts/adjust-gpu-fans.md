@@ -15,7 +15,7 @@ categories: gpu
 git clone https://github.com/liqiang311/set-gpu-fans.git
 mv set-gpu-fans /opt
 apt-get update
-apt-get install -y xinit
+apt-get install -y xinit tcsh
 cd /opt/set-gpu-fans
 chmod +x cool_gpu
 chmod +x nvscmd
