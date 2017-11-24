@@ -59,6 +59,10 @@ Figure 2: MultiNet architecture.
 
 图2：MultiNet架构
 
+> 译者注：  
+> CNN Encoder : `input:1248x384x3` --(`CONV 64`)x**2**--> `1248x384x64` --(`MAX_POOL`)--> `624x192x64` --(`CONV 128`)x**2**--> `624x192x128` --(`MAX_POOL`)--> `312x96x128` --(`CONV 256`)x**3**--> `312x96x256` --(`MAX_POOL`)--> `156x48x256` --(`CONV 512`)x**3**--> `156x48x512` --(`MAX_POOL`)--> `78x24x512` --(`CONV 512`)x**3**--> `78x24x512`  
+> Encoded Features: --(`MAX_POOL`)--> `39x24x512`  
+
 ### 分类
 
 **Classification**: After the development of AlexNet [23], most modern approaches to image classification utilize deep learning. Residual networks [17] constitute the state-of-theart, as they allow to train very deep networks without problems of vanishing or exploding gradients. In the context of road classification, deep neural networks are also widely employed [31]. Sensor fusion has also been exploited in this context [43]. In this paper we use classification to guide other semantic tasks, i.e., segmentation and detection.
@@ -141,11 +145,15 @@ We use one-hot encoding for classification and segmentation. For the detection, 
 
 We define our loss function as the sum of the loss functions for classification, segmentation and detection. We employ cross-entropy as loss function for the classification and segmentation branches, which is defined as
 
+将损失函数定义为分类, 分割和检测的损失函数的总和。采用交叉熵作为分类和分割分支的损失函数, 定义如下： 
+
 $$
 loss_{class}(p,q):=-\frac{1}{\vert I\vert}\sum_{i\in I}\sum_{c\in C}{q_i(c)\log p_i(c)} \qquad (1)
 $$
 
 where p is the prediction, q the ground truth and C the set of classes. We use the sum of two losses for detection: Cross entropy loss for the confidences and an L1 loss on the bounding box coordinates. Note that the L1 loss is only computed for cells which have been assigned a positive confidence label. Thus
+
+其中p是prediction, q是ground truth, C是类的集合。我们使用两个损失的和作为detection的loss：置信度(confidence)的交叉熵损失及边界框坐标的L1损失。请注意, 只有被赋予正置信标签的cells才计算它们的L1损失。从而: 
 
 $$
 loss_{box}(p,q):=\frac{1}{I}\sum_{i \in I}\delta_{q_i}\cdot (\vert x_{p_i}-x_{q_i}\vert+\vert y_{p_i}-y_{q_i}\vert+\vert w_{p_i}-w_{q_i}\vert+\vert h_{p_i}-h_{q_i}\vert) \qquad (2)
@@ -153,13 +161,31 @@ $$
 
 where p is the prediction, q the ground truth, C the set of classes and I is the set of examples in the mini batch.
 
+其中p是prediction, q是ground truth, C是类的集合, I是小批次中的一组示例。
+
 ### Combined Training Strategy
 
 Joint training is performed by merging the gradients computed by each loss on independent mini batches. This allows us to train each of the three decoders with their own set of training parameters. During gradient merging all losses are weighted equally. In addition, we observe that the detection network requires more steps to be trained than the other tasks. We thus sample our mini batches such that we alternate an update using all loss functions with two updates that only utilize the detection loss.
 
+通过将每个损失计算的梯度合并在独立的小批量上进行联合训练。这样我们就能用自己的训练参数来训练每个解码器。在梯度合并过程中, 所有的损失都被相等地加权(all losses are weighted equally)。另外, 我们观察到, 检测网络需要比其他任务训练更多次。因此, 我们对我们的小批次进行抽样, 以便我们使用仅利用detection loss的两次更新的全损失函数来交替更新。
+
 ### Initialization
 
 The encoder is initialized using pretrained VGG weights on ImageNet. The detection and classification decoder weights are randomly initialized using a uniform distribution in the range (−0.1,0.1). The convolutional layers of the segmentation decoder are also initialized using VGG weights and the transposed convolution layers are initialized to perform bilinear upsampling. The skip connections on the other hand are initialized randomly with very small weights (i.e. std of 1e − 4). This allows us to perform training in one step (as opposed to the two step procedure of [29]).
+
+使用ImageNet上预先训练的VGG权重对编码器进行初始化。使用范围在(-0.1, 0.1)的单位分布随机初始化检测和分类解码器权重。分割解码器的卷积层也使用VGG权重进行初始化, 并且转置卷积层被初始化以执行双线性上采样。另一方面, skip connection以非常小的权重(即1e-4的标准)随机初始化。我们能一步进行训练(与[29]的两步程序相反)。
+
+### Optimizer and regularization
+
+We use the Adam optimizer [22] with a learning rate of 1e − 5 to train our MultiNet. A weight decay of 5e − 4 is applied to all layers and dropout with probability 0.5 is applied to all (inner) 1 × 1 convolutions in the decoder.
+
+使用Adam优化器[22], 学习率为1e - 5来训练MultiNet。对所有层施加5e-4的权重衰减, 并且对解码器中所有(内部)1×1的卷积进行概率为0.5的dropout。
+
+## Experimental Results
+
+In this section we perform our experimental evaluation on the challenging KITTI dataset.
+
+在KITTI数据集上进行实验评估。
 
 | Experiment     | max steps | eval steps [k] |
 | -------------- | --------- | -------------- |
@@ -170,74 +196,159 @@ The encoder is initialized using pretrained VGG weights on ImageNet. The detecti
 
 Table 1: Summary of training length.
 
-### Optimizer and regularization
-
-We use the Adam optimizer [22] with a learning rate of 1e − 5 to train our MultiNet. A weight decay of 5e − 4 is applied to all layers and dropout with probability 0.5 is applied to all (inner) 1 × 1 convolutions in the decoder.
-
-## Experimental Results
-
-In this section we perform our experimental evaluation on the challenging KITTI dataset.
+表1：训练长度总结
 
 ### Dataset
 
 We evaluate MultiNet in he KITTI Vision Benchmark Suite [12]. The Benchmark contains images showing a variety of street situations captured from a moving platform driving around the city of Karlruhe. In addition to the raw data, KITTI comes with a number of labels for different tasks relevant to autonomous driving. We use the road benchmark of [10] to evaluate the performance of our semantic segmentation decoder and the object detection benchmark [13] for the detection decoder. We exploit the automatically generated labels of [31], which provide us with road labels generated by combining GPS information with open-street map data.
 
+在KITTI Vision Benchmark Suite [12]上评估MultiNet。基准测试包含许多图像, 这些图像展示了在卡尔鲁厄市由驾驶移动平台捕获的各种街道情况。除原始数据之外, KITTI还附带了许多与自主驾驶相关的不同任务的标签。使用[10]的道路基准来评估语义分割解码器的性能，使用[13]的目标检测基准来检测解码器。利用[31]自动生成的标签, 这些标签提供了通过将GPS信息与开放街道地图数据相结合生成的道路标签。
+
 Detection performance is measured using the average precision score [9]. For evaluation, objects are divided into three categories: easy, moderate and hard to detect. The segmentation performance is measured using the MaxF1 score [10]. In addition, the average precision score is given for reference. Classification performance is evaluated by computing accuracy and precision-recall plots.
+
+使用平均精度得分测量检测性能[9]。对于评估, 目标分为三类：容易, 中等和困难的检测。使用MaxF1分数测量分割性能[10]。此外, 平均精度得分作为参考。分类性能通过计算精度和精确召回图进行评估。
 
 ### Performance evaluation
 
 Our evaluation is performed in two steps. First we build three individual models consisting of the VGG-encoder and the decoder corresponding to the task. Those models are tuned to achieve highest possible performance on the given task. In a second step MultiNet is trained using one encoder and three decoders in a single network. We evaluate both settings in our experimental evaluation. We report a set of plots depicting the convergence properties of our networks in Figs. 4, 6 and 8. Evaluation on the validation set is performed every k iterations during training, where k for each tasks is given in Table 1. To reduce the variance in the plots the output is smoothed by computing the median over the last 50 evaluations performed.
 
+我们的评估分两步进行。首先, 我们构建由VGG编码器和对应三个任务的单独的解码器组成的模型。这些模型被调整到在给定任务上实现最高的性能。在第二步中, MultiNet在一个网络中使用一个编码器和三个解码器进行训练。我们在实验评估中评估这两种设置。我们展示了一组描绘该网络收敛性质的图。在训练期间每k次迭代执行验证集的评估, 其中每个任务的k在表1中给出。为了减少图中的方差, 通过计算过去执行的50次评估的中值来平滑输出。
+
 #### Segmentation
+
+![](http://outz1n6zr.bkt.clouddn.com/2017-11-23_185933.png)
+
+Figure 4: Convergence behavior of the segmentation decoder
+
+图4：分割解码器的收敛性质
 
 Our Segmentation decoder is trained using the KITTI Road Benchmark [10]. This dataset is very small, providing only 289 training images. Thus the network has to transfer as much knowledge as possible from pre-training. Note that the skip connections are the only layers which are randomly initialized and thus need to be trained from scratch. This transfer learning approach leads to very fast convergence of the network. As shown in Fig. 4 the raw scores already reach values of about 95 % after only about 4000 iterations. Training is conducted for 16,000 iterations to obtain a meaningful median score.
 
+分割解码器使用KITTI道路基准进行训练[10]。该数据集非常小, 仅提供289个训练图像。因此, 网络必须从预训练转移尽可能多的知识。请注意, skip connection是唯一随机初始化的层, 因此需要从头进行训练。这种传输学习方法导致网络能非常快速的收敛。如图4所示, 只有4000次迭代,时 原始分数已达到近95％。训练16, 000次以获得有重要意义的中值。
+
+| Metric            | Result  |
+| ----------------- | ------- |
+| MaxF1             | 95.83 % |
+| Average Precision | 92.29 % |
+| Speed (msec)      | 94.6 ms |
+| Speed (fps)       | 10.6 Hz |
+
+Table 2: Validation performance of the segmentation decoder
+
+表2：分割编码器的验证性能 
+
+| Method            | MaxF1      | AP         | Place   |
+| ----------------- | ---------- | ---------- | ------- |
+| FCN LC [32]       | 90.79 %    | 85.83 %    | 5th     |
+| FTP [24]          | 91.61 %    | 90.96 %    | 4th     |
+| DDN [33]          | 93.43 %    | 89.67 %    | 3th     |
+| Up Conv Poly [35] | 93.83 %    | 90.47 %    | 2rd     |
+| MultiNet          | **94.88%** | **93.71%** | **1st** |
+
+Table 3: Summary of the URBAN ROAD scores on the public KITTIRoad Detection Leaderboard [11].
+
+表3：KITTI Road检测排行榜上城市道路评分[11] 
+
+![](http://outz1n6zr.bkt.clouddn.com/2017-11-23_190007.png)
+
+Figure 5: Visualization of the segmentation output. Top rows: Soft segmentation output as red blue plot. The intensity of the
+plot reflects the confidence. Bottom rows hard class labels.
+
+图5：分割输出的可视化。顶行：软分割输出为红蓝色。图的强度反映了置信度。底行：硬类标签
+
 Table 2 shows the scores of our segmentation decoder after 16,000 iterations. The scores indicate that our segmentation decoder generalizes very well using only the data given by the KITTI Road Benchmark. No other segmentation dataset was utilized. As shown in Fig. 5, our approach is very effective at segmenting roads. Even difficult areas, corresponding to sidewalks and buildings are segmented correctly. In the confidence plots shown in top two rows of Fig. 5, it can be seen that our approach has confidence close to 0.5 at the edges of the street. This is due to the slight variation in the labels of the training set. We have submitted the results of our approach on the test set to the KITTI road leaderboard. As shown in Table 3, our result achieve first place.
+
+表2显示了16, 000次迭代后分割解码器的得分。分数表明, 分割解码器仅使用KITTI Road Benchmark给的数据泛化得很好。没有使用其他分割数据集。如图5所示, 该方法在分割道路方面非常有效。对应于人行道和建筑物的困难区域也能正确分割。在图5上面两行所示的置信区间中, 可以看出, 我们的方法在街道边缘的置信度接近0.5。这是由于训练集标签的轻微变化。我们已经将该方法的测试结果提交给了KITTI道路排行榜。如表3所示, 我们的结果达到了第一名。 
 
 #### Detection
 
+![](http://outz1n6zr.bkt.clouddn.com/2017-11-23_185947.png)
+
+Figure 6: Validation scores of the detection decoder. Performance of FastBox with and without rezoom layer is shown for comparison.
+
+图6：检测解码器的验证分数。显示具有和不具有再缩放层的FastBox的性能进行比较
+
 Our detection decoder is trained and evaluated on the data provided by the KITTI object benchmark [13]. Fig. 6 shows the convergence rate of the validation scores. The detection decoder converges much slower than the segmentation and classification decoders. We therefore train the decoder up to iteration 180,000.
+
+检测解码器对KITTI目标基准测试提供的数据进行了训练和评估[13]。图6显示了验证分数的收敛速度。检测解码器的收敛速度比分割和分类解码器慢得多。因此, 我们训练180, 000次。
+
+| Task: Metric        | moderate | easy    | hard    |
+| ------------------- | -------- | ------- | ------- |
+| FastBox with rezoom | 83.35 %  | 92.80 % | 67.59 % |
+| FastBox no rezoom   | 77.00 %  | 86.45 % | 60.82 % |
+
+Table 4: Detection performance of FastBox.
+
+表4：FastBox的检测性能 
+
+|                 | FastBox  | FastBox (no rezoom) |
+| --------------- | -------- | ------------------- |
+| speed [msec]    | 37.49 ms | 35.75 ms            |
+| speed [fps]     | 26.67 Hz | 27.96 Hz            |
+| post-processing | 2.10 ms  | 2.46 ms             |
+
+Table 5: Detection speed of FastBox. Results are measured on a Pascal Titan X.
+
+表5：FastBox的检测速度。结果在Pascal Titan X上测量 
+
+![](http://outz1n6zr.bkt.clouddn.com/2017-11-23_190024.png)
+
+Figure 7: Visualization of the detection output. With and without non-maximal suppression applied.
+
+图7：检测输出的可视化。有无非最大抑制应用
 
 FastBox can perform evaluation at very high speed: an inference step takes 37.49 ms per image. This makes FastBox particularly suitable for real-time applications. Our results indicate further that the computational overhead of the rezoom layer is negligible (see Table 5). The performance boost of the rezoom layer on the other hand is quite substantial (see Table 4), justifying the use of a rezoom layer in the final model. Qualitative results are shown in Fig. 7 with and without non-maxima suppression.
 
+FastBox可以以非常高的速度执行评估：每个图像的推理步骤需要37.49ms。这使得FastBox特别适合实时应用。我们的结果进一步表明, rezoom layer的计算开销是可以忽略的(见表5)。另一方面, rezoom layer的性能提升是相当大的(参见表4), 在最终模型中使用rezoom layer证明了这两点。定性结果如图7具有和不具有非极大抑制。 
+
 #### MultiNet
 
-We have experimented with two versions of
-MultiNet. The first version is trained using two decoders,
-(detection and segmentation) while the second version is
-trained with all three decoders. Training with additional
-decoders significantly lowers the convergence speed of all
-decoders. When training with all three decoders it takes segmentation more than 30.000 and detection more than 150.000 iterations to converge, as shown in Fig. 8. Fig. 8
-and Table 6 also show, that our combined training does not
-harm performance. On the contrary, the detection and classification
-tasks benefit slightly when jointly trained. This
-effect can be explained by transfer learning between tasks:
-relevant features learned from one task can be utilized in a
-different task.
+| Task: Metric             | seperate | 2 losses | 3 losses |
+| ------------------------ | -------- | -------- | -------- |
+| Segmentation: MaxF1      | 95.83%   | 94.98%   | 95.13%   |
+| Detection: Moderate      | 83.35%   | 83.91%   | 84.39%   |
+| Classification: Accuracy | 92.65%   | -        | 94.38%   |
 
-MultiNet is particularly suited for real-time applications.
-As shown in Table 7 computational complexity benefits significantly
-from a shared architecture. Overall, MultiNet is
-able to solve all three task together in real-time.
+Table 6: MultiNet performance: Comparison between united and seperate evaluation on the validation set.
+
+表6：MultiNet性能：验证集合的联合和单独评估之间的比较 
+
+![](http://outz1n6zr.bkt.clouddn.com/2017-11-23_190044.png)
+
+Figure 8: MultiNet: Comparison of Joint and Separate Training.
+
+图8.MultiNet：联合训练和分离训练的比较
+
+We have experimented with two versions of MultiNet. The first version is trained using two decoders, (detection and segmentation) while the second version is trained with all three decoders. Training with additional decoders significantly lowers the convergence speed of all decoders. When training with all three decoders it takes segmentation more than 30.000 and detection more than 150.000 iterations to converge, as shown in Fig. 8. Fig. 8 and Table 6 also show, that our combined training does not harm performance. On the contrary, the detection and classification tasks benefit slightly when jointly trained. This effect can be explained by transfer learning between tasks: relevant features learned from one task can be utilized in a different task.
+
+我们已经尝试了两个版本的MultiNet。使用两个解码器(检测和分割)训练第一个版本, 而第二个版本使用所有三个解码器进行训练。使用额外的解码器进行训练明显地降低了所有解码器的收敛速度。当使用所有三个解码器进行训练时, 分割需要超过30.000次迭代，检测需要超过150.000次迭代达到收敛, 如图8所示。图8和表6还表明, 该组合训练不会影响性能。相反, 联合训练时, 检测和分类任务略有好转。这种效果可以通过任务之间的转移学习来解释：从一个任务中学到的相关特征可以用于不同的任务。
+
+| MultiNet | Segmentation | Detection | Classification |
+| -------- | ------------ | --------- | -------------- |
+| 98.10 ms | 94.6 ms      | 37.5 ms   | 35.94 ms       |
+| 10.2 Hz  | 10.6 Hz      | 27.7 Hz   | 27.8 Hz        |
+
+Table 7: MultiNet inference speed: Comparision between united and seperate evaluation.
+
+表7：MultiNet推理速度：联合和单独评估之间的比较 
+
+MultiNet is particularly suited for real-time applications. As shown in Table 7 computational complexity benefits significantly from a shared architecture. Overall, MultiNet is able to solve all three task together in real-time.
+
+MultiNet特别适用于实时应用。如表7, 计算复杂度显著得益于共享架构。总的来说, MultiNet能够实时的同时解决这三个任务。
+
+Figure 9: Visualization of the MultiNet output.
+
+图9. MultiNet输出可视化
+
+![](http://outz1n6zr.bkt.clouddn.com/2017-11-23_190113.png)
 
 ## Conclusion
 
-In this paper we have developed a unified deep architecture
-which is able to jointly reason about classification,
-detection and semantic segmentation. Our approach is very
-simple, can be trained end-to-end and performs extremely
-well in the challenging KITTI, outperforming the state-ofthe-art
-in the road segmentation task. Our approach is also
-very efficient, taking 98.10 ms to perform all tasks. In the
-future we plan to exploit compression methods in order
-to further reduce the computational bottleneck and energy
-consumption of MutiNet.
+In this paper we have developed a unified deep architecture which is able to jointly reason about classification, detection and semantic segmentation. Our approach is very simple, can be trained end-to-end and performs extremely well in the challenging KITTI, outperforming the state-ofthe-art in the road segmentation task. Our approach is also very efficient, taking 98.10 ms to perform all tasks. In the future we plan to exploit compression methods in order to further reduce the computational bottleneck and energy consumption of MutiNet.
 
-**Acknowledgements**: This work was partially supported
-by Begabtenstiftung Informatik Karlsruhe, ONR-N00014-
-14-1-0232, Qualcomm, Samsung, NVIDIA, Google, EPSRC
-and NSERC. We are thankful to Thomas Roddick for
-proofreading the paper.
+在本文中, 我们开发了一个联合的深度架构, 能够共同推理分类, 检测和语义分割。我们的方法非常简单, 可以端到端训练, 并在KITTI中表现非常出色, 超越了道路分割任务中的最先进的技术。我们的方法也非常有效, 需要98.10ms执行所有任务。未来我们计划开发压缩方法, 以进一步降低MutiNet的计算瓶颈和能耗。
+
+**Acknowledgements**: This work was partially supported by Begabtenstiftung Informatik Karlsruhe, ONR-N00014-14-1-0232, Qualcomm, Samsung, NVIDIA, Google, EPSRC and NSERC. We are thankful to Thomas Roddick for proofreading the paper.
 
 ## References
 
@@ -295,14 +406,29 @@ http://www.pascalnetwork.org/challenges/VOC/voc2012/workshop/index.html. 4
 [51] Z. Zhang, P. Luo, C. C. Loy, and X. Tang. Facial landmark detection by deep multi-task learning. In European Conference on Computer Vision, pages 94–108. Springer, 2014. 3  
 [52] S. Zheng, S. Jayasumana, B. Romera-Paredes, V. Vineet, Z. Su, D. Du, C. Huang, and P. H. S. Torr. Conditional random fields as recurrent neural networks. CoRR, abs/1502.03240, 2015. 2 
 
-![](http://outz1n6zr.bkt.clouddn.com/2017-11-23_185947.png)
+# 程序
 
-![](http://outz1n6zr.bkt.clouddn.com/2017-11-23_190007.png)
+## Get Start
 
-![](http://outz1n6zr.bkt.clouddn.com/2017-11-23_190024.png)
+```shell
+git clone https://github.com/MarvinTeichmann/KittiSeg.git
+cd KittiSeg
+git submodule update --init --recursive
+python download_data.py --kitti_url http://kitti.is.tue.mpg.de/kitti/data_road.zip
+```
 
-![](http://outz1n6zr.bkt.clouddn.com/2017-11-23_190044.png)
+下载过程
 
-![](http://outz1n6zr.bkt.clouddn.com/2017-11-23_190113.png)
-
-![](http://outz1n6zr.bkt.clouddn.com/2017-11-23_185947.png)
+```shell
+2017-11-24 13:41:12,536 INFO Downloading VGG weights.
+2017-11-24 13:41:12,538 INFO Download URL: ftp://mi.eng.cam.ac.uk/pub/mttt2/models/vgg16.npy
+2017-11-24 13:41:12,538 INFO Download DIR: DATA
+>> Downloading vgg16.npy 100.0%
+2017-11-24 13:58:29,855 INFO Downloading Kitti Road Data.
+2017-11-24 13:58:29,855 INFO Download URL: http://kitti.is.tue.mpg.de/kitti/data_road.zip
+2017-11-24 13:58:29,856 INFO Download DIR: DATA
+>> Downloading data_road.zip 100.0%
+2017-11-24 14:46:04,978 INFO Extracting kitti_road data.
+2017-11-24 14:46:09,240 INFO Preparing kitti_road data.
+2017-11-24 14:46:09,244 INFO All data have been downloaded successful.
+```
