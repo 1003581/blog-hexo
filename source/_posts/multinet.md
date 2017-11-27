@@ -432,3 +432,121 @@ python download_data.py --kitti_url http://kitti.is.tue.mpg.de/kitti/data_road.z
 2017-11-24 14:46:09,240 INFO Preparing kitti_road data.
 2017-11-24 14:46:09,244 INFO All data have been downloaded successful.
 ```
+
+运行Demo
+
+Windows下运行出错问题[解决](https://github.com/MarvinTeichmann/KittiSeg/issues/17)
+
+```
+python demo.py --input_image data/demo/demo.png
+```
+
+```
+2017-11-27 14:12:16,096 INFO No environment variable 'TV_PLUGIN_DIR' found. Set to 'C:\Users\10217814/tv-plugins'.
+2017-11-27 14:12:16,096 INFO No environment variable 'TV_STEP_SHOW' found. Set to '50'.
+2017-11-27 14:12:16,096 INFO No environment variable 'TV_STEP_EVAL' found. Set to '250'.
+2017-11-27 14:12:16,096 INFO No environment variable 'TV_STEP_WRITE' found. Set to '1000'.
+2017-11-27 14:12:16,097 INFO No environment variable 'TV_MAX_KEEP' found. Set to '10'.
+2017-11-27 14:12:16,097 INFO No environment variable 'TV_STEP_STR' found. Set to 'Step {step}/{total_steps}: loss = {loss_value:.2f}; lr = {lr_value:.2e}; {sec_per_batch:.3f} sec (per Batch); {examples_per_sec:.1f} imgs/sec'.
+2017-11-27 14:12:16,107 INFO Download URL: ftp://mi.eng.cam.ac.uk/pub/mttt2/models/KittiSeg_pretrained.zip
+2017-11-27 14:12:16,108 INFO Download DIR: RUNS
+>> Downloading KittiSeg_pretrained.zip 100.0%
+2017-11-27 17:13:03,549 INFO Extracting KittiSeg_pretrained.zip
+2017-11-27 17:13:24,930 INFO f: <_io.TextIOWrapper name='RUNS\\KittiSeg_pretrained\\model_files\\hypes.json' mode='r' encoding='cp936'>
+2017-11-27 17:13:24,931 INFO Hypes loaded successfully.
+2017-11-27 17:13:25,072 INFO Modules loaded successfully. Starting to build tf graph.
+npy file loaded
+Layer name: conv1_1
+Layer shape: (3, 3, 3, 64)
+2017-11-27 17:13:29,842 INFO Creating Summary for: conv1_1/filter
+2017-11-27 17:13:29,890 INFO Creating Summary for: conv1_1/biases
+Layer name: conv1_2
+Layer shape: (3, 3, 64, 64)
+2017-11-27 17:13:29,923 INFO Creating Summary for: conv1_2/filter
+2017-11-27 17:13:29,947 INFO Creating Summary for: conv1_2/biases
+Layer name: conv2_1
+Layer shape: (3, 3, 64, 128)
+2017-11-27 17:13:29,979 INFO Creating Summary for: conv2_1/filter
+2017-11-27 17:13:30,004 INFO Creating Summary for: conv2_1/biases
+Layer name: conv2_2
+Layer shape: (3, 3, 128, 128)
+2017-11-27 17:13:30,036 INFO Creating Summary for: conv2_2/filter
+2017-11-27 17:13:30,061 INFO Creating Summary for: conv2_2/biases
+Layer name: conv3_1
+Layer shape: (3, 3, 128, 256)
+2017-11-27 17:13:30,095 INFO Creating Summary for: conv3_1/filter
+2017-11-27 17:13:30,119 INFO Creating Summary for: conv3_1/biases
+Layer name: conv3_2
+Layer shape: (3, 3, 256, 256)
+2017-11-27 17:13:30,152 INFO Creating Summary for: conv3_2/filter
+2017-11-27 17:13:30,175 INFO Creating Summary for: conv3_2/biases
+Layer name: conv3_3
+Layer shape: (3, 3, 256, 256)
+2017-11-27 17:13:30,209 INFO Creating Summary for: conv3_3/filter
+2017-11-27 17:13:30,232 INFO Creating Summary for: conv3_3/biases
+Layer name: conv4_1
+Layer shape: (3, 3, 256, 512)
+2017-11-27 17:13:30,268 INFO Creating Summary for: conv4_1/filter
+2017-11-27 17:13:30,293 INFO Creating Summary for: conv4_1/biases
+Layer name: conv4_2
+Layer shape: (3, 3, 512, 512)
+2017-11-27 17:13:30,332 INFO Creating Summary for: conv4_2/filter
+2017-11-27 17:13:30,356 INFO Creating Summary for: conv4_2/biases
+Layer name: conv4_3
+Layer shape: (3, 3, 512, 512)
+2017-11-27 17:13:30,396 INFO Creating Summary for: conv4_3/filter
+2017-11-27 17:13:30,422 INFO Creating Summary for: conv4_3/biases
+Layer name: conv5_1
+Layer shape: (3, 3, 512, 512)
+2017-11-27 17:13:30,461 INFO Creating Summary for: conv5_1/filter
+2017-11-27 17:13:30,485 INFO Creating Summary for: conv5_1/biases
+Layer name: conv5_2
+Layer shape: (3, 3, 512, 512)
+2017-11-27 17:13:30,565 INFO Creating Summary for: conv5_2/filter
+2017-11-27 17:13:30,589 INFO Creating Summary for: conv5_2/biases
+Layer name: conv5_3
+Layer shape: (3, 3, 512, 512)
+2017-11-27 17:13:30,629 INFO Creating Summary for: conv5_3/filter
+2017-11-27 17:13:30,655 INFO Creating Summary for: conv5_3/biases
+Layer name: fc6
+Layer shape: [7, 7, 512, 4096]
+2017-11-27 17:13:30,965 INFO Creating Summary for: fc6/weights
+2017-11-27 17:13:30,991 INFO Creating Summary for: fc6/biases
+Layer name: fc7
+Layer shape: [1, 1, 4096, 4096]
+2017-11-27 17:13:31,067 INFO Creating Summary for: fc7/weights
+2017-11-27 17:13:31,091 INFO Creating Summary for: fc7/biases
+2017-11-27 17:13:31,127 INFO Creating Summary for: score_fr/weights
+2017-11-27 17:13:31,151 INFO Creating Summary for: score_fr/biases
+WARNING:tensorflow:From e:\GitHub\KittiSeg\incl\tensorflow_fcn\fcn8_vgg.py:114: calling argmax (from tensorflow.python.ops.math_ops) with dimension is deprecated and will be removed in a future version.
+Instructions for updating:
+Use the `axis` argument instead
+2017-11-27 17:13:31,465 WARNING From e:\GitHub\KittiSeg\incl\tensorflow_fcn\fcn8_vgg.py:114: calling argmax (from tensorflow.python.ops.math_ops) with dimension is deprecated and will be removed in a future version.
+Instructions for updating:
+Use the `axis` argument instead
+2017-11-27 17:13:31,488 INFO Creating Summary for: upscore2/up_filter
+2017-11-27 17:13:31,525 INFO Creating Summary for: score_pool4/weights
+2017-11-27 17:13:31,548 INFO Creating Summary for: score_pool4/biases
+2017-11-27 17:13:31,594 INFO Creating Summary for: upscore4/up_filter
+2017-11-27 17:13:31,634 INFO Creating Summary for: score_pool3/weights
+2017-11-27 17:13:31,659 INFO Creating Summary for: score_pool3/biases
+2017-11-27 17:13:31,705 INFO Creating Summary for: upscore32/up_filter
+2017-11-27 17:13:31,778 INFO Graph build successfully.
+2017-11-27 17:13:31.779807: I C:\tf_jenkins\home\workspace\rel-win\M\windows\PY\35\tensorflow\core\platform\cpu_feature_guard.cc:137] Your CPU supports instructions that this TensorFlow binary was not compiled to use: AVX AVX2
+2017-11-27 17:13:31,918 INFO /u/marvin/no_backup/RUNS/KittiSeg/loss_bench/xentropy_kitti_fcn_2016_10_15_01.18/model.ckpt-15999
+INFO:tensorflow:Restoring parameters from RUNS\KittiSeg_pretrained\model.ckpt-15999
+2017-11-27 17:13:31,919 INFO Restoring parameters from RUNS\KittiSeg_pretrained\model.ckpt-15999
+2017-11-27 17:13:35,227 INFO Weights loaded successfully.
+2017-11-27 17:13:35,227 INFO Starting inference using data/demo/demo.png as input
+2017-11-27 17:13:40,363 INFO
+2017-11-27 17:13:40,363 INFO Raw output image has been saved to: e:\GitHub\KittiSeg\data\demo\demo_raw.png
+2017-11-27 17:13:40,363 INFO Red-Blue overlay of confs have been saved to: e:\GitHub\KittiSeg\data\demo\demo_rb.png
+2017-11-27 17:13:40,364 INFO Green plot of predictions have been saved to: e:\GitHub\KittiSeg\data\demo\demo_green.png
+2017-11-27 17:13:40,364 INFO
+2017-11-27 17:13:40,364 WARNING Do NOT use this Code to evaluate multiple images.
+2017-11-27 17:13:40,364 WARNING Demo.py is **very slow** and designed to be a tutorial to show how the KittiSeg works.
+2017-11-27 17:13:40,365 WARNING
+2017-11-27 17:13:40,365 WARNING Please see this comment, if you like to apply demo.py tomultiple images see:
+2017-11-27 17:13:40,365 WARNING https://github.com/MarvinTeichmann/KittiBox/issues/15#issuecomment-301800058
+```
+

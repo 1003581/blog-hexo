@@ -23,10 +23,10 @@ GPU面对的则是类型高度统一的、相互无依赖的大规模数据和�
 
 ![CPU与GPU-2](http://outz1n6zr.bkt.clouddn.com/cuda-cpu-gpu-2.png)
 
- . | 缓存、内存 | 线程 | 寄存器 | SIMD单元
- --- | --- | --- | --- | ---
- CPU | 多 | 少 | 少 | 少
- GPU | 少|多|多|多
+| .   | 缓存、内存 | 线程 | 寄存器 | SIMD单元 |
+| --- | ---------- | ---- | ------ | -------- |
+| CPU | 多         | 少   | 少     | 少       |
+| GPU | 少         | 多   | 多     | 多       |
 
 > SIMD Unit(单指令多数据流,以同步方式，在同一时间内执行同一条指令)
 
@@ -82,14 +82,14 @@ GPU面对的则是类型高度统一的、相互无依赖的大规模数据和�
 
 ### NVIDIA最新GPU一览
 
-型号 | 计算能力 | 单精度性能(TFLOPS) | 显存 | CUDA Core
---- | --- | --- | --- | ---
-高性能计算GPU [Tesla V100](http://images.nvidia.com/content/technologies/volta/pdf/437317-Volta-V100-DS-NV-US-WEB.pdf) | 7.0 | 14 | 16GB | 5120
-高性能计算GPU [Tesla P100]((http://images.nvidia.com/content/pdf/tesla/cn/Tesla_P100_PCle_%E4%BA%A7%E5%93%81%E5%BD%A9%E9%A1%B5_%E7%BD%91%E7%BB%9C%E7%89%88.PDF)) | 6.0 | 9.3 | 16GB | 3584
-专业制图GPU Quadro GP100 | 6.0 | 10.3 | 16GB | 3584
-专业制图GPU Quadro P6000 | 6.1 | 12 | 24GB | 3840
-桌面GPU GeForce [NVIDIA TITAN Xp](https://www.nvidia.com/en-us/design-visualization/products/titan-xp/) | 6.1 | 11 | 12GB | 3584
-桌面GPU GeForce GTX TITAN X | 5.2 | 7 | 12GB | 3072 
+| 款式            | 型号                                                                                                                                               | 计算能力 | 单精度性能(TFLOPS) | 显存 | CUDA Core |
+| --------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- | -------- | ------------------ | ---- | --------- |
+| 高性能计算GPU   | [Tesla V100](http://images.nvidia.com/content/technologies/volta/pdf/437317-Volta-V100-DS-NV-US-WEB.pdf)                                           | 7.0      | 14                 | 16GB | 5120      |
+| 高性能计算GPU   | [Tesla P100]((http://images.nvidia.com/content/pdf/tesla/cn/Tesla_P100_PCle_%E4%BA%A7%E5%93%81%E5%BD%A9%E9%A1%B5_%E7%BD%91%E7%BB%9C%E7%89%88.PDF)) | 6.0      | 9.3                | 16GB | 3584      |
+| 专业制图GPU     | Quadro GP100                                                                                                                                       | 6.0      | 10.3               | 16GB | 3584      |
+| 专业制图GPU     | Quadro P6000                                                                                                                                       | 6.1      | 12                 | 24GB | 3840      |
+| 桌面GPU GeForce | [NVIDIA TITAN Xp](https://www.nvidia.com/en-us/design-visualization/products/titan-xp/)                                                            | 6.1      | 11                 | 12GB | 3584      |
+| 桌面GPU GeForce | GTX TITAN X                                                                                                                                        | 5.2      | 7                  | 12GB | 3072      |
 
 
 > 计算能力Compute Capability。与计算速度无关，代表了其硬件层次的规格和可用功能，整数部分为GPU大的架构（1 Tesla 2 Fermi 3 Kepler 5 Maxwell 6 Pascal 7 Volta）。  
