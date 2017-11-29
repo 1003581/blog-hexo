@@ -376,3 +376,14 @@ none                     100M     0  100M   0% /run/user
 
 ## 永久挂载
 
+## 减小home，增大root
+
+```shell
+umount /home
+lvreduce /dev/dap104-vg/home -L -180G
+mkfs.ext4 /dev/dap104-vg/home
+e2fsck -fy /dev/dap104-vg/home
+mount /dev/dap104-vg/home
+lvextend -L +180G /dev/dap104-vg/root
+resize2fs /dev/dap104-vg/root
+```

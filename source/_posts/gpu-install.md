@@ -14,46 +14,10 @@ categories: linux
 - [下载Docker-Compose](https://github.com/docker/compose/releases)
 - [下载MLNX_OFED](http://ch.mellanox.com/page/products_dyn?product_family=26&mtag=linux_sw_drivers)
 
-## 配置系统
-
-以Ubuntu14.04为类。
-
-```shell
-echo "Acquire::http::Proxy::mirrors.zte.com.cn DIRECT" > /etc/apt/apt.conf
-
-echo "deb http://mirrors.zte.com.cn/ubuntu/ trusty main multiverse restricted universe
-deb http://mirrors.zte.com.cn/ubuntu/ trusty-backports main multiverse restricted universe
-deb http://mirrors.zte.com.cn/ubuntu/ trusty-proposed main multiverse restricted universe
-deb http://mirrors.zte.com.cn/ubuntu/ trusty-security main multiverse restricted universe
-deb http://mirrors.zte.com.cn/ubuntu/ trusty-updates main multiverse restricted universe
-deb-src http://mirrors.zte.com.cn/ubuntu/ trusty main multiverse restricted universe
-deb-src http://mirrors.zte.com.cn/ubuntu/ trusty-backports main multiverse restricted universe
-deb-src http://mirrors.zte.com.cn/ubuntu/ trusty-proposed main multiverse restricted universe
-deb-src http://mirrors.zte.com.cn/ubuntu/ trusty-security main multiverse restricted universe
-deb-src http://mirrors.zte.com.cn/ubuntu/ trusty-updates main multiverse restricted universe" > /etc/apt/sources.list
-
-echo "[global]
-index-url = http://mirrors.zte.com.cn/pypi/simple
-
-[install]
-trusted-host=mirrors.zte.com.cn" > /root/.pip/pip.conf
-
-echo "nameserver 10.41.132.9
-nameserver 10.41.132.10" > /etc/resolvconf/resolv.conf.d/tail
-
-service resolvconf restart
-
-sed -i 's/^PermitRootLogin.*$/PermitRootLogin yes/g' /etc/ssh/sshd_config
-
-apt-get update -qq && apt-get install -y -qq vim subversion tzdata
-
-cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo 'Asia/Shanghai' > /etc/timezone
-```
-
 ## 安装GPU驱动
 
 ```shell
-svn export svn://10.42.10.35/gpu/install/nvidia-diag-driver-local-repo-ubuntu1404-384.81_1.0-1_amd64.deb --username robot --password robotqqq --no-auth-cache
+svn export svn://10.42.10.xx/gpu/install/nvidia-diag-driver-local-repo-ubuntu1404-384.81_1.0-1_amd64.deb --username username --password passwd --no-auth-cache
 dpkg -i nvidia-diag-driver-local-repo-ubuntu1404-384.81_1.0-1_amd64.deb
 apt-key add /var/nvidia-diag-driver-local-repo-384.81/7fa2af80.pub
 apt-get update -qq
@@ -76,12 +40,12 @@ apt-get update -qq
 apt-get install -y -qq docker-engine
 docker --version
 
-svn export svn://10.42.10.35/gpu/install/docker-compose-Linux-x86_64 --username robot --password robotqqq --no-auth-cache
+svn export svn://10.42.10.xx/gpu/install/docker-compose-Linux-x86_64 --username username --password passwd --no-auth-cache
 mv docker-compose-Linux-x86_64 /usr/local/bin/docker-compose
 chmod +x /usr/local/bin/docker-compose
 docker-compose --version
 
-svn export svn://10.42.10.35/gpu/install/nvidia-docker_1.0.1-1_amd64.deb --username robot --password robotqqq --no-auth-cache
+svn export svn://10.42.10.xx/gpu/install/nvidia-docker_1.0.1-1_amd64.deb --username username --password passwd --no-auth-cache
 dpkg -i nvidia-docker_1.0.1-1_amd64.deb
 rm nvidia-docker_1.0.1-1_amd64.deb
 nvidia-docker-plugin -v
@@ -90,7 +54,7 @@ nvidia-docker-plugin -v
 ## 安装ib驱动
 
 ```shell
-svn export svn://10.42.10.35/gpu/install/MLNX_OFED_LINUX-4.2-1.0.0.0-ubuntu14.04-x86_64.tgz --username robot --password robotqqq --no-auth-cache
+svn export svn://10.42.10.xx/gpu/install/MLNX_OFED_LINUX-4.2-1.0.0.0-ubuntu14.04-x86_64.tgz --username username --password passwd --no-auth-cache
 tar zxvf MLNX_OFED_LINUX-4.2-1.0.0.0-ubuntu14.04-x86_64.tgz
 rm MLNX_OFED_LINUX-4.2-1.0.0.0-ubuntu14.04-x86_64.tgz
 apt-get update -qq && apt-get install -y -qq perl dpkg autotools-dev autoconf libtool automake1.10 automake m4 dkms debhelper tcl tcl8.4 chrpath swig graphviz tcl-dev tcl8.4-dev tk-dev tk8.4-dev bison flex dpatch zlib1g-dev curl libcurl4-gnutls-dev python-libxml2 libvirt-bin libvirt0 libnl-dev libglib2.0-dev libgfortran3 automake m4 pkg-config libnuma-dev libnuma1 logrotate ethtool lsof gfortran quilt
@@ -100,13 +64,13 @@ rm -rf MLNX_OFED_LINUX-4.2-1.0.0.0-ubuntu14.04-x86_64
 /etc/init.d/opensmd start
 ```
 
-## 配置Zabbix
+## 配置Zabbix-Agent
 
 ```shell
 apt-get update -qq
 apt-get install -y -qq zabbix-agent lm-sensors
-sed -i 's/^Server=127.0.0.1/Server=10.42.10.39/g' /etc/zabbix/zabbix_agentd.conf
-sed -i 's/^ServerActive=127.0.0.1/ServerActive=10.42.10.39:10051/g' /etc/zabbix/zabbix_agentd.conf
+sed -i 's/^Server=127.0.0.1/Server=10.42.10.xx/g' /etc/zabbix/zabbix_agentd.conf
+sed -i 's/^ServerActive=127.0.0.1/ServerActive=10.42.10.xx:10051/g' /etc/zabbix/zabbix_agentd.conf
 echo "UserParameter=gpu0.temp, nvidia-smi -q -g 0 2>&1|grep -i "gpu current temp"|awk '{print $5}'| sed s/\%//g" >> /etc/zabbix/zabbix_agentd.conf
 echo "UserParameter=cpu0.temp, sensors coretemp-isa-0000|grep Physical|awk '{print $4}'|cut -d "." -f1" >> /etc/zabbix/zabbix_agentd.conf
 echo "UserParameter=cpu1.temp, sensors coretemp-isa-0001|grep Physical|awk '{print $4}'|cut -d "." -f1" >> /etc/zabbix/zabbix_agentd.conf
