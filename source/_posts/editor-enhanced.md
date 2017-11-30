@@ -226,26 +226,32 @@ E36B85CC 84991F19 7575D828 470A92AB
 `Crtl+,`->`用户设置`
 
 ```
-// Place your settings in this file to overwrite default and user settings.
 {
-    // 控制字体系列。
-    "editor.fontFamily": "Source Code Pro",
-    //"workbench.colorTheme": "Seti",
-    "extensions.ignoreRecommendations": false,
-    "git.enableSmartCommit": true,
-    "editor.renderLineHighlight": "none",
-    "editor.lineHeight": 24,
-    "editor.roundedSelection": false,
-    "extensions.autoUpdate": true,
-    "editor.fontSize": 14,
-    "editor.tabSize": 4,
-    "files.associations":{
-        "*.ejs": "html",
-        "*.wxss": "css"
-    },
-    "python.linting.pylintEnabled": false
+  "editor.fontSize": 16,
+    // 要使用的代理设置。如果尚未设置，则将从 http_proxy 和 https_proxy 环境变量获取
+  "http.proxy": "http://proxyhk.zte.com.cn:80",
+  "files.autoSave": "afterDelay",
+  "workbench.colorTheme": "Solarized Light",
+  "git.enableSmartCommit": true,
+  "git.confirmSync": false,
+  "markdown.preview.fontSize": 16,
+  "workbench.iconTheme": "vscode-icons",
+  "window.menuBarVisibility": "default",
+  "explorer.confirmDelete": false,
+  "python.workspaceSymbols.tagFilePath": "${workspaceRoot}/tags",
 }
 ```
+
+## 插件
+
+- C/C++
+- Docker
+- Go
+- Markdown All in One
+- Markdown+ Math
+- Python
+- vscode-icons
+- vscode-pandoc
 
 ## 编译C++
 
