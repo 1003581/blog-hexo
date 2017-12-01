@@ -550,3 +550,18 @@ INFO:tensorflow:Restoring parameters from RUNS\KittiSeg_pretrained\model.ckpt-15
 2017-11-27 17:13:40,365 WARNING https://github.com/MarvinTeichmann/KittiBox/issues/15#issuecomment-301800058
 ```
 
+demo.png
+
+![](http://outz1n6zr.bkt.clouddn.com/demo.png)
+
+demo_raw.png
+
+![](http://outz1n6zr.bkt.clouddn.com/demo_raw.png)
+
+demo_rb.png
+
+![](http://outz1n6zr.bkt.clouddn.com/demo_rb.png)
+
+demo_green.png
+
+![](http://outz1n6zr.bkt.clouddn.com/demo_green.png)
