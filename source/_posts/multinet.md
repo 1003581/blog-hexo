@@ -433,7 +433,7 @@ python download_data.py --kitti_url http://kitti.is.tue.mpg.de/kitti/data_road.z
 2017-11-24 14:46:09,244 INFO All data have been downloaded successful.
 ```
 
-运行Demo
+### 运行Demo
 
 Windows下运行出错问题[解决](https://github.com/MarvinTeichmann/KittiSeg/issues/17)
 
@@ -550,6 +550,8 @@ INFO:tensorflow:Restoring parameters from RUNS\KittiSeg_pretrained\model.ckpt-15
 2017-11-27 17:13:40,365 WARNING https://github.com/MarvinTeichmann/KittiBox/issues/15#issuecomment-301800058
 ```
 
+运行结果：
+
 demo.png
 
 ![](http://outz1n6zr.bkt.clouddn.com/demo.png)
@@ -565,3 +567,167 @@ demo_rb.png
 demo_green.png
 
 ![](http://outz1n6zr.bkt.clouddn.com/demo_green.png)
+
+代码笔记：
+
+1. 输出日志中前几行的`No environment variable`由`incl/tensorvision/utils.py`中的325-339输出，负责读取环境变量中的一些设置。
+1. `KittiSeg_pretrained.zip`由`demo.py`中的125行代码下载，大小为2.56GB，默认下载到`RUNS/`文件夹中，并解压到同一目录中。
+1. 接下来读取hypes和modules.
+    1. hypes是指`RUNS/KittiSeg_pretrained/model_files/hypes.json`文件
+    1. modules是一个dict，存放了一些模块包，包括`KittiSeg_pretrained/model_files/`下的`data_input.py`,`architecture.py`,`objective.py`,`solver.py`,`eval.py`.
+    1. 以下代码
+        ```python
+        f = os.path.join(model_dir, "eval.py")
+        eva = imp.load_source("evaluator_%s" % postfix, f)
+        ```
+        表示将`eval.py`这个文件进行导入，导入后的模块名称为`evluator_%s`，`eva`为模块变量。
+1. 开始构建Tensorflow Graph。首先创建2个placeholder
+    ```python
+    # Create placeholder for input
+    image_pl = tf.placeholder(tf.float32)
+    image = tf.expand_dims(image_pl, 0)
+    ```
+    占位符的shape为未知
+    ```
+    >>> image_pl
+    <tf.Tensor 'Placeholder:0' shape=<unknown> dtype=float32>
+    >>> image
+    <tf.Tensor 'ExpandDims:0' shape=<unknown> dtype=float32>
+    ```
+1. 从module中读取Graph
+    ```python
+    # build Tensorflow graph using the model from logdir
+    prediction = core.build_inference_graph(hypes, modules, image=image)
+    
+    ----------incl/tensorvision/core.py
+    def build_inference_graph(hypes, modules, image):
+        with tf.name_scope("Validation"):
+
+        logits = modules['arch'].inference(hypes, image, train=False)
+
+        decoded_logits = modules['objective'].decoder(hypes, logits,
+                                                      train=False)
+    return decoded_logits
+    
+    ----------RUNS/KittiSeg_pretrained/model_files/architecture.py
+    def inference(hypes, images, train=True):
+        vgg16_npy_path = os.path.join(hypes['dirs']['data_dir'], "vgg16.npy")
+        vgg_fcn = fcn8_vgg.FCN8VGG(vgg16_npy_path=vgg16_npy_path)
+
+        vgg_fcn.wd = hypes['wd']
+
+        vgg_fcn.build(images, train=train, num_classes=2, random_init_fc8=True)
+
+        return vgg_fcn.upscore32
+
+    ----------RUNS/KittiSeg_pretrained/model_files/objective.py
+    def decoder(hypes, logits, train):
+        decoded_logits = {}
+        decoded_logits['logits'] = logits
+        decoded_logits['softmax'] = _add_softmax(hypes, logits)
+        return decoded_logits
+    ```
+    上文运行`download_data.py`已经下载好了`vgg16.npy`，这是VGG-16网络实现训练好的参数。日志显示的Inference结构为：
+    | Layer Name  | Layer Shape        |
+    | ----------- | ------------------ |
+    | conv1_1     | (3, 3, 3, 64)      |
+    | conv1_2     | (3, 3, 64, 64)     |
+    | conv2_1     | (3, 3, 64, 128)    |
+    | conv2_2     | (3, 3, 128, 128)   |
+    | conv3_1     | (3, 3, 128, 256)   |
+    | conv3_2     | (3, 3, 256, 256)   |
+    | conv3_3     | (3, 3, 256, 256)   |
+    | conv4_1     | (3, 3, 256, 512)   |
+    | conv4_2     | (3, 3, 512, 512)   |
+    | conv4_3     | (3, 3, 512, 512)   |
+    | conv5_1     | (3, 3, 512, 512)   |
+    | conv5_2     | (3, 3, 512, 512)   |
+    | conv5_3     | (3, 3, 512, 512)   |
+    | fc6         | [7, 7, 512, 4096]  |
+    | fc7         | [1, 1, 4096, 4096] |
+    | score_fr    |
+    | upscore2    |
+    | score_pool4 |
+    | upscore4    |
+    | score_pool3 |
+    | upscore32   |
+1. 加载本地的权重网络变量
+    ```python
+    # Create a session for running Ops on the Graph.
+    sess = tf.Session()
+    saver = tf.train.Saver()
+
+    # Load weights from logdir
+    core.load_weights(logdir, sess, saver)
+    ```
+    在`RUNS/KittiSeg_pretrained`下包含了ckpt文件，`load_weights`函数会自动读取目录下的`checkpoint`文件，并得到实际的参数文件，然后`save.restore`。
+1. 读取且重定义测试图像，demo中**未执行**。
+    ```python
+    # Load and resize input image
+    image = scp.misc.imread(input_image)
+    if hypes['jitter']['reseize_image']:
+        # Resize input only, if specified in hypes
+        image_height = hypes['jitter']['image_height']
+        image_width = hypes['jitter']['image_width']
+        image = scp.misc.imresize(image, size=(image_height, image_width),
+                                    interp='cubic')
+    ```
+    `scp.misc.imread`返回的类型为`<class 'numpy.ndarray'>`类型，原始shape为`(375, 1242, 3)`, 而hypes中图像大小为`(384,1248)`, 利用`cubic`三次样条插值算法进行缩放。
+1. Tensorflow运行预测任务。
+    ```python
+    # Run KittiSeg model on image
+    feed = {image_pl: image}
+    softmax = prediction['softmax']
+    output = sess.run([softmax], feed_dict=feed)
+    ```
+    softmax为输出层，输出类别为2，如下
+    ```
+    Tensor("Validation/decoder/Softmax:0", shape=(?, 2), dtype=float32)
+    ```
+    output为一个list，里面只有1个元素，该元素大小为图像大小，元素为0-1的概率，表示是目标的概率。如下：
+    ```
+    [array([[  9.99689460e-01,   3.10521980e-04],
+       [  9.99805272e-01,   1.94725304e-04],
+       [  9.99785841e-01,   2.14181622e-04],
+       ...,
+       [  9.99480784e-01,   5.19228633e-04],
+       [  9.99274552e-01,   7.25465012e-04],
+       [  9.98537183e-01,   1.46284746e-03]], dtype=float32)]
+    ```
+1. 将输出reshape到图像大小，`output_image`的shape为`(375, 1242)`
+    ```python
+    # Reshape output from flat vector to 2D Image
+    shape = image.shape
+    output_image = output[0][:, 1].reshape(shape[0], shape[1])
+    ```
+1. 将每个点的概率映射到原始图像中。`rb_image`的shape为`(375, 1242, 3)`
+    ```python
+    # Plot confidences as red-blue overlay
+    rb_image = seg.make_overlay(image, output_image)
+    ```
+1. 利用阈值分割图像，用绿色标注。`green_image`的shape为`(375, 1242, 3)`
+    ```python
+    # Accept all pixel with conf >= 0.5 as positive prediction
+    # This creates a `hard` prediction result for class street
+    threshold = 0.5
+    street_prediction = output_image > threshold
+
+    # Plot the hard prediction as green overlay
+    green_image = tv_utils.fast_overlay(image, street_prediction)
+    ```
+1. 保存图像。
+    ```python
+    # Save output images to disk.
+    if FLAGS.output_image is None:
+        output_base_name = input_image
+    else:
+        output_base_name = FLAGS.output_image
+
+    raw_image_name = output_base_name.split('.')[0] + '_raw.png'
+    rb_image_name = output_base_name.split('.')[0] + '_rb.png'
+    green_image_name = output_base_name.split('.')[0] + '_green.png'
+
+    scp.misc.imsave(raw_image_name, output_image)
+    scp.misc.imsave(rb_image_name, rb_image)
+    scp.misc.imsave(green_image_name, green_image)
+    ```

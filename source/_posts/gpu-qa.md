@@ -1,6 +1,6 @@
 ---
-title: GPU集群环境一键式部署
-date: 2017-11-27 23:30:00
+title: NVIDIA GPU相关
+date: 2017-12-03 23:30:00
 tags: gpu
 categories: linux
 ---
