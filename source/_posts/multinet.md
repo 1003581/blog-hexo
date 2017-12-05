@@ -574,7 +574,7 @@ demo_green.png
 1. `KittiSeg_pretrained.zip`由`demo.py`中的125行代码下载，大小为2.56GB，默认下载到`RUNS/`文件夹中，并解压到同一目录中。
 1. 接下来读取hypes和modules.
     1. hypes是指`RUNS/KittiSeg_pretrained/model_files/hypes.json`文件
-    1. modules是一个dict，存放了一些模块包，包括`KittiSeg_pretrained/model_files/`下的`data_input.py`,`architecture.py`,`objective.py`,`solver.py`,`eval.py`.
+    1. modules是一个dict，存放了一些模块包，包括`KittiSeg_pretrained/model_files/` 下的`data_input.py`, `architecture.py`, `objective.py`, `solver.py`, `eval.py`.
     1. 以下代码
         ```python
         f = os.path.join(model_dir, "eval.py")
@@ -628,6 +628,7 @@ demo_green.png
         return decoded_logits
     ```
     上文运行`download_data.py`已经下载好了`vgg16.npy`，这是VGG-16网络实现训练好的参数。日志显示的Inference结构为：
+    
     | Layer Name  | Layer Shape        |
     | ----------- | ------------------ |
     | conv1_1     | (3, 3, 3, 64)      |
@@ -651,6 +652,7 @@ demo_green.png
     | upscore4    |
     | score_pool3 |
     | upscore32   |
+    
 1. 加载本地的权重网络变量
     ```python
     # Create a session for running Ops on the Graph.
