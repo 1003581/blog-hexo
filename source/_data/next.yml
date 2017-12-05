@@ -40,7 +40,7 @@ footer:
   since: 2017
 
   # Icon between year and copyright info.
-  icon: user
+  icon: heart
 
   # If not defined, will be used `author` from Hexo main config.
   copyright:
@@ -50,12 +50,12 @@ footer:
 
   theme:
     # Theme & scheme info link (Theme - NexT.scheme).
-    enable: false
+    enable: true
     # Version info of NexT after scheme info (vX.X.X).
-    version: false
+    version: true
   # -------------------------------------------------------------
   # Any custom text can be defined here.
-  custom_text: Hosted by <a href="https://pages.coding.me" style="font-weight: bold">Coding Pages</a> <a target="_blank" href="https://liqiang311.github.io/">GitHub Pages</a>
+  custom_text: Hosted by <a target="_blank" href="https://pages.coding.me">Coding Pages</a> and <a target="_blank" href="https://pages.github.com/">GitHub Pages</a>
 
 # ---------------------------------------------------------------
 # SEO Settings
@@ -71,7 +71,7 @@ seo: true
 
 # If true, will add site-subtitle to index page, added in main hexo config.
 # subtitle: Subtitle
-index_with_subtitle: true
+index_with_subtitle: false
 
 
 # ---------------------------------------------------------------
@@ -90,7 +90,7 @@ menu:
   categories: /categories/ || th
   archives: /archives/ || archive
   #schedule: /schedule/ || calendar
-  sitemap: /sitemap.xml || sitemap
+  #sitemap: /sitemap.xml || sitemap
   #commonweal: /404/ || heartbeat
 
 # Enable/Disable menu icons.
