@@ -240,3 +240,48 @@ agent代理程序的接口 IP地址 10.42.10.1
 
 上面我们在Zabbix中添加了对许多卡的监控，现在利用Grafana的模版进行监控。
 
+在Grafana中打开`Dashboards`，然后选择你创建的Dashboards，比如`GPUs`,然后进入该Dashboards首页，点击`设置`中的`Templating`
+
+![](http://outz1n6zr.bkt.clouddn.com/2017-12-15_091138.png)
+
+选择`Variables`界面的`New`，填写内容如下：
+
+```
+Name: 自定义变量名，比如Host
+Type: Query
+Data source: zabbix
+Refresh: On Dashboard Load
+Query: Groups.*
+Multi-value: ✔
+Include All option: ✔
+```
+
+> Query说明：格式为Groups.Host.Application.Items，若要创建Group级变量，则填*，若要全部的Host，则填写`*.*`，全部Items则写`*.*.*.*`，上文填写为获取指定Group下的Host
+
+若填写正确，则`Add`按钮上方会出现所有的匹配项（Preview of values(shows max 20)）（前20个）。
+
+点击`Add`。
+
+以此方式再添加Items变量。Query中填写`Group.*.*.*`。
+
+添加后如图。
+
+![](http://outz1n6zr.bkt.clouddn.com/2017-12-15_092802.png)
+
+接下来是如何使用。
+
+选择新建一个`Graph`Panel，编辑这个Panel，填写方式如下:
+
+```
+Query Mode: Metrics
+Group: Group
+Host: $Host
+Item: $Items
+Data Source: zabbix
+```
+
+![](http://outz1n6zr.bkt.clouddn.com/2017-12-15_093212.png)
+
+若不想全部Items显示到一个Graph中，则需要修改Graph Panel的`General`选项中的`Templating`，选择`Repeat Panel`，选择要Repeat的方式，`Min span`指的是分开多个后每个panel的最小宽度。最终效果图如下：
+
+![](http://outz1n6zr.bkt.clouddn.com/2017-12-15_093452.png)
