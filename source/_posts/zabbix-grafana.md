@@ -23,11 +23,10 @@ categories: linux
 
 ## 准备工作
 
-### 下载部署代码，并且下载granafa插件
+### 下载部署代码
 
 ```
-git clone https://github.com/liqiang311/zabbix-grafana.git
-git clone https://github.com/alexanderzobnin/grafana-zabbix.git zabbix-grafana/grafana/plugins/grafana-zabbix
+git clone --recursive https://github.com/liqiang311/zabbix-grafana.git
 ```
 
 ### 下载docker镜像
@@ -285,3 +284,39 @@ Data Source: zabbix
 若不想全部Items显示到一个Graph中，则需要修改Graph Panel的`General`选项中的`Templating`，选择`Repeat Panel`，选择要Repeat的方式，`Min span`指的是分开多个后每个panel的最小宽度。最终效果图如下：
 
 ![](http://outz1n6zr.bkt.clouddn.com/2017-12-15_093452.png)
+
+# 定期备份
+
+## Zabbix
+
+使用如下命令将Zabbix的数据库进行备份，备份为sql文件，自行保存到其他服务器。然后添加到Crontab中。
+
+```
+docker exec zabbix-mysql mysqldump -uroot -pmysql57 zabbix > init.sql
+scp init.sql 10.40.64.206:/root
+```
+
+恢复
+
+```
+docker cp init.sql zabbix-mysql:/tmp/
+docker exec zabbix-mysql mysql -uroot -pmysql57 zabbix -e "source /tmp/init.sql"
+```
+
+## Grafana
+
+[参考](http://www.cnblogs.com/xkus/p/7462953.html)
+
+备份
+
+```
+docker cp grafana:/var/lib/grafana/grafana.db ./
+scp grafana.db 10.40.64.206:/root
+```
+
+恢复
+
+```
+docker cp grafana.db grafana:/var/lib/grafana/grafana.db
+docker restart grafana
+```
