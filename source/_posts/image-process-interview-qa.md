@@ -52,6 +52,10 @@ YUV，分为三个分量，“Y”表示明亮度（Luminance或Luma），也就
 
 [12](http://blog.csdn.net/songzitea/article/details/13629389)
 
+#### 视频帧播放速度的单位
+
+PAL制式是——25fps，NTSC是——30fps。
+
 ### 图像预处理
 
 #### 叙述GABOR滤波器原理？
@@ -69,6 +73,14 @@ YUV，分为三个分量，“Y”表示明亮度（Luminance或Luma），也就
 在图像中，它是一种随机出现的白点或者黑点，可能是亮的区域有黑色像素或是在暗的区域有白色像素（或是两者皆有）。
 
 滤除椒盐噪声比较有效的方法是对信号进行中值滤波处理。
+
+### 插值
+
+#### 最近邻插值
+
+#### 双线性插值
+
+#### 立方卷积插值
 
 ### 特征算子
 
@@ -348,6 +360,68 @@ Graph cuts是一种十分有用和流行的能量优化算法，在计算机视�
 
 无监督学习里典型的例子就是聚类了。聚类的目的在于把相似的东西聚在一起，而我们并不关心这一类是什么。因此，一个聚类算法通常只需要知道如何计算相似度就可以开始工作了。
 
+### 图像算法
+
+#### 二值图像连通域搜索
+
+matlab中连通区域标记函数bwlabel中的算法，一次遍历图像，并记下每一行（或列）中连续的团（run）和标记的等价对，然后通过等价对对原来的图像进行重新标记。
+
+1. 创建RUN（团）结构体，包含（纵坐标、横坐标开始、横坐标结束、标记号）
+1. 开始逐行扫描图像，寻找所有的团，将他们放到一个二维数组`vector< vector<Stuct> >`中，以下为每一行的操作。
+	1. 当遇到一个255时，创建一个团的对象，标记纵坐标和横坐标的开始。
+	1. 从开始点向右寻找，直到遇到0或者这行结束，则标记为这个团的横坐标结束。
+	1. 将该行的RUN push到对应的位置。回到步骤2.1.
+1. 对众多的团进行分析，对团进行标记且得到等价对，创建一个`vector< pair<int, int> >`用于存放所有的等价对。
+	1. 遍历所有相邻行。
+	1. 若该行为第一行，则直接进行标记。
+	1. 对于相邻行，遍历该行的所有RUN，对于每一个RUN，遍历上一行的所有RUN（超出范围即停止循环）。
+		1. 若上一行中没有与该行RUN邻接，则创建新的标记。
+		1. 若上一行只有一个与该RUN邻接，则沿用相邻RUN的标记。
+		1. 若上一行有多个与该RUN邻接，则使用这多个RUN中最小的标记，并创建多个等价对。
+1. 消除等价对，可使用并查集，使得所有的团都拥有自己的祖先。
+	1. 假设标记从0开始，到1000结束。标记对为类似的(0,10).(10,39)。
+	1. 创建一个prev[1000]数组，初始化值为-1，记录该标记的上一级领导。初始prev[10]=0,prev[39]=10。初始化所有的等价对。
+	1. 遍历所有的等价对，修改每一级的上一级领导为最上层领导。
+1. 修改每个团中的标记为最上层领导的标记。
+
+代码见[github](https://github.com/liqiang311/snippets/blob/master/%E4%BA%8C%E5%80%BC%E5%9B%BE%E5%83%8F%E8%BF%9E%E9%80%9A%E5%9F%9F%E9%97%AE%E9%A2%98.cpp)
+
+开源库cvBlob中使用的标记算法，它通过定位连通区域的内外轮廓来标记整个图像，这个算法的核心是轮廓的搜索算法
+
+TODO:轮廓跟踪算法
+
+## 图像相关开放性知识
+
+### 怎样在一张街拍图像中识别明星的衣着服饰信息？
+
+我们需要把服装与背景、人物、建筑等等元素区别开来,确定是否有衣服以及衣服在什么位置。接下来需要对衣服进行分析,提取出服装的属性、特征等等。最后再根据这些特征,在庞大的数据库里搜索同款或者类似的服装图片。
+
+### 上衣纯色，裙子花色，怎样做区分？
+
+方差判断，梯度变化。
+
+### 怎样判断一张广告图片中是否有文字信息？是否用到OCR技术？怎样应用？
+
+场景文字检测与识别，先用CNN等对文字进行定位，然后再使用LSTM、OCR进行文字识别。
+
+### 给一张二值化图片(包含一个正方形)，怎样识别图片中的正方形？如果图片污损严重，怎样识别并恢复？
+
+首先检测轮廓，然后对轮廓进行分析（角点）。
+
+如果图像污损严重，如何识别？
+
+### 简述图像识别在移动互联网中的应用
+
+人脸识别、识别各类东西、检索各类图像。
+
+### 图像处理领域相关顶级论文
+
+- Image and Vision Computing   (IVC)
+- Pattern Recognition          (PR)
+- ICCV: IEEE International Conference on Computer Vision
+- CVPR: IEEE Conf on Comp Vision and Pattern Recognition
+- NIPS: Neural Information Processing Systems
+
 ## 数学知识
 
 ### 公式
@@ -398,7 +472,7 @@ $$
 
 C，C++中内存分配方式可以分为三种：  
 
-1. 从静态存储区域分配：内存在程序编译时就已经分配好，这块内存在程序的整个运行期间都存在。速度快，不容易出错，因有系统自行管理。
+1. 从静态存储区域分配：内存在程序编译时就已经分配好，这块内存在程序的整个运行期间都存在。速度快，不容易出错，因有系统自行管理。它主要存放静态数据、全局数据和常量。会默认初始化，其他两个不会自动初始化。
 1. 在栈上分配：在执行函数时，函数内局部变量的存储单元都在栈上创建，函数执行结束时这些存储单元自动被释放。栈内存分配运算内置于处理器的指令集中，效率很高，但是分配的内存容量有限。
 1. 从堆上分配：即运态内存分配。程序在运行时候用malloc或new申请任意大小的内存，程序员自己负责在何进用free 和delete释放内存。
 
@@ -422,7 +496,13 @@ C，C++中内存分配方式可以分为三种：
 
 #### 广度搜搜BFS
 
-队
+设置队列
+
+1. 定义一个队列Queue和visited数组。
+1. 将开头节点入队。
+1. 开始循环
+	1. 出队，访问该节点
+	1. 遍历该节点的相邻的未被访问过的节点，入队
 
 ### 其他编程
 
@@ -546,53 +626,7 @@ int main(){
 
 #### 自定义实现字符串转为整数的算法，例如把“123456”转成整数123456.(输入中可能存在符号，和数字)
 
-```c++
-#include <iostream>
-using namespace std;
-
-int strToInt(const char* str)
-{
-	long long result = 0;
-	if (str != NULL) {
-		const char* digit = str;
-
-		bool minus = false;
-
-		if (*digit == '+')
-			digit++;
-		else if (*digit == '-') {
-			digit++;
-			minus = true;
-		}
-
-		while (*digit != '\0') {
-			if (*digit >= '0' && *digit <= '9') {
-				result = result * 10 + (*digit - '0');
-				if (result > numeric_limits<int>::max()) {
-					result = 0;
-					break;
-				}
-				digit++;
-			}
-			else {
-				result = 0;
-				break;
-			}
-		}
-
-		if (*digit == '\0') {
-			if (minus)
-				result = 0 - result;
-		}
-	}
-	return static_cast<int>(result);
-}
-
-int main(){
-	cout << strToInt("-164546") << endl;
-	return 0;
-}
-```
+代码见[github](https://github.com/liqiang311/snippets/blob/master/string/%E8%BD%AC%E6%95%B4%E6%95%B0.cpp)
 
 #### 字符串最长公共子序列
 
@@ -600,135 +634,13 @@ int main(){
 
 ![](https://box.kancloud.cn/2016-06-07_575683a585d0b.jpg)
 
-```c++
-#include <iostream>
-#include <vector>
-#include <string>
-using namespace std;
-
-string lcs(string s1, string s2) {
-	int len1 = s1.size();
-	int len2 = s2.size();
-	vector< vector<int> > mat;
-	vector< vector<int> > direct; //0-up 1-leftup 2-left
-	mat.resize(len1 + 1);
-	direct.resize(len1 + 1);
-	for (int i = 0; i < len1 + 1; i++) {
-		mat[i].resize(len2 + 1);
-		direct[i].resize(len2 + 1);
-	}
-	for (int i = 0; i < len1 + 1; i++) {
-		mat[i][0] = 0;
-		direct[i][0] = 0;
-	}
-	for (int j = 0; j < len2 + 1; j++) {
-		mat[0][j] = 0;
-		direct[0][j] = 0;
-	}
-		
-	for (int i = 1; i <= len1; i++) {
-		for (int j = 1; j <= len2; j++) {
-			if (s1[i - 1] == s2[j - 1]) {
-				mat[i][j] = mat[i - 1][j - 1] + 1;
-				direct[i][j] = 1;
-			}
-
-			else {
-				if (mat[i][j - 1] > mat[i - 1][j]) {
-					mat[i][j] = mat[i][j - 1];
-					direct[i][j] = 2;
-				}
-				else {
-					mat[i][j] = mat[i - 1][j];
-					direct[i][j] = 0;
-				}
-			}
-		}
-	}
-	cout << "lcs:" << mat[len1][len2] << endl;
-	string res;
-	int i = len1, j = len2;
-	while (i > 0 && j > 0) {
-		if (direct[i][j] == 1) {
-			res = s1[i - 1] + res;
-			i--;
-			j--;
-		}
-		else if (direct[i][j] == 0) {
-			i--;
-		}
-		else {
-			j--;
-		}
-	}
-	return res;
-}
-
-int main() {
-	string s1 = "ABCBDAB";
-	string s2 = "BDCABA";
-	cout << lcs(s1, s2) << endl;
-	return 0;
-}
-```
+代码见[github](https://github.com/liqiang311/snippets/blob/master/string/%E6%9C%80%E9%95%BF%E5%85%AC%E5%85%B1%E5%AD%90%E5%BA%8F%E5%88%97.cpp)
 
 #### 字符串最长公共子串
 
 与上文区别是不等时的处理方式，和最后是整个矩阵中寻找最大值。
 
-```c++
-#include <iostream>
-#include <vector>
-#include <string>
-using namespace std;
-
-string lcs(string s1, string s2) {
-	int len1 = s1.size();
-	int len2 = s2.size();
-	vector< vector<int> > mat;
-	mat.resize(len1 + 1);
-	for (int i = 0; i < len1 + 1; i++) {
-		mat[i].resize(len2 + 1);
-	}
-	for (int i = 0; i < len1 + 1; i++) {
-		mat[i][0] = 0;
-	}
-	for (int j = 0; j < len2 + 1; j++) {
-		mat[0][j] = 0;
-	}
-		
-	for (int i = 1; i <= len1; i++) {
-		for (int j = 1; j <= len2; j++) {
-			if (s1[i - 1] == s2[j - 1]) {
-				mat[i][j] = mat[i - 1][j - 1] + 1;
-			}
-			else {
-				mat[i][j] = 0;
-			}
-		}
-	}
-
-	int maxMat = 0;
-	string res;
-	for (int i = 1; i <= len1; i++) {
-		for (int j = 1; j <= len2; j++) {
-			if (mat[i][j] > maxMat) {
-				maxMat = mat[i][j];
-				res = s1.substr(i - maxMat, maxMat);
-			}
-		}
-	}
-	
-	return res;
-}
-
-int main() {
-	string s1 = "ABCBDAB";
-	string s2 = "BDCABA";
-	cout << lcs(s1, s2) << endl;
-	return 0;
-}
-```
+代码见[github](https://github.com/liqiang311/snippets/blob/master/string/%E6%9C%80%E9%95%BF%E5%85%AC%E5%85%B1%E5%AD%90%E4%B8%B2.cpp)
 
 #### 请实现一个函数：最长顺子。输入很多个整数(1<=数值<=13)，返回其中可能组成的最长的一个顺子(顺子中数的个数代表顺的长度)； 其中数字1也可以代表14；
 
@@ -958,22 +870,6 @@ Matlab引擎方式(Matlab后台程序为服务器，VC前端为客户端，C/S�
 
 
 
-
-
-
-## 白板编程
-
-
-### 网格搜索：给一张二值化图片，用1~n标记不同的连通域。
-   思路：可以采用最简单的四领域搜索。
-### 码实现HSV图的直方图表示，已知H bins=8 S bins=4 V bins=2 
-
-开放问答：
-1.怎样在一张街拍图像中识别明星的衣着服饰信息？
-2.上衣纯色，裙子花色，怎样做区分？
-3.怎样判断一张广告图片中是否有文字信息？是否用到OCR技术？怎样应用？
-4.给一张二值化图片(包含一个正方形)，怎样识别图片中的正方形？如果图片污损严重，怎样识别并恢复？
-5.简述图像识别在移动互联网中的应用。
 
 图像处理基本算法-卷积和相关
 在执行线性空间滤波时，经常会遇到两个概念相关和卷积

@@ -129,6 +129,7 @@ social:
   #YouTube: https://youtube.com/yourname || youtube
   #Instagram: https://instagram.com/yourname || instagram
   #Skype: skype:yourname?call|chat || skype
+  CSDN: http://blog.csdn.net/QiangLi_strong?ref=toolbar || csdn
 
 social_icons:
   enable: true
