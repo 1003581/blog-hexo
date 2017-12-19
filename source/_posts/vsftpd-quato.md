@@ -44,6 +44,22 @@ useradd -s /sbin/nologin -d /data -m yy -p 123
 echo "yy" >> /etc/vsftpd/user_list
 ```
 
+## 安装
+
+```shell
+apt-get install vsftpd
+```
+
+## 配置
+
+安装软件后，`/etc`目录下无`vsftpd`文件夹，只有`/etc/vsftpd.conf`。
+
+默认配置如下，全部配置见：[man page](https://linux.die.net/man/5/vsftpd.conf)、[中文](http://blog.csdn.net/istruth/article/details/41776767?locationNum=4)
+
+## 问题
+
+[有些目录无法登录 vsftpd: "500 OOPS: priv_sock_get_cmd"](http://worldend.logdown.com/posts/247495-solve-vsftpd-500-oopspriv-sock-get-cmd)
+
 # Quota:
 
 

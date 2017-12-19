@@ -173,6 +173,26 @@ ${n\choose m}$
 | $\langle$   | `\langle`   |
 | $\rangle$   | `\rangle`   |
 
+## 集合运算
+
+| Symbol        | Latex         |
+| ------------- | ------------- |
+| $\mid$ | `\mid` |
+| $\in$         | `\in`         |
+| $\notin$      | `\notin`      |
+| $\ni$         | `\ni`         |
+| $\subset$ | `\subset` |
+| $\subsetneqq$ | `\subsetneqq` |
+| $\supset$ | `\supset` |
+| $\supsetneqq$ | `\supsetneqq` |
+| $\not\subset$ | `\not\subset` |
+| $\cap$ | `\cap` |
+| $\cup$ | `\cup` |
+| $\overline A$ | `\overline A` |
+| $\setminus$ | `\setminus` |
+| $\mathbb R$ | `\mathbb R` |
+| $\emptyset$ | `\emptyset` |
+
 ## 运算符
 
 | Symbol        | Latex         |
@@ -195,9 +215,6 @@ ${n\choose m}$
 | $\sim$        | `\sim`        |
 | $\simeq$      | `\simeq`      |
 | $\cong$       | `\cong`       |
-| $\in$         | `\in`         |
-| $\notin$      | `\notin`      |
-| $\ni$         | `\ni`         |
 | $\equiv$      | `\equiv`      |
 | $a\mod b$     | `a\mod b`     |
 | $a\pmod {bc}$ | `a\pmod {bc}` |

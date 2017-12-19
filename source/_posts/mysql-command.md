@@ -9,7 +9,7 @@ categories: sql
 
 <!-- more -->
 
-连接MySQL`mysql -u root -p`
+连接MySQL`mysql -u root -p` `mysql -uroot -p123456`
 
 创建数据库`create database <db name>;`
 
@@ -20,11 +20,6 @@ categories: sql
 create table <table name> (
 <字段名> <字段属性>
 );
-```
-
-插入数据
-```
-insert into <表名> [( <字段名1>[,..<字段名n > ])] values ( 值1 )[, ( 值n )]
 ```
 
 主机上导出数据库
@@ -46,3 +41,20 @@ docker exec gputest_mysql_1 mysql -uroot -p123456 gpu -e "source /tmp/backup.sql
 查看所有数据库`show databases;`
 
 查看当前数据库`select database();`
+
+## 增
+
+插入数据
+```
+insert into <表名> [( <字段名1>[,..<字段名n > ])] values ( 值1 )[, ( 值n )];
+```
+
+## 删
+
+```
+delete from <table> where condition;
+```
+
+## 改
+
+## 查
