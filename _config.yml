@@ -77,11 +77,11 @@ theme: next
 # Deployment
 ## Docs: https://hexo.io/docs/deployment.html
 deploy:
-  type: git
+- type: git
   repo:
     coding: git@git.coding.net:liqiang311/liqiang311.git
     github: git@github.com:liqiang311/liqiang311.github.io.git
-  type: baidu_url_submitter
+- type: baidu_url_submitter
 
 
 search:
