@@ -311,3 +311,11 @@ curl -sSL https://get.daocloud.io/daotools/set_mirror.sh | sh -s http://a6841873
 [jessfraz Dockerfile](https://github.com/jessfraz/dockerfiles)
 
 ## [docker 容器的网络模式](http://cizixs.com/2016/06/12/docker-network-modes-explained)
+
+## Docker配置替代官方源
+
+参照加速器命令
+
+```
+curl -sSL https://get.daocloud.io/daotools/set_mirror.sh | sh -s http://mirrors.***.com
+```

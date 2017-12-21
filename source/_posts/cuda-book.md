@@ -59,6 +59,8 @@ HANDLE_ERROR( cudaMemcpy( c, dev_c, N * sizeof(int), cudaMemcpyDeviceToHost ) );
 HANDLE_ERROR( cudaFree( dev_a ) );
 ```
 
+可以用`cudaMemcpyDefault`来代替`cudaMemcpyHostToDevice`和`cudaMemcpyDeviceToHost`。
+
 ### 共享内存
 
 将`__share__`添加到变量声明中, 对于GPU中的每个线程块, CUDA C编译器都创建该变量的一个副本. 同一线程块中的线程共享这块内存, 不同线程块之间内存不可见. 此内存常驻在GPU上.
