@@ -98,7 +98,7 @@ baidusitemap:
   path: baidusitemap.xml
 
 baidu_url_submit:
-  count: 3
+  count: 100
   host: www.liqiang311.com
   token: lc4U2TGsqw2ovku4
   path: baidu_urls.txt
