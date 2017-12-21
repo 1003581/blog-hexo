@@ -28,7 +28,7 @@ categories: c++
 
 为Field-Proven RDMA and Transport Offload Hardware Solutions的高性能服务器和存储连接软件
 
-#### Benifits
+## Benifits
 - 支持同一适配卡上的InfiniBand和以太网连接
 - 在所有Mellanox InfiniBand和以太网设备上运行的单个软件堆栈
 - 支持HPC应用，如科学研究，油气勘探，汽车碰撞测试
@@ -43,39 +43,37 @@ categories: c++
 - 在用户和内核级别支持OpenFabrics定义的Verbs API。
 - SCSI中间层接口，支持基于SCSI的块存储和管理
 
-#### Mellanox OpenFabrics 企业发行版(Enterprise Distribution) for Linux（MLNX_OFED）
+## Mellanox OpenFabrics 企业发行版(Enterprise Distribution) for Linux（MLNX_OFED）
 使用商品servers和存储系统的集群在不断增长的大型市场中被广泛部署，如高性能计算、数据仓库、在线交易处理、金融服务和大规模的Web2.0部署。为了实现高效率地透明式分布式计算，市场中的应用需要最高的I/O带宽和尽可能低的延迟。这些需求与提供一个网络、虚拟化、存储和其他应用程序和接口的大型交互式生态系统相结合。
 
 开放式结构联盟[www.openfabrics.org](www.openfabrics.org)的OFED已经通过与提供高性能I/O的供应商的协作开发测试来加强。Mellanox OFED（MLNX_OFED）是一种Mellanox测试和打包版本的OFED，并支持使用相同的RDMA（远程DMA）和内核旁路API（称为OFED verbs - InfiniBand and Ethernet)两种互连类型。Mellanox制作的10/20/40Gb/s的InfiniBand和超过10/40GbE的RoCE(基于RDMA over Converged Ethernet标准)使OEM和系统集成商能够满足市场中最终用户的需求。
 
-#### Linux Inbox 驱动
+## Linux Inbox 驱动
 适用于以太网和InfiniBand的Mellanox适配器的Linux VPI驱动程序也可用于所有主要发行版，RHEL、SLES、Ubuntu等等的Inbox。Inbox驱动程序使用Mellanox高性能云、HPC、存储、金融服务和更多的企业级Linux发行版的开箱即用的经验。
-#### VPI Support
+## VPI Support
 该设备通过一个高效的多层设备驱动架构使得在相同硬件I/O适配器（HCA或NIC）上的多重I/O连接选项生效。一台服务器上安装的相同的OFED栈可以deliver(实现)InfiniBand和以太网的同时I/O服务，端口也根据应用和终端用户需求来重新安排。比如适配器上的一个端口可以用来作为标准NIC或者RoCE以太网NIC，而另一个端口何以操作InfiniBand，或者两个端口用用来运行IB后者以太网。这样就使得IT管理人员能够实现功能聚合和高端I/O服务。
 
-#### 提供聚合和高端I/O服务
+## 提供聚合和高端I/O服务
 数据中心环境的网络中包含server to server通信（IPC）、server to LAN和server to SAN。在数据中心，特别是那些属于目标市场的应用程序中，应用程序期望针对不同类型的流量进行优化的不同API或接口，以实现最高性能。
 
-#### 效率 & 高性能HPC（高性能计算）簇
+## 效率 & 高性能HPC（高性能计算）簇
 在HPC应用中，MPI(信息通过接口)已经被广泛作为了并行编程通信库。在正在形成的大规模HPC应用中，I/O瓶颈不仅仅存在于架构中，还被拓展到了通信库。为了对MPI、SHMEM和PGAS应用提供可扩展的解决方法，Mellanox提供了一个新的名叫MXM(MellanoX Messaging)的增量库，该库通过改善内存和延迟的相关效率，使MPI、SHMEM和PGAS编程语言能够扩展到非常大的集群，并确保通信库可以通过Mellanox互连解决方案进行全面优化。
 
-#### 金融服务应用的最低延迟
+## 金融服务应用的最低延迟
 使用InfiniBand、RoCE和VMA的MLNX_OFED实现了金融应用的最低延迟和最高PPS(Packet Per Second)性能。
 
-#### 集群数据库应用的最低延迟和带宽
+## 集群数据库应用的最低延迟和带宽
 UDAPL是应用程序（如IBM DB2 pureScale）使用的另一个用户级RDMA接口。
 
-#### Web2.0和其他传统的基于Socket的应用
+## Web2.0和其他传统的基于Socket的应用
 包含IP-IB现场验证的MLNX_OFED，使基于IP的应用程序能够在InfiniBand上无缝工作。对于对最低延迟不敏感的应用程序，通过L2 NIC（以太网）驱动程序实现支持标准UDP/TCP/IP Socket接口。
 
-#### 存储应用
+## 存储应用
 为了使传统的基于SCSI和iSCSI的存储应用程序享受类似的RDMA性能优势，MLNX_OFED包括基于RDMA协议（SRP）的SCSI启动器和目标，以及与行业中可用的各种目标组件进行互操作的iSCSI RDMA协议（iSER）。 iSER可以
 在InfiniBand或RoCE上实施。 MLNX_OFED支持Mellanox存储加速，这是一个统一的计算和存储网络，可以显着优于多种网络的性价比。
 
-#### 高可用性 High Availability (HA)
+## 高可用性 High Availability (HA)
 MLNX_OFED包括消息传递，套接字和存储应用程序的高可用性支持。 通过IPoIB支持标准的Linux通道绑定模块，可以跨同一个适配器上的端口或跨适配器进行故障切换。 类似地，使用标准Linux实现（例如设备映射器多路径（dm-multipath）驱动程序）的SCSI应用程序支持通过SRP启动器的标准多路径和故障转移。 还支持一些供应商特定的故障切换/负载平衡驱动程序模型。
-
-![image](https://github.com/liqiang311/Pictures/blob/master/201705121.png?raw=true)
 
 # RDMA Aware Networks Programing User Manual
 
@@ -161,13 +159,17 @@ version 1.7
 ### 1.5 Key Components
 
 这些只是在部署IB和RoCE的优势的背景下提出的。我们不讨论电缆和连接器。
+
 #### Host Channel Adapter 主机通道适配器
 HCAs提供IB端节点（例如服务器）连接到IB网络的点。  
 这些相当于以太网（NIC）卡，但它们做得更多。 HCAs在操作系统的控制下提供地址转换机制，允许应用程序直接访问HCA。相同的地址转换机制是HCA代表用户级应用访问存储器的手段。该应用程序是指虚拟地址，而HCA具有将这些地址转换为物理地址的能力，以影响实际的消息传输。  
+
 #### Range Extenders 范围扩展器 
 InfiniBand范围扩展通过将InfiniBand流量封装到WAN链路上并扩展足够的缓冲区来确保WAN上的带宽被全部利用。
+
 #### Subnet Manager 子网管理器
 InfiniBand子网管理器为连接到InfiniBand结构的每个端口分配本地标识符（LID），并根据分配的LID开发路由表。 IB子网管理器是软件定义网络（SDN）的概念，它消除了互连复杂性，并创建了非常大规模的计算和存储基础架构。
+
 #### Switches 开关
 IB交换机在概念上类似于标准网络交换机，但是被设计为满足IB性能要求。实现IB链路层的流量控制，防止丢包，支持拥塞避免和自适应路由功能，以及高级服务质量。许多交换机包括子网管理器。需要至少一个子网管理器来配置IB结构。
 
