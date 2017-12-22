@@ -24,7 +24,7 @@ CNN中隐藏层中的节点是无连接的。RNN隐藏层的输入不仅包括�
 
 示意图：
 
-![]()
+![img]()
 
 代码：
 
@@ -100,7 +100,7 @@ for i in range(num_steps):
 
 双向循环神经网络bidirectional RNN，使得当前时刻的输出不仅与上一时刻的状态有关，也与后一时刻的状态有关。使用2个RNN进行组合。
 
-![]()
+![img]()
 
 深层循环神经网络deepRNN，将每一时刻的循环体重复多次。不同层的参数不同，而不同时刻同一层的参数相同。
 
@@ -120,7 +120,7 @@ for i in range(len(num_steps)):
 
 ## RNN的Dropout
 
-![]()
+![img]()
 
 ```python
 lstm = rnn_cell.BasicLSTMCell(lstm_size)

@@ -224,7 +224,7 @@ CUDA Toolkit（CUDA SDK）不断升级，从2007年推出的1.0到2017年推出�
 
 ### CUDA并行编程模型
 
-![](http://outz1n6zr.bkt.clouddn.com/a97718b65efee4716903ba08446b2317.png)
+![img](http://outz1n6zr.bkt.clouddn.com/a97718b65efee4716903ba08446b2317.png)
 
 - 线程级并行（核函数）
 - CPU+GPU同时工作
@@ -289,7 +289,7 @@ int main( void ) {
 
 结果
 
-![](http://outz1n6zr.bkt.clouddn.com/6f4edcb49f25d819d49ea0b025bfd3c2.png)
+![img](http://outz1n6zr.bkt.clouddn.com/6f4edcb49f25d819d49ea0b025bfd3c2.png)
 
 ### CUDA C基础
 
@@ -399,7 +399,7 @@ int main() {
 int tid = threadIdx.x + blockIdx.x * blockDim.x;
 ```
 
-![](http://outz1n6zr.bkt.clouddn.com/4271bf457dd3942214ababb5020046bf.png)
+![img](http://outz1n6zr.bkt.clouddn.com/4271bf457dd3942214ababb5020046bf.png)
 
 二维结构中，利用内置变量来确定线程Idx：
 
@@ -412,7 +412,7 @@ int y = threadIdx.y + blockIdx.y * blockDim.y;
 int offset = x + y * blockDim.x * gridDim.x; 
 ```
 
-![](http://outz1n6zr.bkt.clouddn.com/04795d344f33b2a88945624f9428b27e.png)
+![img](http://outz1n6zr.bkt.clouddn.com/04795d344f33b2a88945624f9428b27e.png)
 
 #### 变量类型限定符
 

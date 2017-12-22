@@ -1485,19 +1485,19 @@ type Value interface {
 
 空类型
 
-![](http://outz1n6zr.bkt.clouddn.com/8870e0b98ddeeb663bb319023a6de7af.png)
+![img](http://outz1n6zr.bkt.clouddn.com/8870e0b98ddeeb663bb319023a6de7af.png)
 
 ```go
 var w io.Writer = os.Stdout
 ```
 
-![](http://outz1n6zr.bkt.clouddn.com/13b45de433b748a038c9bd9a1a1d799c.png)
+![img](http://outz1n6zr.bkt.clouddn.com/13b45de433b748a038c9bd9a1a1d799c.png)
 
 ```go
 var x interface{} = time.Now()
 ```
 
-![](http://outz1n6zr.bkt.clouddn.com/040f73a4cbe187aba67802a835bdeb8f.png)
+![img](http://outz1n6zr.bkt.clouddn.com/040f73a4cbe187aba67802a835bdeb8f.png)
 
 ### sort.Interface接口
 

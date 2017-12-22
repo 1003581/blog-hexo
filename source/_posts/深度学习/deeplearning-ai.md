@@ -28,7 +28,7 @@ categories: 深度学习
     1. **We have access to a lot more computational power.**
     1. Neural Networks are a brand new field.
 1. Recall this diagram of iterating over different ML ideas. Which of the statements below are true? (Check all that apply.)   
-    ![](http://outz1n6zr.bkt.clouddn.com/20171106212040.png)
+    ![img](http://outz1n6zr.bkt.clouddn.com/20171106212040.png)
     1. **Being able to try out ideas quickly allows deep learning engineers to iterate more quickly.**
     1. **Faster computation can help speed up how long a team takes to iterate to a good idea.**
     1. It is faster to train on a big dataset than a small dataset.
@@ -38,13 +38,13 @@ categories: 深度学习
     1. **False**
 1. Which one of these plots represents a ReLU activation function?
     1. Figure 1:   
-    ![](http://outz1n6zr.bkt.clouddn.com/20171106212525.png)
+    ![img](http://outz1n6zr.bkt.clouddn.com/20171106212525.png)
     1. Figure 2:   
-    ![](http://outz1n6zr.bkt.clouddn.com/20171106212535.png)
+    ![img](http://outz1n6zr.bkt.clouddn.com/20171106212535.png)
     1. **Figure 3:**   
-    ![](http://outz1n6zr.bkt.clouddn.com/20171106212541.png)
+    ![img](http://outz1n6zr.bkt.clouddn.com/20171106212541.png)
     1. Figure 4:   
-    ![](http://outz1n6zr.bkt.clouddn.com/20171106212548.png)
+    ![img](http://outz1n6zr.bkt.clouddn.com/20171106212548.png)
 1. Images for cat recognition is an example of “structured” data, because it is represented as a structured array in a computer. True/False?
     1. True
     1. **False**
@@ -57,7 +57,7 @@ categories: 深度学习
     1. **It is applicable when the input/output is a sequence (e.g., a sequence of words).**
     1. RNNs represent the recurrent process of Idea->Code->Experiment->Idea->....
 1. In this diagram which we hand-drew in lecture, what do the horizontal axis (x-axis) and vertical axis (y-axis) represent?  
-    ![](http://outz1n6zr.bkt.clouddn.com/20171106212556.png)
+    ![img](http://outz1n6zr.bkt.clouddn.com/20171106212556.png)
     1.  - x-axis is the performance of the algorithm
         - y-axis (vertical axis) is the amount of data.
     1.  - x-axis is the input to the algorithm
@@ -571,7 +571,7 @@ $$
     1. This will multiply a 3x3 matrix a with a 3x1 vector, thus resulting in a 3x1 vector. That is, c.shape = (3,1).
     1. It will lead to an error since you cannot use “*” to operate on these two matrices. You need to instead use np.dot(a,b)
 1. Consider the following computation graph.  
-    ![](http://outz1n6zr.bkt.clouddn.com/2017-11-22_094905.png)  
+    ![img](http://outz1n6zr.bkt.clouddn.com/2017-11-22_094905.png)  
     What is the output J?
     1. `J = (c - 1)*(b + a)`
     1. **`J = (a - 1) * (b + c)`**
@@ -818,7 +818,7 @@ $$g'(z)=leakyRelu(z)' = \begin{cases} 0.01, &z<0\cr 1, &z \geq 0 \end{cases}$$
     1. It doesn’t matter. So long as you initialize the weights randomly gradient descent is not affected by whether the weights are large or small.
     1. This will cause the inputs of the tanh to also be very large, thus causing gradients to also become large. You therefore have to set α to be very small to prevent divergence; this will slow down learning.
 1. Consider the following 1 hidden layer neural network:  
-    ![](http://outz1n6zr.bkt.clouddn.com/2017-11-22_095200.png)
+    ![img](http://outz1n6zr.bkt.clouddn.com/2017-11-22_095200.png)
     Which of the following statements are True? (Check all that apply).
     1. $W^{[1]}$ will have shape (2, 4)
     1. **$b^{[1]}$ will have shape (4, 1)**
@@ -913,7 +913,7 @@ $$
             parameter['b' + str(i)] = np.random.randn(layers[i], 1) *　0.01
         ```
 1. Consider the following neural network.  
-    ![](...)  
+    ![img](...)  
     How many layers does this network have?
     1. **The number of layers $L$ is 4. The number of hidden layers is 3.**
     1. The number of layers $L$ is 3. The number of hidden layers is 3.
@@ -927,7 +927,7 @@ $$
     1. **True**
     1. False
 1. Consider the following 2 hidden layer neural network:  
-    ![](http://outz1n6zr.bkt.clouddn.com/2017-11-22_095336.png)  
+    ![img](http://outz1n6zr.bkt.clouddn.com/2017-11-22_095336.png)  
     Which of the following statements are True? (Check all that apply).
     1. **W[1] will have shape (4, 4)**
     1. **b[1] will have shape (4, 1)**
@@ -1220,7 +1220,7 @@ $$
     1. **If the mini-batch size is 1, you lose the benefits of vectorization across examples in the mini-batch.**
     1. If the mini-batch size is 1, you end up having to process the entire training set before making any progress.
 1. Suppose your learning algorithm’s cost , plotted as a function of the number of iterations, looks like this:  
-    ![](http://outz1n6zr.bkt.clouddn.com/201711170922.PNG)  
+    ![img](http://outz1n6zr.bkt.clouddn.com/201711170922.PNG)  
     Which of the following do you agree with?
     1. Whether you’re using batch gradient descent or mini-batch gradient descent, this looks acceptable.
     1. **If you’re using mini-batch gradient descent, this looks acceptable. But if you’re using batch gradient descent, something is wrong.**
@@ -1241,13 +1241,13 @@ $$
     1. $\alpha=0.95^t\alpha_0$
     1. $\alpha=\frac{1}{\sqrt{t}}\alpha_0$
 1. You use an exponentially weighted average on the London temperature dataset. You use the following to track the temperature: $v_t=\beta v_{t-1}+(1-\beta)\theta_t$. The red line below was computed using $\beta=0.9$. What would happen to your red curve as you vary $\beta$? (Check the two that apply)  
-    ![](http://outz1n6zr.bkt.clouddn.com/201711170944.PNG)
+    ![img](http://outz1n6zr.bkt.clouddn.com/201711170944.PNG)
     1. Decreasing $\beta$ will shift the red line slightly to the right.
     1. **Increasing $\beta$ will shift the red line slightly to the right.**
     1. Decreasing $\beta$ will create more oscillation within the red line.
     1. Increasing $\beta$ will create more oscillations within the red line.
 1. Consider this figure:  
-    ![](http://outz1n6zr.bkt.clouddn.com/201711170947.PNG)  
+    ![img](http://outz1n6zr.bkt.clouddn.com/201711170947.PNG)  
     These plots were generated with gradient descent; with gradient descent with momentum ($\beta$ = 0.5) and gradient descent with momentum ($\beta$ = 0.9). Which curve corresponds to which algorithm?
     1. (1) is gradient descent with momentum (small $\beta$). (2) is gradient descent. (3) is gradient descent with momentum (large $\beta$)
     1. (1) is gradient descent. (2) is gradient descent with momentum (large $\beta$) . (3) is gradient descent with momentum (small $\beta$)
@@ -1556,7 +1556,7 @@ s: stride  常用2
 
 ##### LeNet-5
 
-![](http://outz1n6zr.bkt.clouddn.com/lenet5.PNG)
+![img](http://outz1n6zr.bkt.clouddn.com/lenet5.PNG)
 
 1. `32x32x1` --(`conv f=5 s=1 VALID`)--> `28x28x6`
 1. --(`avg-pool f=2 s=2`)--> `14x14x6`
@@ -1572,7 +1572,7 @@ s: stride  常用2
 
 ##### AlexNet
 
-![](http://outz1n6zr.bkt.clouddn.com/alexnet.PNG)
+![img](http://outz1n6zr.bkt.clouddn.com/alexnet.PNG)
 
 1. `227x227x3` --(`conv f=11 s=4 VALID`)--> `55x55x96`
 1. --(`max-pool f=3 s=2`)--> `27x27x96`
@@ -1591,11 +1591,11 @@ s: stride  常用2
 - 论文中使用了ReLU激活函数
 - 经典ALexNet中包含局部响应归一化层，用于将通道之间相同位置上的像素进行归一化。
 
-![](http://upload-images.jianshu.io/upload_images/1689929-063fb60285b6ed42.png?imageMogr2/auto-orient/strip%7CimageView2/2)
+![img](http://upload-images.jianshu.io/upload_images/1689929-063fb60285b6ed42.png?imageMogr2/auto-orient/strip%7CimageView2/2)
 
 ##### VGG-16
 
-![](http://outz1n6zr.bkt.clouddn.com/vgg16.PNG)
+![img](http://outz1n6zr.bkt.clouddn.com/vgg16.PNG)
 
 只用了2种网络：`CONV(f=3 s=1 SAME)` `MAX-POOL(f=2 s=2)`
 
@@ -1618,9 +1618,9 @@ s: stride  常用2
 
 #### 残差网络 ResNet(152 layers)
 
-![](http://outz1n6zr.bkt.clouddn.com/2017-11-22_112752.png)
+![img](http://outz1n6zr.bkt.clouddn.com/2017-11-22_112752.png)
 
-![](http://outz1n6zr.bkt.clouddn.com/2017-11-22_112910.png)
+![img](http://outz1n6zr.bkt.clouddn.com/2017-11-22_112910.png)
 
 正常网络 plain network
 
@@ -1638,7 +1638,7 @@ $$
 
 残差块的矩阵加法要求维度相同，故需要添加一个矩阵，$W_s$，即$a^{[l+2]}=g(z^{[l+2]} + W_s a^{[l]})$，该参数属于学习参数。
 
-![](http://outz1n6zr.bkt.clouddn.com/2017-11-22_142806.png)
+![img](http://outz1n6zr.bkt.clouddn.com/2017-11-22_142806.png)
 
 #### 1x1卷积
 
@@ -1650,27 +1650,27 @@ Network in Network
 
 一个Inception模块，帮你解决使用什么尺寸的卷积层和何时使用池化层。
 
-![](http://outz1n6zr.bkt.clouddn.com/2017-11-22_144756.png)
+![img](http://outz1n6zr.bkt.clouddn.com/2017-11-22_144756.png)
 
 为了解决计算成本问题，引入1x1卷积进行优化计算。
 
-![](http://outz1n6zr.bkt.clouddn.com/2017-11-22_144817.png)
+![img](http://outz1n6zr.bkt.clouddn.com/2017-11-22_144817.png)
 
 事实证明，只要合理构建瓶颈层，不仅不会降低网络性能，还会降低计算成本。
 
 具体模块
 
-![](http://outz1n6zr.bkt.clouddn.com/2017-11-22_145952.png)
+![img](http://outz1n6zr.bkt.clouddn.com/2017-11-22_145952.png)
 
 具体网络
 
-![](http://outz1n6zr.bkt.clouddn.com/2017-11-22_150301.png)
+![img](http://outz1n6zr.bkt.clouddn.com/2017-11-22_150301.png)
 
 #### 迁移学习
 
 冻结一部分网络，自己训练一部分网络，并替换输出层的softmax
 
-![](http://outz1n6zr.bkt.clouddn.com/2017-11-22_154149.png)
+![img](http://outz1n6zr.bkt.clouddn.com/2017-11-22_154149.png)
 
 #### 数据增强
 
@@ -1701,7 +1701,7 @@ Network in Network
 
 输入图像如下，红框为标记位置。
 
-![](http://outz1n6zr.bkt.clouddn.com/2017-11-22_161948.png)
+![img](http://outz1n6zr.bkt.clouddn.com/2017-11-22_161948.png)
 
 此分类任务中包含4个类别：
 
@@ -1745,11 +1745,11 @@ $$
 
 将网络中的FC转化为卷积层，实际效果一样。
 
-![](http://outz1n6zr.bkt.clouddn.com/2017-11-22_170438.png)
+![img](http://outz1n6zr.bkt.clouddn.com/2017-11-22_170438.png)
 
 整个大图像做卷积运算。
 
-![](http://outz1n6zr.bkt.clouddn.com/2017-11-22_171833.png)
+![img](http://outz1n6zr.bkt.clouddn.com/2017-11-22_171833.png)
 
 #### 边界框预测
 

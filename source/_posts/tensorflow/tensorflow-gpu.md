@@ -94,11 +94,11 @@ sess = tf.Session(config=tf.ConfigProto(allow_soft_placement=True, log_device_pl
 
 深度学习模型训练流程图
 
-![]()
+![img]()
 
 异步模式深度学习模型训练流程图
 
-![]()
+![img]()
 
 可以简单的认为异步模式就是单机模式复制了多份，每一份使用不同的训练数据进行训练。不同设备之间是完全独立的。
 
@@ -106,11 +106,11 @@ sess = tf.Session(config=tf.ConfigProto(allow_soft_placement=True, log_device_pl
 
 同步模式深度学习模型训练流程图
 
-![]()
+![img]()
 
 所有设备会同时读取参数的取值，然后等待所有的设备的传播算法计算完成后，统一更新参数（取平均值）。
 
-![]()
+![img]()
 
 缺点：受所有设备中最慢的设备制约。
 

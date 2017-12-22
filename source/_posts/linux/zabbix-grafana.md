@@ -211,7 +211,7 @@ UserParameter=gpu7.temp, nvidia-smi -q -g 7 2>&1|grep -i "gpu current temp"|awk 
 
 最后效果如图：
 
-![](http://outz1n6zr.bkt.clouddn.com/2017-12-14_161919.png)
+![img](http://outz1n6zr.bkt.clouddn.com/2017-12-14_161919.png)
 
 继续添加主机。点击 Zabbix Web中的`配置`->`主机`->右上角`创建主机`。
 
@@ -225,7 +225,7 @@ agent代理程序的接口 IP地址 10.42.10.1
 
 点击上方主机旁边的`模版`,然后点击`选择`，选择刚刚创建的模板，然后选择后，点击`添加`按钮(带下划线的)。见下图
 
-![](http://outz1n6zr.bkt.clouddn.com/2017-12-14_163541.png)
+![img](http://outz1n6zr.bkt.clouddn.com/2017-12-14_163541.png)
 
 最后点击`添加`按钮，创建主机成功，可以发现这些主机中已经包含了很多监控项。
 
@@ -233,7 +233,7 @@ agent代理程序的接口 IP地址 10.42.10.1
 
 > 注意：我们创建的模版中，选择监控了8个gpu卡，但是有的服务器中只有4块或者1块，需要在主机中将这些监控项进行禁用。如下：
 
-![](http://outz1n6zr.bkt.clouddn.com/2017-12-14_172159.png)
+![img](http://outz1n6zr.bkt.clouddn.com/2017-12-14_172159.png)
 
 # Gafana中使用Templating
 
@@ -241,7 +241,7 @@ agent代理程序的接口 IP地址 10.42.10.1
 
 在Grafana中打开`Dashboards`，然后选择你创建的Dashboards，比如`GPUs`,然后进入该Dashboards首页，点击`设置`中的`Templating`
 
-![](http://outz1n6zr.bkt.clouddn.com/2017-12-15_091138.png)
+![img](http://outz1n6zr.bkt.clouddn.com/2017-12-15_091138.png)
 
 选择`Variables`界面的`New`，填写内容如下：
 
@@ -265,7 +265,7 @@ Include All option: ✔
 
 添加后如图。
 
-![](http://outz1n6zr.bkt.clouddn.com/2017-12-15_092802.png)
+![img](http://outz1n6zr.bkt.clouddn.com/2017-12-15_092802.png)
 
 接下来是如何使用。
 
@@ -279,11 +279,11 @@ Item: $Items
 Data Source: zabbix
 ```
 
-![](http://outz1n6zr.bkt.clouddn.com/2017-12-15_093212.png)
+![img](http://outz1n6zr.bkt.clouddn.com/2017-12-15_093212.png)
 
 若不想全部Items显示到一个Graph中，则需要修改Graph Panel的`General`选项中的`Templating`，选择`Repeat Panel`，选择要Repeat的方式，`Min span`指的是分开多个后每个panel的最小宽度。最终效果图如下：
 
-![](http://outz1n6zr.bkt.clouddn.com/2017-12-15_093452.png)
+![img](http://outz1n6zr.bkt.clouddn.com/2017-12-15_093452.png)
 
 # 定期备份
 

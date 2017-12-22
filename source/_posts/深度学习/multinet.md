@@ -41,7 +41,7 @@ We demonstrate the effectiveness of our approach in the challenging KITTI benchm
 
 我们在KITTI数据库上测试该方法的有效性[13], 并得到道路分割中最好的性能表现。重要的是, ROI-Pooling的实施可以显著提高检测性能, 而不需要一个明确的候选生成网络。与Faster RCNN相比, 这使得我们的解码器具有显著的速度优势。我们的方法得益于共享运算, 从而执行所有任务所需时间不到100 ms。
 
-![](http://outz1n6zr.bkt.clouddn.com/2017-11-23_185805.png)
+![img](http://outz1n6zr.bkt.clouddn.com/2017-11-23_185805.png)
 
 Figure 1: Our goal: Solving street classification, vehicle detection and road segmentation in one forward pass.
 
@@ -53,7 +53,7 @@ In this section we review current approaches to the tasks that MultiNet tackles,
 
 本节中, 我们回顾了目前使用MultiNet处理任务的方法, 即classification、detection、segmentation。我们着重于基于深度学习的方法。
 
-![](http://outz1n6zr.bkt.clouddn.com/2017-11-23_185846.png)
+![img](http://outz1n6zr.bkt.clouddn.com/2017-11-23_185846.png)
 
 Figure 2: MultiNet architecture.
 
@@ -113,7 +113,7 @@ The first step of our decoder is to produce a rough estimate of the bounding box
 
 该解码器的第一步是产生bounding box的粗略估计。为了实现这一目标, 首先用500个滤波器的1×1卷积层传递编码的特征, 产生一个39×12×500大小的张量, 我们称之为隐藏层。随后该张量用另一个1×1卷积层处理, 输出6个分辨率为39×12的通道。我们称这个张量为prediction, 张量的值具有语义含义。该张量的前两个通道形成图像的粗分割。这些值表示感兴趣目标存在于39×12网格中的特定位置处的置信度。最后四个通道表示该单元周围区域中边界框的坐标。图3表示有cell的图像。
 
-![](http://outz1n6zr.bkt.clouddn.com/2017-11-23_185905.png)
+![img](http://outz1n6zr.bkt.clouddn.com/2017-11-23_185905.png)
 
 Figure 3: Visualization of our label encoding. Blue grid: cells, Red cells: cells containing a car, Grey cells: cells in don’t care area. Green boxes: ground truth boxes.
 
@@ -216,7 +216,7 @@ Our evaluation is performed in two steps. First we build three individual models
 
 #### Segmentation
 
-![](http://outz1n6zr.bkt.clouddn.com/2017-11-23_185933.png)
+![img](http://outz1n6zr.bkt.clouddn.com/2017-11-23_185933.png)
 
 Figure 4: Convergence behavior of the segmentation decoder
 
@@ -249,7 +249,7 @@ Table 3: Summary of the URBAN ROAD scores on the public KITTIRoad Detection Lead
 
 表3：KITTI Road检测排行榜上城市道路评分[11] 
 
-![](http://outz1n6zr.bkt.clouddn.com/2017-11-23_190007.png)
+![img](http://outz1n6zr.bkt.clouddn.com/2017-11-23_190007.png)
 
 Figure 5: Visualization of the segmentation output. Top rows: Soft segmentation output as red blue plot. The intensity of the
 plot reflects the confidence. Bottom rows hard class labels.
@@ -262,7 +262,7 @@ Table 2 shows the scores of our segmentation decoder after 16,000 iterations. Th
 
 #### Detection
 
-![](http://outz1n6zr.bkt.clouddn.com/2017-11-23_185947.png)
+![img](http://outz1n6zr.bkt.clouddn.com/2017-11-23_185947.png)
 
 Figure 6: Validation scores of the detection decoder. Performance of FastBox with and without rezoom layer is shown for comparison.
 
@@ -291,7 +291,7 @@ Table 5: Detection speed of FastBox. Results are measured on a Pascal Titan X.
 
 表5：FastBox的检测速度。结果在Pascal Titan X上测量 
 
-![](http://outz1n6zr.bkt.clouddn.com/2017-11-23_190024.png)
+![img](http://outz1n6zr.bkt.clouddn.com/2017-11-23_190024.png)
 
 Figure 7: Visualization of the detection output. With and without non-maximal suppression applied.
 
@@ -313,7 +313,7 @@ Table 6: MultiNet performance: Comparison between united and seperate evaluation
 
 表6：MultiNet性能：验证集合的联合和单独评估之间的比较 
 
-![](http://outz1n6zr.bkt.clouddn.com/2017-11-23_190044.png)
+![img](http://outz1n6zr.bkt.clouddn.com/2017-11-23_190044.png)
 
 Figure 8: MultiNet: Comparison of Joint and Separate Training.
 
@@ -340,7 +340,7 @@ Figure 9: Visualization of the MultiNet output.
 
 图9. MultiNet输出可视化
 
-![](http://outz1n6zr.bkt.clouddn.com/2017-11-23_190113.png)
+![img](http://outz1n6zr.bkt.clouddn.com/2017-11-23_190113.png)
 
 ## Conclusion
 
@@ -554,19 +554,19 @@ INFO:tensorflow:Restoring parameters from RUNS\KittiSeg_pretrained\model.ckpt-15
 
 demo.png
 
-![](http://outz1n6zr.bkt.clouddn.com/demo.png)
+![img](http://outz1n6zr.bkt.clouddn.com/demo.png)
 
 demo_raw.png
 
-![](http://outz1n6zr.bkt.clouddn.com/demo_raw.png)
+![img](http://outz1n6zr.bkt.clouddn.com/demo_raw.png)
 
 demo_rb.png
 
-![](http://outz1n6zr.bkt.clouddn.com/demo_rb.png)
+![img](http://outz1n6zr.bkt.clouddn.com/demo_rb.png)
 
 demo_green.png
 
-![](http://outz1n6zr.bkt.clouddn.com/demo_green.png)
+![img](http://outz1n6zr.bkt.clouddn.com/demo_green.png)
 
 代码笔记：
 

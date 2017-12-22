@@ -1759,7 +1759,7 @@ P(x6=T|x1=F)=P(x6=T,x1=F)/P(x1=F)
 
 继续盗图
 
-![](http://shareditor-shareditor.oss-cn-beijing.aliyuncs.com/dynamic/ea49002e7337dc908cfc169d0e4c1b612a3d66ab.png)
+![img](http://shareditor-shareditor.oss-cn-beijing.aliyuncs.com/dynamic/ea49002e7337dc908cfc169d0e4c1b612a3d66ab.png)
 
 音乐的每一个音不是随意作出来的，是根据曲子的风格、和弦、大小调式等来决定的，但是因为可选的音高有多种，也就出现了无数美妙的旋律。因为有约束，所以其实可以说新的音和前面的n个音有关，这其实是一个马尔可夫模型可以解释的事情。
 
@@ -1767,7 +1767,7 @@ P(x6=T|x1=F)=P(x6=T,x1=F)/P(x1=F)
 
 如果说这个马尔可夫是两阶的，那么转移概率可能是这个样子：
 
-![](http://shareditor-shareditor.oss-cn-beijing.aliyuncs.com/dynamic/87b372efdfd3d27d1c76712a362f14287d95d1e3.png)
+![img](http://shareditor-shareditor.oss-cn-beijing.aliyuncs.com/dynamic/87b372efdfd3d27d1c76712a362f14287d95d1e3.png)
 
 当然后面的概率只是举了个例子，这种情况由前两列决定的第三列任意值都会有一个概率
 
@@ -2240,7 +2240,7 @@ R(query, d) = Wq×p(w,w)×Wd
 
 我们这样来设计我们的神经网络：由n个输入特征得出与输入特征几乎相同的n个结果，这样训练出的隐藏层可以得到意想不到的信息。
 
-![](http://shareditor-shareditor.oss-cn-beijing.aliyuncs.com/dynamic/e71bacc31d8e066220d9d7a97fb52f07b31c0962.png)
+![img](http://shareditor-shareditor.oss-cn-beijing.aliyuncs.com/dynamic/e71bacc31d8e066220d9d7a97fb52f07b31c0962.png)
 
 比如，在信息检索领域，我们需要通过模型训练来得出合理的排序模型，那么输入的特征可能有：文档质量、文档点击历史、文档前链数目、文档锚文本信息……，为了能找出这些特征中隐藏的信息，我们把隐藏层的神经元数目设置的少于输入特征的数目，经过大量样本的训练出能还原原始特征的模型，这样相当于我们用少于输入特征数目的信息还原出了全部特征，表面上是一种压缩，实际上通过这种方式就可以发现某些特征之间存在隐含的相关性，或者有某种特殊的关系。
 
@@ -2262,7 +2262,7 @@ R(query, d) = Wq×p(w,w)×Wd
 
 讲述第三种用法之前我们先讲一下什么是卷积运算。卷积英文是convolution(英文含义是：盘绕、弯曲、错综复杂)，数学表达是：
 
-![](http://shareditor-shareditor.oss-cn-beijing.aliyuncs.com/dynamic/a271d170d4fbe2ddedaa0863f1087db4e38e81b3.png)
+![img](http://shareditor-shareditor.oss-cn-beijing.aliyuncs.com/dynamic/a271d170d4fbe2ddedaa0863f1087db4e38e81b3.png)
 
 数学上不好理解，我们可以通俗点来讲：卷积就相当于在一定范围内做平移并求平均值。比如说回声可以理解为原始声音的卷积结果，因为回声是原始声音经过很多物体反射回来声音揉在一起。再比如说回声可以理解为把信号分解成无穷多的冲击信号，然后再进行冲击响应的叠加。再比如说把一张图像做卷积运算，并把计算结果替换原来的像素点，可以实现一种特殊的模糊，这种模糊其实是一种新的特征提取，提取的特征就是图像的纹路。总之卷积就是先打乱，再叠加。
 
@@ -2296,7 +2296,7 @@ R(query, d) = Wq×p(w,w)×Wd
 
 为了对mnist手写数据集做训练，我们设计这样的多层卷积网络：
 
-![](http://shareditor-shareditor.oss-cn-beijing.aliyuncs.com/dynamic/3941ea72a9fbca647e1562e3a569228d3921db23.png)
+![img](http://shareditor-shareditor.oss-cn-beijing.aliyuncs.com/dynamic/3941ea72a9fbca647e1562e3a569228d3921db23.png)
 
 第一层由一个卷积和一个max pooling完成，其中卷积运算的“视野”是5×5的像素范围，卷积使用1步长、0边距的模板(保证输入输出是同一个大小)，1个输入通道(因为图片是灰度的，单色)，32个输出通道(也就是设计32个特征)。由于我们通过上面read_images.c的打印可以看到每张图片都是28×28像素，那么第一次卷积输出也是28×28大小。max pooling采用2×2大小的模板，那么池化后输出的尺寸就是14×14，因为一共有32个通道，所以一张图片的输出一共是14×14×32=6272像素
 
@@ -2306,7 +2306,7 @@ R(query, d) = Wq×p(w,w)×Wd
 
 为了让算法更“智能”，我们把这些神经元的激活函数设计为ReLu函数，即如下图像中的蓝色(其中绿色是它的平滑版g(x)=log(1+e^x))：
 
-![](http://shareditor-shareditor.oss-cn-beijing.aliyuncs.com/dynamic/79abd1f246da3600c49a14650843fcf5f3633d6b.png)
+![img](http://shareditor-shareditor.oss-cn-beijing.aliyuncs.com/dynamic/79abd1f246da3600c49a14650843fcf5f3633d6b.png)
 
 最终的输出层，我们以第三层的1024个输出为输入，设计一个softmax层，输出10个概率值
 
@@ -2459,7 +2459,7 @@ step 1400, training accuracy 0.98
 
 基于三层神经网络构建n-gram语言模型(词向量顺带着就算出来了)的基本思路：
 
-![](http://shareditor-shareditor.oss-cn-beijing.aliyuncs.com/dynamic/436984a952d8fb45270875d8452081517d149973.png)
+![img](http://shareditor-shareditor.oss-cn-beijing.aliyuncs.com/dynamic/436984a952d8fb45270875d8452081517d149973.png)
 
 最下面的w是词，其上面的C(w)是词向量，词向量一层也就是神经网络的输入层(第一层)，这个输入层是一个(n-1)×m的矩阵，其中n-1是词向量数目，m是词向量维度
 
@@ -2553,7 +2553,7 @@ word2vec中做训练主要使用的是神经概率语言模型，这需要掌握
 
 CBOW全称是Continuous Bag-of-Words Model，是在已知当前词的上下文的前提下预测当前词
 
-![](http://shareditor-shareditor.oss-cn-beijing.aliyuncs.com/dynamic/6e168a6ea0fc1051ef2ae3192f7ce3b7626cd5e5.png)
+![img](http://shareditor-shareditor.oss-cn-beijing.aliyuncs.com/dynamic/6e168a6ea0fc1051ef2ae3192f7ce3b7626cd5e5.png)
 
 CBOW模型的神经网络结构设计如下：
 
@@ -2569,7 +2569,7 @@ CBOW模型的神经网络结构设计如下：
 
 上面的CBOW输出层为什么要建成一个霍夫曼树呢？因为我们是要基于训练语料得到每一个可能的w的概率。那么具体怎么得到呢？我们先来看一下这个霍夫曼树的例子：
 
-![](http://shareditor-shareditor.oss-cn-beijing.aliyuncs.com/dynamic/ddb7360209957368d53c066deccb1c0d686feff4.png)
+![img](http://shareditor-shareditor.oss-cn-beijing.aliyuncs.com/dynamic/ddb7360209957368d53c066deccb1c0d686feff4.png)
 
 在这个霍夫曼树中，我们以词足球为例，走过的路径图上容易看到，其中非根节点上的θ表示待训练的参数向量，也就是要达到这种效果：当在投射层产出了一个新的向量x，那么我通过逻辑回归公式：
 
@@ -2591,23 +2591,23 @@ p(足球|Context(足球)) = ∏ p(d|x,θ)
 
 我们以对数似然函数为优化目标，盗取一个网上的推导公式：
 
-![](http://shareditor-shareditor.oss-cn-beijing.aliyuncs.com/dynamic/e66ecb7bd782da7ee0512df278c30240ce753423.png)
+![img](http://shareditor-shareditor.oss-cn-beijing.aliyuncs.com/dynamic/e66ecb7bd782da7ee0512df278c30240ce753423.png)
 
 假设两个求和符号里面的部分记作L(w, j)，那么有
 
-![](http://shareditor-shareditor.oss-cn-beijing.aliyuncs.com/dynamic/6fd27ff26d8a54efd31d725d4659c10b6fadbdd3.png)
+![img](http://shareditor-shareditor.oss-cn-beijing.aliyuncs.com/dynamic/6fd27ff26d8a54efd31d725d4659c10b6fadbdd3.png)
 
 于是θ的更新公式：
 
-![](http://shareditor-shareditor.oss-cn-beijing.aliyuncs.com/dynamic/91e37d7bac2f7f94577e62c2a0cc373c4f8f154d.png)
+![img](http://shareditor-shareditor.oss-cn-beijing.aliyuncs.com/dynamic/91e37d7bac2f7f94577e62c2a0cc373c4f8f154d.png)
 
 同理得出x的梯度公式：
 
-![](http://shareditor-shareditor.oss-cn-beijing.aliyuncs.com/dynamic/58adbe7af6fe479fbffc7510a9ce10793c4a36fc.png)
+![img](http://shareditor-shareditor.oss-cn-beijing.aliyuncs.com/dynamic/58adbe7af6fe479fbffc7510a9ce10793c4a36fc.png)
 
 因为x是多个v的累加，word2vec中v的更新方法是：
 
-![](http://shareditor-shareditor.oss-cn-beijing.aliyuncs.com/dynamic/3f8446f41079621cfdcbf3e39d00cb31b154e784.png)
+![img](http://shareditor-shareditor.oss-cn-beijing.aliyuncs.com/dynamic/3f8446f41079621cfdcbf3e39d00cb31b154e784.png)
 
 想想机器学习真是伟大，整个模型从上到下全是未知数，竟然能算出来我真是服了
 
@@ -2615,7 +2615,7 @@ p(足球|Context(足球)) = ∏ p(d|x,θ)
 
 Skip-gram全称是Continuous Skip-gram Model，是在已知当前词的情况下预测上下文
 
-![](http://shareditor-shareditor.oss-cn-beijing.aliyuncs.com/dynamic/e4789eeb56746d55b6e710388bdd7f180c392da5.png)
+![img](http://shareditor-shareditor.oss-cn-beijing.aliyuncs.com/dynamic/e4789eeb56746d55b6e710388bdd7f180c392da5.png)
 
 Skip-gram模型的神经网络结构设计如下：
 
@@ -2627,7 +2627,7 @@ Skip-gram模型的神经网络结构设计如下：
 
 后面的推导公式和CBOW大同小异，其中θ和v(w)的更新公式除了把符号名从x改成了v(w)之外完全一样，如下：
 
-![](http://shareditor-shareditor.oss-cn-beijing.aliyuncs.com/dynamic/8c5424a24c0f96566abb72d27808c75506aff841.png)
+![img](http://shareditor-shareditor.oss-cn-beijing.aliyuncs.com/dynamic/8c5424a24c0f96566abb72d27808c75506aff841.png)
 
 ### 体验真实的word2vec
 
@@ -2695,13 +2695,13 @@ Word: 人类  Position in vocabulary: 6
 
 传统的神经网络叫做FNN(Feed-Forward Neural Networks)，也就是前向反馈神经网络，有关传统神经网络的介绍请见《机器学习教程 十二-神经网络模型的原理》，RNN是在此基础上引入了定向循环，也就是已神经元为节点组成的图中存在有向的环，这种神经网络可以表达某些前后关联关系，事实上，真正的生物神经元之间也是存在这种环形信息传播的，RNN也是神经网络向真实生物神经网络靠近的一个进步。一个典型的RNN是这样的：
 
-![](http://shareditor-shareditor.oss-cn-beijing.aliyuncs.com/dynamic/5a3a6de28e660a08c09dc75bc16c38d88f850cd8.png)
+![img](http://shareditor-shareditor.oss-cn-beijing.aliyuncs.com/dynamic/5a3a6de28e660a08c09dc75bc16c38d88f850cd8.png)
 
 图中隐藏层中的节点之间构成了全连接，也就是一个隐藏层节点的输出可以作为另一个隐藏层节点甚至它自己的输入
 
 这种结构可以抽象成：
 
-![](http://shareditor-shareditor.oss-cn-beijing.aliyuncs.com/dynamic/489d09ae7d9c122a706ecded04e6a7bde406cf39.png)
+![img](http://shareditor-shareditor.oss-cn-beijing.aliyuncs.com/dynamic/489d09ae7d9c122a706ecded04e6a7bde406cf39.png)
 
 其中U、V、W都是变换概率矩阵，x是输入，o是输出
 
@@ -2729,21 +2729,21 @@ RNN的训练方法和传统神经网络一样，都是使用BP误差反向传播
 
 通过这样的前向推导，我们是不是可以对RNN的结构做一个展开，成如下的样子：
 
-![](http://shareditor-shareditor.oss-cn-beijing.aliyuncs.com/dynamic/5514cf3cef3c5b2171356ff350dae4e41bd72186.png)
+![img](http://shareditor-shareditor.oss-cn-beijing.aliyuncs.com/dynamic/5514cf3cef3c5b2171356ff350dae4e41bd72186.png)
 
 这样从时序上来看更直观明了
 
 下面就是反向修正参数的过程了，每一步输出o和实际的o值总会有误差，和传统神经网络反向更新的方法一样，用误差来反向推导，利用链式求导求出每层的梯度，从而更新参数，反向推导过程中我们还是把神经网络结构看成展开后的样子：
 
-![](http://shareditor-shareditor.oss-cn-beijing.aliyuncs.com/dynamic/c015c822cdd69b42766c1aaeeb4d5ab497831f8f.png)
+![img](http://shareditor-shareditor.oss-cn-beijing.aliyuncs.com/dynamic/c015c822cdd69b42766c1aaeeb4d5ab497831f8f.png)
 
 根据链式求导法则，得出隐藏层的残差计算公式为：
 
-![](http://shareditor-shareditor.oss-cn-beijing.aliyuncs.com/dynamic/3b7b844fd722b794e06c4c9bd1baf68636695bd9.png)
+![img](http://shareditor-shareditor.oss-cn-beijing.aliyuncs.com/dynamic/3b7b844fd722b794e06c4c9bd1baf68636695bd9.png)
 
 因此W和U的梯度就是：
 
-![](http://shareditor-shareditor.oss-cn-beijing.aliyuncs.com/dynamic/b68efabed77a3b11bb585373350df3ecf155c537.png)
+![img](http://shareditor-shareditor.oss-cn-beijing.aliyuncs.com/dynamic/b68efabed77a3b11bb585373350df3ecf155c537.png)
 
 LSTM(Long Short Tem Momery networks)
 
@@ -2751,39 +2751,39 @@ LSTM(Long Short Tem Momery networks)
 
 借用 http://colah.github.io/posts/2015-08-Understanding-LSTMs/ 中经典的几张图来说明下，第一张图是传统RNN的另一种形式的示意图，它只包含一个隐藏层，以tanh为激发函数，这里面的“记忆”体现在t的滑动窗口上，也就是有多少个t就有多少记忆，如下图
 
-![](http://shareditor-shareditor.oss-cn-beijing.aliyuncs.com/dynamic/acb256c2654c0882a3270ae8b9377fddc5146731.png)
+![img](http://shareditor-shareditor.oss-cn-beijing.aliyuncs.com/dynamic/acb256c2654c0882a3270ae8b9377fddc5146731.png)
 
 那么我们看LSTM的设计，如下，这里面有一些符号，其中黄色方框是神经网络层(意味着有权重系数和激活函数，σ表示sigmoid激活函数，tanh表示tanh激活函数)，粉红圆圈表示矩阵运算(矩阵乘或矩阵加)
 
-![](http://shareditor-shareditor.oss-cn-beijing.aliyuncs.com/dynamic/e3004368db50293f66b8bf03fe3cb342e7e365cc.png)
+![img](http://shareditor-shareditor.oss-cn-beijing.aliyuncs.com/dynamic/e3004368db50293f66b8bf03fe3cb342e7e365cc.png)
 
 这里需要分部分来说，下面这部分是一个历史信息的传递和记忆，其中粉红×是就像一个能调大小的阀门(乘以一个0到1之间的系数)，下面的第一个sigmoid层计算输出0到1之间的系数，作用到粉红×门上，这个操作表达上一阶段传递过来的记忆保留多少，忘掉多少
 
 其中的sigmoid公式如下：
 
-![](http://shareditor-shareditor.oss-cn-beijing.aliyuncs.com/dynamic/02570e707b30a72965b4a9554ad3ba12f902c71f.png)
+![img](http://shareditor-shareditor.oss-cn-beijing.aliyuncs.com/dynamic/02570e707b30a72965b4a9554ad3ba12f902c71f.png)
 
 可以看出忘掉记忆多少取决于上一隐藏层的输出h{t-1}和本层的输入x{t}
 
 下面这部分是由上一层的输出h{t-1}和本层的输入x{t}得出的新信息，存到记忆中：
 
-![](http://shareditor-shareditor.oss-cn-beijing.aliyuncs.com/dynamic/9e39788384b600703ead2f77aad880d16ba6025e.png)
+![img](http://shareditor-shareditor.oss-cn-beijing.aliyuncs.com/dynamic/9e39788384b600703ead2f77aad880d16ba6025e.png)
 
 其中包括计算输出值Ct部分的tanh神经元和计算比例系数的sigmoid神经元（这里面既存在sigmoid又存在tanh原因在于sigmoid取值范围是[0,1]天然作为比例系数，而tanh取值范围是[-1,1]可以作为一个输出值）。其中i{t}和Ct计算公式如下：
 
-![](http://shareditor-shareditor.oss-cn-beijing.aliyuncs.com/dynamic/f2cb937dd6c388f9e1b08df79897e160aa665ef5.png)
+![img](http://shareditor-shareditor.oss-cn-beijing.aliyuncs.com/dynamic/f2cb937dd6c388f9e1b08df79897e160aa665ef5.png)
 
 那么Ct输出就是：
 
-![](http://shareditor-shareditor.oss-cn-beijing.aliyuncs.com/dynamic/c897a02a61a3eabd65b3f2364e4ee2df4fdb1866.png)
+![img](http://shareditor-shareditor.oss-cn-beijing.aliyuncs.com/dynamic/c897a02a61a3eabd65b3f2364e4ee2df4fdb1866.png)
 
 下面部分是隐藏层输出h的计算部分，它考虑了当前拥有的全部信息（上一时序隐藏层的输出、本层的输入x和当前整体的记忆信息），其中本单元状态部分C通过tanh激活并做一个过滤(上一时序输出值和当前输入值通过sigmoid激活后的系数)
 
-![](http://shareditor-shareditor.oss-cn-beijing.aliyuncs.com/dynamic/fdd1613d3074c2a7d5458ae66b3f7fa471a53d3b.png)
+![img](http://shareditor-shareditor.oss-cn-beijing.aliyuncs.com/dynamic/fdd1613d3074c2a7d5458ae66b3f7fa471a53d3b.png)
 
 计算公式如下：
 
-![](http://shareditor-shareditor.oss-cn-beijing.aliyuncs.com/dynamic/d7a08a9896dab0599a52fbe08ed15c2d3cc4cbf4.png)
+![img](http://shareditor-shareditor.oss-cn-beijing.aliyuncs.com/dynamic/d7a08a9896dab0599a52fbe08ed15c2d3cc4cbf4.png)
 
 LSTM非常适合在NLP领域应用，比如一句话出现的词可以认为是不同时序的输入x，而在某一时间t出现词A的概率可以通过LSTM计算，因为词A出现的概率是取决于前面出现过的词的，但取决于前面多少个词是不确定的，这正是LSTM所做的存储着记忆信息C，使得能够得出较接近的概率。
 
@@ -2807,11 +2807,11 @@ CNN的三个优点：sparse interaction(稀疏的交互)，parameter sharing(参
 
 我们设计卷积公式表示如下（不了解卷积的含义请见《机器学习教程 十五-细解卷积神经网络》）：
 
-![](http://shareditor-shareditor.oss-cn-beijing.aliyuncs.com/dynamic/4dc33e729f50c04760fc0356971a7cf83bf2e1bd.png)
+![img](http://shareditor-shareditor.oss-cn-beijing.aliyuncs.com/dynamic/4dc33e729f50c04760fc0356971a7cf83bf2e1bd.png)
 
 假设每个词用三维向量表示，左边是4个词，右边是卷积矩阵，那么得到输出为：
 
-![](http://shareditor-shareditor.oss-cn-beijing.aliyuncs.com/dynamic/8a8f50d1ca436d218a1374907745cfa13a4675ae.png)
+![img](http://shareditor-shareditor.oss-cn-beijing.aliyuncs.com/dynamic/8a8f50d1ca436d218a1374907745cfa13a4675ae.png)
 
 如果基于这个结果做1-MaxPool池化，那么就取o中的最大值
 
@@ -2819,7 +2819,7 @@ CNN的三个优点：sparse interaction(稀疏的交互)，parameter sharing(参
 
 训练时获取问题的词向量Vq(这里面词向量可以使用google的word2vec来训练,有关word2vec的内容可以看《自己动手做聊天机器人 二十五-google的文本挖掘深度学习工具word2vec的实现原理》)，和一个正向答案的词向量Va+，和一个负向答案的词向量Va-， 然后比较问题和这两个答案的相似度，两个相似度的差值如果大于一个阈值m就用来更新模型参数，然后继续在候选池里选答案，小于m就不更新模型，即优化函数为：
 
-![](http://shareditor-shareditor.oss-cn-beijing.aliyuncs.com/dynamic/37318a24be94c53d84b748c00ffacf6a939bc84b.png)
+![img](http://shareditor-shareditor.oss-cn-beijing.aliyuncs.com/dynamic/37318a24be94c53d84b748c00ffacf6a939bc84b.png)
 
 参数更新方式和其他卷积神经网络方式相同，都是梯度下降、链式求导
 
@@ -2831,7 +2831,7 @@ CNN的三个优点：sparse interaction(稀疏的交互)，parameter sharing(参
 
 图中HL或CNN连起来的表示他们共享相同的权重。CNN的输出是几维的取决于做多少个卷积特征，如果有4个卷积，那么结果就是4*3的矩阵(这里面的3在下一步被池化后就变成1维了)
 
-![](http://shareditor-shareditor.oss-cn-beijing.aliyuncs.com/dynamic/f476d12e8230f0d6d5de033e52d2dfee5015c18a.png)
+![img](http://shareditor-shareditor.oss-cn-beijing.aliyuncs.com/dynamic/f476d12e8230f0d6d5de033e52d2dfee5015c18a.png)
 
 以上结构的效果在论文《Applying Deep Learning To Answer Selection- A Study And An Open Task》中有详细说明，这里不赘述
 
@@ -3355,7 +3355,7 @@ maven帮我们自动生成了pom.xml文件，这配置了包依赖信息，我�
 
 从https://storage.googleapis.com/google-code-archive-downloads/v2/code.google.com/ik-analyzer/IK%20Analyzer%202012FF_hf1_source.rar下载ik的源代码并把其中的src/org目录拷贝到chatbotv1工程的src/main/java下，然后刷新maven工程，效果如下：
 
-![](http://shareditor-shareditor.oss-cn-beijing.aliyuncs.com/dynamic/9c4ad3d303c1277b5b3ac57ecd9470dc2bc00b85.png)
+![img](http://shareditor-shareditor.oss-cn-beijing.aliyuncs.com/dynamic/9c4ad3d303c1277b5b3ac57ecd9470dc2bc00b85.png)
 
 在com.shareditor.chatbotv1包下maven帮我们自动生成了App.java，为了辨识我们改成Indexer.java，关键代码如下：
 
@@ -3404,7 +3404,7 @@ java -cp $CLASSPATH:./lib/:./chatbotv1-0.0.1-SNAPSHOT.jar com.shareditor.chatbot
 
 最终生成的索引目录index通过lukeall-4.9.0.jar查看如下：
 
-![](http://shareditor-shareditor.oss-cn-beijing.aliyuncs.com/dynamic/6829b0d38f7c3759f2ab50b745ba4ddae303758c.png)
+![img](http://shareditor-shareditor.oss-cn-beijing.aliyuncs.com/dynamic/6829b0d38f7c3759f2ab50b745ba4ddae303758c.png)
 
 ### 检索服务
 
@@ -3582,30 +3582,3 @@ function addText(text, is_response) {
 ```
 
 以上所有代码全都共享在 https://github.com/warmheartli/ChatBotCourse 和 https://github.com/warmheartli/shareditor.com 中供参考
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
