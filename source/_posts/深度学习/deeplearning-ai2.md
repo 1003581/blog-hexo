@@ -303,19 +303,51 @@ Intersection over Union(IoU)
 
 #### RPN网络
 
-Region proposal 候选区域
+预先进行Region proposal 候选区域提取
 
-R-CNN 区域CNN
+[RCNN,Fast RCNN,Faster RCNN 总结](http://shartoo.github.io/RCNN-series/ "RCNN,Fast RCNN,Faster RCNN 总结")
+
+##### R-CNN 
+
+[RCNN算法详解](http://blog.csdn.net/shenxiaolu1984/article/details/51066975)
+
+相比传统算法（HOG+SVM），RCNN（区域CNN）优势如下：
+
+1. 速度。经典的目标检测算法使用滑动窗法依次判断所有可能的区域。RCNN则预先提取一系列较可能是物体的候选区域，之后仅在这些候选区域上提取特征，进行判断。
+1. 特征提取。经典的目标检测算法在区域中提取人工设定的特征（Haar，HOG）。RCNN则需要训练深度网络进行特征提取。
+
+![R-CNN ](http://shartoo.github.io/images/blog/rcnn4.png)
 
 不再使用滑动窗口卷积，而是选择一些候选区域进行卷积，使用图像分割（Segmentation）算法选出候选区域。对区域进行卷积分类比较缓慢。算法不断优化。
 
-Fast R-CNN
+1. 使用候选区域提取算法selective search大约提取2000个矩形框。（是一种分割后合并的算法）
+1. 对这2000个矩形框与groud truth进行IOU比较，大于阈值则认为是目标区域。
+1. 将这2000个矩形进行缩放到CNN的输入大小227*227
+1. 将2000个图像分别通过CNN提取特征。
+1. 利用SVM进行特征分类。
 
-使用滑动窗口的卷积实现去分类所有的候选区域。但是区域候选区域的算法依然缓慢。
+##### Fast R-CNN
 
-Faster R-CNN
+[Fast RCNN算法详解](http://blog.csdn.net/shenxiaolu1984/article/details/51036677)
 
-使用卷积网络去检测候选区域，速度比Fast R-CNN快
+相比RCNN，Fast RCNN有如下优化：
+
+1. 速度优化。RCNN对2000个区域分别做CNN特征提取，而这些区域很多都是重叠的，所有包含大量的重复计算。Fast R-CNN将整个图像归一化后传入深度网络，消除了重复计算。
+1. 空间缩小。RCNN中独立的分类器和回归器需要大量特征作为训练样本。 Fast R-CNN把类别判断和位置精调统一用深度网络实现（softmax和regressor），不再需要额外存储。
+
+![Fast RCNN](http://shartoo.github.io/images/blog/rcnn7.png)
+
+算法具体要点：
+
+1. Conv feature map。将整个图像放入深度网络后，得到了总的feature map（图中中间的Deep ConvNet箭头所指的大map），然后结合2000个候选区域，得到了2000个子feature map（图中中间的RoI projection所指的灰色部分，是大map中的一部分）。
+1. ROI pooling。 因为这些feature后续需要通过全连接层，所以需要尺寸一致，所以需要将不同大小的feature map归一化到相同的大小。具体是先分割区域，然后max pooling。
+1. ROI feature vector。每个候选区域经过ROI pooling layer和2个FC后，得到了大小相同的 feature vector，这些vector分成2部分，一个进行全连接之后用来做softmax回归，用来进行分类，另一个经过全连接之后用来做bbox回归。
+
+##### Faster R-CNN
+
+从RCNN到fast RCNN，再到本文的faster RCNN，目标检测的四个基本步骤（候选区域生成，特征提取，分类，位置精修）终于被统一到一个深度网络框架之内。所有计算没有重复，完全在GPU中完成，大大提高了运行速度。 
+
+
 
 ## 第四周 特殊应用：人脸识别和神经风格转变
 
