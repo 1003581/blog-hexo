@@ -60,3 +60,33 @@ cat /proc/cmdline
 ```
 BOOT_IMAGE=/vmlinuz-3.13.0-24-generic root=/dev/mapper/ubuntu--vg-root ro cgroup_enable=memory swapaccount=1
 ```
+
+### 启动etcd
+
+```
+docker run --net=host -d googlegcr/etcd:2.0.12 /usr/local/bin/etcd --addr=127.0.0.1:4001 --bind-addr=0.0.0.0:4001 --data-dir=/var/etcd/data
+```
+
+### 启动master
+
+```
+docker run \
+    --volume=/:/rootfs:ro \
+    --volume=/sys:/sys:ro \
+    --volume=/dev:/dev \
+    --volume=/var/lib/docker/:/var/lib/docker:ro \
+    --volume=/var/lib/kubelet/:/var/lib/kubelet:rw \
+    --volume=/var/run:/var/run:rw \
+    --net=host \
+    --pid=host \
+    --privileged=true \
+    -d \
+    googlegcr/hyperkube:v1.0.1 \
+    /hyperkube kubelet --containerized --hostname-override=127.0.0.1 --address=0.0.0.0 --api-servers=http://localhost:8080 --config=/etc/kubernetes/manifests
+```
+
+### 运行service proxy
+
+```
+docker run -d --net=host --privileged googlegcr/hyperkube:v1.0.1 /hyperkube proxy --master=http://127.0.0.1:8080 --v=2
+```
