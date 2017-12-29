@@ -90,3 +90,30 @@ docker run \
 ```
 docker run -d --net=host --privileged googlegcr/hyperkube:v1.0.1 /hyperkube proxy --master=http://127.0.0.1:8080 --v=2
 ```
+
+搁浅
+
+## 第二次安装
+
+参考
+
+- [Ubuntu 14.04主机上部署k8s集群](http://www.cnblogs.com/ilinuxer/p/6368466.html)
+
+记录命令如下：
+
+```
+# 下载kubernetes仓库
+# 若为内网环境，则可以使用本地git仓库先行导入后后续clone
+# 若由Windows下载后续FTP传入，可能会丢失可执行文件的权限，导致编译出错
+git clone https://github.com/kubernetes/kubernetes.git
+
+# 下载必要镜像
+docker pull 
+```
+
+放弃
+
+## 直接参照官网安装
+
+[https://kubernetes.io/docs/home/](https://kubernetes.io/docs/home/)
+

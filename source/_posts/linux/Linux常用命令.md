@@ -75,11 +75,16 @@ categories: linux
 ## 用户
 
 ### 显示普通账户和系统用户
+
 `awk -F: '{if($3>=1000){printf "Common User: %s \n",$1}}' /etc/passwd`  
 `awk -F: '{if($3>=1000){printf "Common User: %s \n",$1}else{printf "root or sysuser:%s\n",$1}}' /etc/passwd `
+
 ### [启动禁用账户](http://blog.csdn.net/rainylin/article/details/6132916)
+
 ### [userdel](http://www.cnblogs.com/DaDaOnline/p/5527833.html)
+
 ### 添加管理员账户
+
 ```
 su
 useradd -s /bin/bash -mr <username>
@@ -87,6 +92,16 @@ passwd <username>
 visudo
 ```
 - 在`root    ALL=(ALL:ALL) ALL`下按格式对齐添加一行`<username>   ALL=(ALL:ALL) ALL`, `Ctrl+O`回车保存,`Ctrl+X`退出.
+
+无交互方式
+
+```
+useradd -s /bin/bash -m username
+echo username:password​ | chpasswd
+adduser username sudo
+```
+
+> 注意：chpasswd若username采用数字id开头，则会出现修改不掉密码的情形，未找到缘由。
 
 ## SSH
 
