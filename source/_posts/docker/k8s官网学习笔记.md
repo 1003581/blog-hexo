@@ -617,3 +617,33 @@ kubernetes-bootcamp-390780338-tm3vw   1/1       Terminating   0          50s    
 
 [日志](https://gitee.com/liqiang311/codes/je5gsr960c37qlviaud2415)
 
+# [Setup](https://kubernetes.io/docs/setup/)
+
+##  [Picking the Right Solution](https://kubernetes.io/docs/setup/pick-right-solution/)
+
+### Local-machine Solutions
+
+- [Minikube](https://kubernetes.io/docs/getting-started-guides/minikube/)适用于创建本地的、单节点集群。
+- [Kubeadm-dind](https://github.com/Mirantis/kubeadm-dind-cluster) is a multi-node (while minikube is single-node) Kubernetes cluster which only requires a docker daemon. It uses docker-in-docker technique to spawn the Kubernetes cluster.
+- [Ubuntu on LXD](https://kubernetes.io/docs/getting-started-guides/ubuntu/local/) supports a nine-instance deployment on localhost.
+- [IBM Cloud Private-CE (Community Edition)](https://github.com/IBM/deploy-ibm-cloud-private) can use VirtualBox on your machine to deploy Kubernetes to one or more VMs for development and test scenarios. Scales to full multi-node cluster.
+
+### Hosted Solutions
+
+## Independent Solutions
+
+### [Running Kubernetes Locally via Minikube](https://kubernetes.io/docs/getting-started-guides/minikube/) 
+
+
+
+### Bootstrapping Clusters with kubeadm
+
+#### [Installing kubeadm](https://kubernetes.io/docs/setup/independent/install-kubeadm/) 
+
+#### [Using kubeadm to Create a Cluster](https://kubernetes.io/docs/setup/independent/create-cluster-kubeadm/) 
+
+#### [Troubleshooting kubeadm](https://kubernetes.io/docs/setup/independent/troubleshooting-kubeadm/) 
+
+### [Creating a Custom Cluster from Scratch](https://kubernetes.io/docs/getting-started-guides/scratch/) 
+
+### [Deprecated Alternatives](https://kubernetes.io/docs/getting-started-guides/alternatives/)
